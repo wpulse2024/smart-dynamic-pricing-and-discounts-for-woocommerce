@@ -1,0 +1,130 @@
+  .fraise_quick-actions {
+      margin: 2rem 1rem;
+
+      &-title {
+          font-weight: 600;
+          font-size: 1rem;
+          color: var(--fraise-text-primary);
+          margin-bottom: 0.75rem;
+      }
+
+      .fraise_btn-wrapper {
+          display: flex;
+          gap: 1rem;
+
+          .el-button {
+              font-weight: 500;
+              border-radius: 999px;
+              padding: 0.75rem 1.5rem;
+              font-size: 0.9rem;
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+          }
+
+          .fraise_btn-template {
+              background: linear-gradient(to right, #8b5cf6, #6366f1);
+              color: white;
+              border: none;
+          }
+
+          .fraise_btn-outline {
+              background-color: white;
+              color: var(--fraise-text-primary);
+              border: 1px solid var(--fraise-border-light);
+          }
+      }
+  }
+
+  /* =========== Modals ============= */
+  .fraise_modal {
+      border-radius: 12px !important;
+      padding: 0px !important;
+
+      &-subtitle {
+          font-size: 13px;
+          font-weight: 500;
+          color: #374151;
+          margin-top: 0px;
+          margin-bottom: 1rem;
+      }
+
+      .el-dialog__title {
+          font-weight: 500;
+          font-size: 16px;
+          color: var(--fraise-text-primary);
+      }
+
+      .el-dialog__header {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 14px 20px;
+      }
+      .el-dialog__body {
+        padding: 14px 20px;
+      }
+
+      .fraise_template-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          gap: 1rem;
+      }
+
+      .fraise_template-card {
+          padding: 1rem;
+          border-radius: 1rem;
+          background-color: var(--fraise-bg-primary);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+          text-align: center;
+          border: 2px solid transparent;
+          transition: all 0.2s ease;
+
+          .fraise_template-icon {
+              width: 40px;
+              height: 40px;
+              margin: 0 auto 0.5rem;
+              border-radius: 0.75rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: white;
+          }
+
+          .fraise_template-title {
+              font-weight: 600;
+              font-size: 0.95rem;
+              color: var(--fraise-text-primary);
+          }
+
+          .fraise_template-desc {
+              font-size: 0.75rem;
+              color: var(--fraise-text-muted);
+              margin-top: 0.25rem;
+          }
+      }
+
+      .fraise_modal-form {
+          margin-top: 1rem;
+
+          .el-form-item {
+              margin-bottom: 1rem;
+          }
+
+          .priority-tip {
+              font-size: 0.75rem;
+              color: var(--fraise-text-muted);
+              margin-top: 0.25rem;
+          }
+      }
+
+      .dialog-footer {
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.75rem;
+          margin-top: 1rem;
+
+          .el-button--primary {
+              background: linear-gradient(to right, #8b5cf6, #6366f1);
+              border: none;
+          }
+      }
+  }

@@ -1,0 +1,9 @@
+@import './base/color.scss';
+@import './component/layout/navbar.scss';
+@import './module/dashboard/dashboard-index.scss';
+@import './module/roles/roles.scss';
+@import './base/element.scss';
+
+.dashboard-wrapper {
+    padding: 2rem;
+}

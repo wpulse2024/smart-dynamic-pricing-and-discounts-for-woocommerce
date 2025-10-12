@@ -1,0 +1,389 @@
+/* Main Container */
+.fraise_add-new-role {
+    max-width: 800px;
+    margin: 24px auto;
+    min-height: 100vh;
+  }
+  
+  /* Page Header */
+  .fraise_page-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  
+  .fraise_page-header h2 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--fraise-text-primary);
+    margin: 0;
+  }
+
+  .el-card {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+
+  
+  /* Form Sections */
+  .fraise_form-section {
+    margin-bottom: 30px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .fraise_form-section .el-card__header {
+    background: white;
+    border-bottom: 1px solid #f5f5f7;
+    padding: 16px 20px;
+  }
+  
+  .fraise_form-section .el-card__body {
+    padding: 20px;
+    background: white;
+  }
+  
+  /* Section Headers */
+  .fraise_section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fraise-text-primary);
+  }
+  
+  .fraise_section-header .el-icon {
+    font-size: 16px;
+    color: var(--fraise-primary-color);
+  }
+  
+  /* Form Items */
+  .fraise_rule-form .el-form-item {
+    margin-bottom: 20px;
+  }
+  
+  .fraise_rule-form .el-form-item__label {
+    font-size: 14px;
+    font-weight: 400;
+    color: $fraise-dark-400;
+    line-height: 20px;
+    padding-bottom: 4px;
+  }
+  
+  /* Inputs */
+  .fraise_rule-form .el-input__inner,
+  .fraise_rule-form .el-textarea__inner {
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1d1d1f;
+    background-color: #fafafa;
+    transition: all 0.2s ease;
+  }
+  
+  .fraise_rule-form .el-input__inner:focus,
+  .fraise_rule-form .el-textarea__inner:focus {
+    border-color: #0071e3;
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+  }
+  
+  .fraise_rule-form .el-input__inner::placeholder,
+  .fraise_rule-form .el-textarea__inner::placeholder {
+    color: #86868b;
+  }
+  
+  /* Select Dropdown */
+  .fraise_rule-form .el-select .el-input__inner {
+    background-color: #fafafa;
+    cursor: pointer;
+  }
+  
+  .fraise_rule-form .el-select .el-input__inner:hover {
+    border-color: #0071e3;
+  }
+  
+  /* Input Number */
+  .fraise_rule-form .el-input-number {
+    width: 100%;
+  }
+  
+  .fraise_rule-form .el-input-number .el-input__inner {
+    text-align: left;
+    padding-left: 15px;
+  }
+  
+  /* Radio Groups */
+  .fraise_rule-form .el-radio-group {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .fraise_rule-form .el-radio {
+    margin-right: 0;
+    height: 38px;
+    padding: 0 16px;
+    background: #fafafa;
+    border: 1px solid #e5e5e7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  
+  .fraise_rule-form .el-radio:hover {
+    border-color: #0071e3;
+    background: white;
+  }
+  
+  .fraise_rule-form .el-radio.is-checked {
+    border-color: #0071e3;
+    background: #f0f7ff;
+  }
+  
+  .fraise_rule-form .el-radio__label {
+    font-size: 14px;
+    color: #1d1d1f;
+    padding-left: 12px;
+  }
+  
+  /* Checkboxes */
+  .fraise_rule-form .el-checkbox {
+    height: 38px;
+    padding: 0 16px;
+    background: #fafafa;
+    border: 1px solid #e5e5e7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    margin-right: 0;
+    transition: all 0.2s ease;
+  }
+  
+  .fraise_rule-form .el-checkbox:hover {
+    border-color: #0071e3;
+    background: white;
+  }
+  
+  .fraise_rule-form .el-checkbox.is-checked {
+    border-color: #0071e3;
+    background: #f0f7ff;
+  }
+  
+  .fraise_rule-form .el-checkbox__label {
+    font-size: 14px;
+    color: #1d1d1f;
+    padding-left: 12px;
+  }
+  
+  /* Checkbox Group for Days */
+  .fraise_rule-form .el-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .fraise_rule-form .el-checkbox-group .el-checkbox {
+    margin: 0;
+  }
+  
+  /* Switch */
+  .fraise_rule-form .el-switch {
+    height: 16px;
+  }
+  
+  .fraise_rule-form .el-switch__core {
+    height: 22px;
+    border-radius: 14px;
+    background-color: #e5e5e7;
+  }
+  
+  .fraise_rule-form .el-switch.is-checked .el-switch__core {
+    background-color: #0071e3;
+  }
+  
+  .fraise_rule-form .el-switch__action {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Date Picker */
+  .fraise_rule-form .el-date-editor {
+    width: 100%;
+  }
+  
+  .fraise_rule-form .el-date-editor .el-input__inner {
+    padding-left: 40px;
+  }
+  
+  /* Divider */
+  .fraise_rule-form .el-divider {
+    margin: 24px 0;
+    border-color: #e5e5e7;
+  }
+  
+  /* Tier Rows */
+  .fraise_tier-row {
+    padding: 16px;
+    background: #fafafa;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e5e7;
+  }
+  
+  .fraise_tier-row .el-form-item {
+    margin-bottom: 0;
+  }
+  
+  /* Buttons */
+  .fraise_rule-form .el-button {
+    height: 44px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0 24px;
+    transition: all 0.2s ease;
+  }
+  
+  .fraise_rule-form .el-button--primary {
+    background-color: #0071e3;
+    border-color: #0071e3;
+    color: white;
+  }
+  
+  .fraise_rule-form .el-button--primary:hover {
+    background-color: #0077ed;
+    border-color: #0077ed;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+  }
+  
+  .fraise_rule-form .el-button--default {
+    background-color: white;
+    border-color: #d2d2d7;
+    color: #1d1d1f;
+  }
+  
+  .fraise_rule-form .el-button--default:hover {
+    border-color: #0071e3;
+    color: #0071e3;
+  }
+  
+  .fraise_rule-form .el-button--danger {
+    background-color: #ff3b30;
+    border-color: #ff3b30;
+    color: white;
+  }
+  
+  .fraise_rule-form .el-button--danger:hover {
+    background-color: #ff453a;
+    border-color: #ff453a;
+  }
+  
+  .fraise_rule-form .el-button.is-circle {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+  
+  /* Form Actions */
+  .fraise_form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 20px 24px;
+  }
+  
+  /* Offer Configuration Section */
+  .fraise_form-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 0 0 16px 0;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .fraise_add-new-role {
+      padding: 16px;
+    }
+  
+    .fraise_page-header h2 {
+      font-size: 20px;
+    }
+  
+    .fraise_form-section .el-card__header,
+    .fraise_form-section .el-card__body {
+      padding: 16px;
+    }
+  
+    .fraise_form-actions {
+      flex-direction: column;
+    }
+  
+    .fraise_form-actions .el-button {
+      width: 100%;
+    }
+  }
+  
+  /* Additional Refinements */
+  .fraise_rule-form .el-row {
+    width: 100%;
+  }
+  
+  .fraise_rule-form .el-col {
+    padding: 0 8px;
+  }
+  
+  .fraise_rule-form .el-row:first-child .el-col:first-child {
+    padding-left: 0;
+  }
+  
+  .fraise_rule-form .el-row:first-child .el-col:last-child {
+    padding-right: 0;
+  }
+  
+  /* Select Tag Styles */
+  .fraise_rule-form .el-select__tags {
+    flex-wrap: wrap;
+  }
+  
+  .fraise_rule-form .el-tag {
+    background-color: #f0f7ff;
+    border-color: #0071e3;
+    color: #0071e3;
+    border-radius: 6px;
+    height: 28px;
+    padding: 0 10px;
+    margin: 2px 4px 2px 0;
+  }
+  
+  /* Focus States */
+  .fraise_rule-form .el-radio__input.is-checked + .el-radio__label,
+  .fraise_rule-form .el-checkbox__input.is-checked + .el-checkbox__label {
+    color: #0071e3;
+  }
+  
+  /* Scrollbar Styling */
+  .fraise_add-new-role::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .fraise_add-new-role::-webkit-scrollbar-track {
+    background: #f5f5f7;
+  }
+  
+  .fraise_add-new-role::-webkit-scrollbar-thumb {
+    background: #d2d2d7;
+    border-radius: 4px;
+  }
+  
+  .fraise_add-new-role::-webkit-scrollbar-thumb:hover {
+    background: #86868b;
+  }

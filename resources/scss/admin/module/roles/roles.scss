@@ -1,0 +1,80 @@
+@import './add-new.scss';
+
+.rule_table_wrapper {
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+.fraise_pricing-rules-wrapper {
+    padding: 2rem;
+
+    .role_table_footer {
+        margin-top: 20px;
+        display: flex;
+        justify-content: end;
+    }
+
+    .fraise_title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        color: var(--fraise-text-primary);
+        margin-top: 0px;
+    }
+
+    .fraise_subtitle {
+        font-size: 0.925rem;
+        color: var(--fraise-text-muted);
+        margin-bottom: 1rem;
+    }
+
+    .fraise_search {
+        max-width: 100%;
+        margin-bottom: 1.25rem;
+        .el-input__wrapper {
+            background-color: var(--fraise-bg-muted) !important;
+            border-radius: var(--fraise-border-radius) !important;
+        }
+
+        :deep(.el-input__inner) {
+            background-color: var(--fraise-bg-muted);
+            border-radius: var(--fraise-border-radius);
+        }
+    }
+}
+
+.fraise_rules-table {
+    border-radius: 12px;
+    overflow: hidden;
+
+    thead {
+        .el-table__cell {
+            background: $fraise-gray-25 !important;
+            padding: 10px;
+            color: var(--fraise-text-primary) !important;
+        }
+    }
+
+    :deep(.el-table__header),
+    :deep(.el-table__cell) {
+        font-size: 0.85rem;
+        color: var(--fraise-text-primary);
+    }
+
+    .status-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 4px;
+
+        &.on {
+            background-color: var(--fraise-green-500);
+        }
+
+        &.off {
+            background-color: var(--fraise-red-500);
+        }
+    }
+}
