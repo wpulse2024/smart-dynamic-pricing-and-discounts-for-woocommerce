@@ -1,18 +1,18 @@
 @import './add-new.scss';
 
 .rule_table_wrapper {
-    padding: 20px;
     background: #fff;
     border-radius: 12px;
 }
 
 .fraise_pricing-rules-wrapper {
     padding: 2rem;
-
+    max-width: 1040px;
+    margin: 0 auto;
     .role_table_footer {
-        margin-top: 20px;
         display: flex;
         justify-content: end;
+        padding: 20px;
     }
 
     .fraise_title {
@@ -31,28 +31,38 @@
 
     .fraise_search {
         max-width: 100%;
-        margin-bottom: 1.25rem;
+        padding: 20px;
         .el-input__wrapper {
             background-color: var(--fraise-bg-muted) !important;
             border-radius: var(--fraise-border-radius) !important;
         }
-
-        :deep(.el-input__inner) {
-            background-color: var(--fraise-bg-muted);
-            border-radius: var(--fraise-border-radius);
-        }
     }
 }
 
+.el-table__inner-wrapper:after {
+    background: none !important;
+}
+
 .fraise_rules-table {
-    border-radius: 12px;
     overflow: hidden;
 
     thead {
         .el-table__cell {
             background: $fraise-gray-25 !important;
-            padding: 10px;
+            padding: 14px 8px;
             color: var(--fraise-text-primary) !important;
+            border-right: none;
+            border-top: none;
+        }
+    }
+
+    tbody {
+        .el-table__row {
+            background: #fff;
+            td {
+                border-right: none;
+                padding: 14px 8px;
+            }
         }
     }
 
@@ -60,6 +70,25 @@
     :deep(.el-table__cell) {
         font-size: 0.85rem;
         color: var(--fraise-text-primary);
+    }
+
+    .el-tag--success {
+        background: transparent !important;
+        border: none !important;
+        color: var(--fraise-text-primary) !important;
+        .el-tag__content {
+            font-weight: 500;
+            color: #137A5F !important;
+        }
+    }
+    .el-tag--danger {
+        background: transparent !important;
+        border: none !important;
+        color: var(--fraise-text-primary) !important;
+        .el-tag__content {
+            font-weight: 500;
+            color: var(--fraise-red-700) !important;
+        }
     }
 
     .status-dot {
@@ -70,11 +99,11 @@
         margin-right: 4px;
 
         &.on {
-            background-color: var(--fraise-green-500);
+            background-color: #137A5F;
         }
 
         &.off {
-            background-color: var(--fraise-red-500);
+            background-color: $fraise-gray-400;
         }
     }
 }

@@ -138,7 +138,7 @@
   flex: 1 1 250px;
   border-radius: 16px;
   background-color: var(--fraise-white-color);
-  padding: 1.5rem;
+  padding: 20px;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -159,40 +159,46 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.fraise_card-icon .el-icon {
+  font-size: 16px !important;
+  font-weight: 800;
 }
 .fraise_card-icon.purple {
-  background-color: var(--fraise-purple-500);
-  color: white;
+  background-color: #E6F2FE;
+  color: #0165C2;
 }
 .fraise_card-icon.green {
-  background-color: var(--fraise-green-500);
-  color: white;
+  background-color: #F0FDF4;
+  color: #15803D;
 }
 
 .fraise_card-content .label {
-  font-size: 0.875rem;
+  font-size: 12px;
   color: var(--fraise-text-secondary);
-  margin-bottom: 0.25rem;
+  margin-bottom: 6px;
 }
 .fraise_card-content .value {
-  font-size: 1.5rem;
+  font-size: 18px;
   font-weight: 600;
   color: var(--fraise-text-primary);
 }
 .fraise_card-content .value-lg {
-  font-size: 1.25rem;
+  font-size: 18px;
   font-weight: 600;
   color: white;
   margin: 0.25rem 0;
 }
 .fraise_card-content .applications {
-  font-size: 0.9rem;
+  font-size: 12px;
   color: white;
   opacity: 0.85;
 }
 .fraise_card-content .light {
   color: white;
-  font-size: 0.9rem;
+  font-size: 12px;
   opacity: 0.9;
 }
 
@@ -209,7 +215,7 @@
 }
 
 .featured-card {
-  background: linear-gradient(135deg, #7e22ce, #6d28d9);
+  background: linear-gradient(135deg, #253241, #98A2B3);
   color: white;
   position: relative;
 }
@@ -234,11 +240,11 @@
 }
 
 .fraise_quick-actions {
-  margin: 2rem 1rem;
+  margin: 2rem 0;
 }
 .fraise_quick-actions-title {
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 500;
+  font-size: 16px;
   color: var(--fraise-text-primary);
   margin-bottom: 0.75rem;
 }
@@ -248,15 +254,17 @@
 }
 .fraise_quick-actions .fraise_btn-wrapper .el-button {
   font-weight: 500;
-  border-radius: 999px;
-  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
   font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  height: 38px;
+}
+.fraise_quick-actions .fraise_btn-wrapper .el-button .el-icon {
+  margin-right: 4px;
 }
 .fraise_quick-actions .fraise_btn-wrapper .fraise_btn-template {
-  background: linear-gradient(to right, #8b5cf6, #6366f1);
+  background: #253241;
   color: white;
   border: none;
 }
@@ -654,7 +662,7 @@
 
 /* Buttons */
 .fraise_rule-form .el-button {
-  height: 44px;
+  height: 38px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
@@ -708,8 +716,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 24px;
-  padding: 20px 24px;
+  padding-top: 0px;
 }
 
 /* Offer Configuration Section */
@@ -737,6 +744,7 @@
   }
   .fraise_form-actions .el-button {
     width: 100%;
+    height: 38px !important;
   }
 }
 /* Additional Refinements */
@@ -796,18 +804,19 @@
 }
 
 .rule_table_wrapper {
-  padding: 20px;
   background: #fff;
   border-radius: 12px;
 }
 
 .fraise_pricing-rules-wrapper {
   padding: 2rem;
+  max-width: 1040px;
+  margin: 0 auto;
 }
 .fraise_pricing-rules-wrapper .role_table_footer {
-  margin-top: 20px;
   display: flex;
   justify-content: end;
+  padding: 20px;
 }
 .fraise_pricing-rules-wrapper .fraise_title {
   font-size: 1.25rem;
@@ -823,30 +832,56 @@
 }
 .fraise_pricing-rules-wrapper .fraise_search {
   max-width: 100%;
-  margin-bottom: 1.25rem;
+  padding: 20px;
 }
 .fraise_pricing-rules-wrapper .fraise_search .el-input__wrapper {
   background-color: var(--fraise-bg-muted) !important;
   border-radius: var(--fraise-border-radius) !important;
 }
-.fraise_pricing-rules-wrapper .fraise_search :deep(.el-input__inner) {
-  background-color: var(--fraise-bg-muted);
-  border-radius: var(--fraise-border-radius);
+
+.el-table__inner-wrapper:after {
+  background: none !important;
 }
 
 .fraise_rules-table {
-  border-radius: 12px;
   overflow: hidden;
 }
 .fraise_rules-table thead .el-table__cell {
   background: #F9FAFB !important;
-  padding: 10px;
+  padding: 14px 8px;
   color: var(--fraise-text-primary) !important;
+  border-right: none;
+  border-top: none;
+}
+.fraise_rules-table tbody .el-table__row {
+  background: #fff;
+}
+.fraise_rules-table tbody .el-table__row td {
+  border-right: none;
+  padding: 14px 8px;
 }
 .fraise_rules-table :deep(.el-table__header),
 .fraise_rules-table :deep(.el-table__cell) {
   font-size: 0.85rem;
   color: var(--fraise-text-primary);
+}
+.fraise_rules-table .el-tag--success {
+  background: transparent !important;
+  border: none !important;
+  color: var(--fraise-text-primary) !important;
+}
+.fraise_rules-table .el-tag--success .el-tag__content {
+  font-weight: 500;
+  color: #137A5F !important;
+}
+.fraise_rules-table .el-tag--danger {
+  background: transparent !important;
+  border: none !important;
+  color: var(--fraise-text-primary) !important;
+}
+.fraise_rules-table .el-tag--danger .el-tag__content {
+  font-weight: 500;
+  color: var(--fraise-red-700) !important;
 }
 .fraise_rules-table .status-dot {
   display: inline-block;
@@ -856,10 +891,10 @@
   margin-right: 4px;
 }
 .fraise_rules-table .status-dot.on {
-  background-color: var(--fraise-green-500);
+  background-color: #137A5F;
 }
 .fraise_rules-table .status-dot.off {
-  background-color: var(--fraise-red-500);
+  background-color: #ADB5C2;
 }
 
 .el-input__wrapper {
@@ -898,4 +933,6 @@
 
 .dashboard-wrapper {
   padding: 2rem;
+  max-width: 1040px;
+  margin: 0 auto;
 }

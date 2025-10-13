@@ -21,10 +21,10 @@
                     <el-input v-model="ruleForm.name" placeholder="Enter rule name" />
                 </el-form-item>
 
-                <el-form-item label="Description">
+                <!-- <el-form-item label="Description">
                     <el-input v-model="ruleForm.meta.description" type="textarea" :rows="3"
                         placeholder="Brief description of this rule" />
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item label="Priority" style="max-width: 300px;">
                     <el-input-number v-model="ruleForm.priority" :min="1" :max="100" />
@@ -33,7 +33,7 @@
                 <el-row :gutter="20">
                     <el-col :span="24">
                         <el-form-item label="Status">
-                            <el-switch v-model="ruleForm.status" active-text="Active" inactive-text="Inactive" />
+                            <el-switch active-value="active" inactive-value="inactive" v-model="ruleForm.status" active-text="Active"  />
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -464,8 +464,8 @@
 
             <!-- Action Buttons -->
             <div class="fraise_form-actions">
-                <el-button @click="$router.go(-1)">Cancel</el-button>
-                <el-button type="primary" @click="saveRule" :icon="Check">Save Rule</el-button>
+                <el-button size="medium" @click="$router.go(-1)">Cancel</el-button>
+                <el-button size="medium" type="primary" @click="saveRule" :icon="Check">Save Rule</el-button>
             </div>
         </el-form>
     </div>
@@ -562,13 +562,17 @@ export default {
     methods: {
         initializeRule() {
             // Check if it's a template or custom type
+            console.log('Route name:', this.$route.name);
             if (this.$route.name === 'add-new-role-template') {
                 this.templateData = getTemplateByKey(this.template);
                 if (this.templateData) {
                     this.ruleForm = JSON.parse(JSON.stringify(this.templateData));
                     delete this.ruleForm.template_key;
                 }
-            } else {
+            } else if (this.$route.name === 'edit-rule') {
+                this.fetchRule();
+            }
+            else {
                 // Custom rule from scratch
                 this.ruleForm.rule_type = this.template;
                 this.initializeOfferByType(this.template);
@@ -633,6 +637,19 @@ export default {
 
             this.ruleForm.offers = [offerTemplates[type]];
         },
+        fetchRule() {
+            fetch(this.restUrl + 'api/rules/' + this.$route.params.id, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': this.nonce
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    this.ruleForm = data?.data?.rule;
+                })
+                .catch(err => console.error('Error:', err));
+        },
         addTier() {
             if (this.currentOffer.tiers) {
                 const lastTier = this.currentOffer.tiers[this.currentOffer.tiers.length - 1];
@@ -672,6 +689,10 @@ export default {
 
             console.log('Saving rule:', this.ruleForm);
 
+            if (this.$route.name === 'edit-rule') {
+                this.ruleForm.id = this.$route.params.id;
+            }
+
             fetch(this.restUrl + 'api/rules', {
                 method: 'POST',
                 headers: {
@@ -681,7 +702,10 @@ export default {
                 body: JSON.stringify(this.ruleForm)
             })
                 .then(res => res.json())
-                .then(data => console.log('Created Rule:', data))
+                .then(data => {
+                    this.$message.success('Rule saved successfully', 'success');
+                    this.$router.push({ name: 'roles' });
+                })
                 .catch(err => console.error('Error:', err));
 
         }

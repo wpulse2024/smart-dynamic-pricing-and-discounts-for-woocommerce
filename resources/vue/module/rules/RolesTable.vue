@@ -17,13 +17,25 @@
                     </div>
                 </template>
             </el-input>
+
             <el-table :data="filteredRules" border style="width: 100%" class="fraise_rules-table">
-                <el-table-column label="Rule Name" prop="name" width="220" />
+                <el-table-column label="ID" width="90" >
+                    <template #default="{ row }">
+                        #{{ row.id }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="Rule Name" width="280">
+                    <template #default="{ row }">
+                        <router-link :to="{ name: 'edit-rule', params: { id: row.id }}" class="rule_name">
+                            {{ row.name }}
+                        </router-link>
+                    </template>
+                </el-table-column>
                 <el-table-column label="Status">
                     <template #default="{ row }">
-                        <el-tag :type="row.status ? 'success' : 'danger'" effect="light" disable-transitions>
-                            <span class="status-dot" :class="row.status ? 'on' : 'off'"></span>
-                            {{ row.status ? "Active" : "Inactive" }}
+                        <el-tag :type="row.status == 'active' ? 'success' : 'danger'" effect="light" disable-transitions>
+                            <span class="status-dot" :class="row.status == 'active' ? 'on' : 'off'"></span>
+                            {{ row.status == 'active' ? "Active" : "Inactive" }}
                         </el-tag>
                     </template>
                 </el-table-column>
@@ -34,24 +46,6 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="Product Scope">
-                    <template #default="{ row }">
-                        {{ getProductScope(row.product_scope.scopeType) }}
-                    </template>
-                </el-table-column>
-
-                <el-table-column label="User Scope">
-                    <template #default="{ row }">
-                        {{ getUserScope(row.user_scope.scopeType) }}
-                    </template>
-                </el-table-column>
-
-                <el-table-column label="Schedule" width="140">
-                    <template #default="{ row }">
-                        {{ formatSchedule(row.schedule) }}
-                    </template>
-                </el-table-column>
-
                 <el-table-column label="Offer Type">
                     <template #default="{ row }">
                         {{ formatOfferType(row.offers?.[0]?.type) }}
@@ -59,14 +53,18 @@
                 </el-table-column>
 
                 <el-table-column label="Actions" align="center" width="100">
-                    <template>
-                        <el-button type="text" icon="el-icon-edit" />
-                        <el-button type="text" icon="el-icon-delete" />
+                    <template #default="{ row }">
+                        <div class="actions-btn" style="display: flex; gap: 10px; align-items: center;">
+                            <router-link :to="{ name: 'edit-rule', params: { id: row.id }}" style="text-decoration: none;">
+                                <Icon style="margin-top: 4px;" icon="editor" />
+                            </router-link>
+                            <Icon @click="confirmDeleteRule(row.id)" style="cursor: pointer;" icon="delete" />
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="role_table_footer">
-                <el-pagination background layout="prev, pager, next" :total="1000" />
+                <!-- <el-pagination background layout="prev, pager, next" :total="1000" /> -->
             </div>
         </div>
     </div>
@@ -99,6 +97,30 @@ export default defineComponent({
         },
     },
     methods: {
+        confirmDeleteRule(id) {
+            this.$confirm('This will delete the rule. Continue?', 'Warning', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                this.deleteRule(id);
+            });
+        },
+        deleteRule(id) {
+            fetch(this.restUrl + 'api/rules/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': this.nonce
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    this.$message.success('Rule deleted successfully');
+                    this.getRules();
+                })
+                .catch(err => console.error('Error:', err));
+        },
         getRules() {
             this.loading = true;
             fetch(this.restUrl + 'api/rules', {
@@ -137,7 +159,7 @@ export default defineComponent({
                 specific_users: "Specific Users",
                 user_roles: "Specific Roles",
             };
-            return map[scopeType] || "Custom";
+            return map[scopeType] || "All Users";
         },
         formatSchedule(schedule) {
             if (schedule.start && schedule.end) {
@@ -157,6 +179,11 @@ export default defineComponent({
                 bogo: "BOGO",
                 markdown: "Markdown",
                 gift: "Free Gift",
+                free_shipping: "Free Shipping",
+                quantity_discount: "Quantity Discount",
+                category_discount: "Category Discount",
+                cart_discount: "Cart Discount",
+                role_discount: "Role Discount",
             };
             return map[type] || "N/A";
         },
@@ -166,3 +193,15 @@ export default defineComponent({
     },
 });
 </script>
+
+<style scoped lang="scss">
+.rule_name {
+    color: var(--fraise-primary-color);
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+        border: none;
+        box-shadow: none;
+    }
+}
+</style>

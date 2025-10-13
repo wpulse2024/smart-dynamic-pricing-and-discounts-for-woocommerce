@@ -22,6 +22,8 @@ class ApiRoutes
             // Public trip routes
             $router->get('/rules', 'RuleController@index');
             $router->post('/rules', 'RuleController@store');
+            $router->delete('/rules/{id}', 'RuleController@destroy');
+            $router->get('/rules/{id}', 'RuleController@show');
             
             // $router->get('/trips', 'TripController@index');
             // $router->get('/trips/upcoming', 'TripController@upcoming');

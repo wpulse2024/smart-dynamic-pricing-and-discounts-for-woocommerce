@@ -9,7 +9,7 @@
     flex: 1 1 250px;
     border-radius: 16px;
     background-color: var(--fraise-white-color);
-    padding: 1.5rem;
+    padding: 20px;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -30,48 +30,54 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    .el-icon {
+        font-size: 16px !important;
+        font-weight: 800;
+    }
   
     &.purple {
-      background-color: var(--fraise-purple-500);
-      color: white;
+      background-color: $fraise-blue-50;
+      color: $fraise-blue-700;
     }
   
     &.green {
-      background-color: var(--fraise-green-500);
-      color: white;
+      background-color: $fraise-green-50;
+      color: $fraise-green-700;
     }
   }
   
   .fraise_card-content {
     .label {
-      font-size: 0.875rem;
-      color: var(--fraise-text-secondary);
-      margin-bottom: 0.25rem;
+        font-size: 12px;
+        color: var(--fraise-text-secondary);
+        margin-bottom: 6px;
     }
   
     .value {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--fraise-text-primary);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--fraise-text-primary);
     }
   
     .value-lg {
-      font-size: 1.25rem;
+      font-size: 18px;
       font-weight: 600;
       color: white;
       margin: 0.25rem 0;
     }
   
     .applications {
-      font-size: 0.9rem;
+      font-size: 12px;
       color: white;
       opacity: 0.85;
     }
   
     .light {
-      color: white;
-      font-size: 0.9rem;
-      opacity: 0.9;
+        color: white;
+        font-size: 12px;
+        opacity: 0.9;
     }
   }
   
@@ -88,7 +94,7 @@
   }
   
   .featured-card {
-    background: linear-gradient(135deg, #7e22ce, #6d28d9);
+    background: linear-gradient(135deg, $fraise-dark-500, $fraise-gray-500);
     color: white;
     position: relative;
   

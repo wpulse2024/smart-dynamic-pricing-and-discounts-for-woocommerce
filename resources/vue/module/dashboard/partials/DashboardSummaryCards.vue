@@ -8,7 +8,8 @@
                 <div class="label">Total Active Rules</div>
                 <div class="value">24</div>
             </div>
-            <div class="fraise_card-indicator green">↗ +4</div>
+            <div class="fraise_card-indicator green">
+            +4</div>
         </div>
 
         <div class="fraise_card stat-card">
@@ -19,7 +20,7 @@
                 <div class="label">Total Discounts Applied</div>
                 <div class="value">1,247</div>
             </div>
-            <div class="fraise_card-indicator green">↗ 18%</div>
+            <div class="fraise_card-indicator green">18%</div>
         </div>
 
         <div class="fraise_card featured-card">
@@ -38,12 +39,14 @@
 <script>
 import { defineComponent } from 'vue';
 import { MagicStick, ShoppingCart } from '@element-plus/icons-vue';
+import Icon from '../../../icons/Icon.vue';
 
 export default defineComponent({
     name: 'DashboardSummaryCards',
     components: {
         MagicStick,
         ShoppingCart,
+        Icon,
     },
 });
 </script>
