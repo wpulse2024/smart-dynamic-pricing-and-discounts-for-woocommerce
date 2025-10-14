@@ -299,8 +299,8 @@ export default {
 
 .create_from_scratch_list li:hover, .fraise_template-card:hover {
     background: #f3f4f6;
-    border-color: #6366f1;
-    color: #6366f1;
+    border-color: #D9DADC;
+    color: #253241;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
     cursor: pointer;
