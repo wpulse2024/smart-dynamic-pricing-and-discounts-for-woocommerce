@@ -10,12 +10,14 @@ class DynamicPricingManager
 {
     protected $rules = [];
     protected $wpdb;
+    protected $applied_discounts = [];
 
     public function __construct($wpdb)
     {
         $this->wpdb = $wpdb;
         $this->loadRules();
         add_action('woocommerce_before_calculate_totals', [$this, 'apply_cart_discounts'], 10);
+        add_action('woocommerce_before_cart', [$this, 'show_discount_notices']); 
     }
 
     public function loadRules()
@@ -57,7 +59,7 @@ class DynamicPricingManager
                         continue;
                     }
 
-                    $this->apply_offer_to_cart($cart, $cart_item, $offer);
+                    $this->apply_offer_to_cart($cart, $cart_item, $offer, $rule->name);
                 }
             }
         }
@@ -66,7 +68,7 @@ class DynamicPricingManager
     /**
      * Core logic to apply each offer.
      */
-    protected function apply_offer_to_cart(WC_Cart $cart, $cart_item, $offer)
+    protected function apply_offer_to_cart(WC_Cart $cart, $cart_item, $offer, $rule_name)
     {
         $condition = $offer['condition'] ?? [];
         $reward = $offer['reward'] ?? [];
@@ -98,8 +100,12 @@ class DynamicPricingManager
             $full_price_qty = $qty - $discounted_qty;
 
             $discounted_price = $this->calculate_discounted_price($base_price, $discount_type, $discount_value);
+      
             $new_total = ($full_price_qty * $base_price) + ($discounted_qty * $discounted_price);
             $base_product->set_price(round($new_total / $qty, wc_get_price_decimals()));
+            // give a clear message which product is discounted and by how much and which rule is applied
+            $totalDiscount = ($base_price * $qty) - $new_total;
+            $this->showsApplyDiscountMessage($totalDiscount, $rule_name, $base_product);
         }
 
         // --- CASE 2: specific products (cross-product BOGO) ---
@@ -145,5 +151,39 @@ class DynamicPricingManager
             return max(0, $base_price - $discount_value);
         }
         return $base_price;
+    }
+
+   
+    /**
+     * Store discount messages instead of showing immediately
+     */
+    protected function showsApplyDiscountMessage($totalDiscount, $rule_name, $base_product)
+    {
+        $product_name = $base_product->get_name();
+        $message_key = md5($rule_name . $product_name);
+
+        if (!isset($this->applied_discounts[$message_key])) {
+            $this->applied_discounts[$message_key] = sprintf(
+                __('Discount applied: %s — on %s — You saved %s', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+                $rule_name,
+                $product_name,
+                wc_price($totalDiscount)
+            );
+        }
+    }
+
+    /**
+     * Output messages once cart is ready (safe for notices)
+     */
+    public function show_discount_notices()
+    {
+        if (!is_cart()) {
+            return; // 🚫 only show on cart page
+        }
+        
+        foreach ($this->applied_discounts as $message) {
+            wc_add_notice($message, 'notice');
+        }
+        $this->applied_discounts = []; // clear after showing
     }
 }
