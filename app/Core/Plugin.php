@@ -6,6 +6,7 @@ use SmartDynamicPricingDiscounts\Routes\Router;
 use SmartDynamicPricingDiscounts\Database\Database;
 use SmartDynamicPricingDiscounts\Services\ServiceContainer;
 
+
 /**
  * Main Plugin class - Bootstrap and service container
  */
@@ -45,6 +46,7 @@ class Plugin
         $this->container = new ServiceContainer();
         $this->router = new Router();
         $this->database = new Database();
+        (new Action())->handle();
         
         $this->registerServices();
         $this->init();
@@ -145,7 +147,7 @@ class Plugin
         global $submenu;
         add_menu_page(
             'smart-dynamic-pricing-and-discounts-for-woocommerce',
-            __('Dynamic Pricing & Discounts', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+            __('Smart Discounts', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
             'manage_options',
             'smart-dynamic-pricing-and-discounts-for-woocommerce.php',
             array($this, 'renderAdminPage'),
@@ -157,6 +159,16 @@ class Plugin
             __('Dashboard', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
             'manage_options',
             'admin.php?page=smart-dynamic-pricing-and-discounts-for-woocommerce.php#/',
+        );
+        $submenu['smart-dynamic-pricing-and-discounts-for-woocommerce.php']['rules'] = array(
+            __('Pricing Rules', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+            'manage_options',
+            'admin.php?page=smart-dynamic-pricing-and-discounts-for-woocommerce.php#/roles',
+        );
+        $submenu['smart-dynamic-pricing-and-discounts-for-woocommerce.php']['settings'] = array(
+            __('Settings', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+            'manage_options',
+            'admin.php?page=smart-dynamic-pricing-and-discounts-for-woocommerce.php#/settings',
         );
     }
 

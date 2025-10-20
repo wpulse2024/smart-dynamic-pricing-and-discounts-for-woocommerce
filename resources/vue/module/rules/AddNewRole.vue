@@ -677,7 +677,6 @@ export default {
             const now = new Date().toISOString();
             this.ruleForm.meta.createdAt = now;
             this.ruleForm.meta.updatedAt = now;
-            this.ruleForm.id = 'rule_' + Date.now();
 
             // Convert dates to ISO strings
             if (this.ruleForm.schedule.start) {
