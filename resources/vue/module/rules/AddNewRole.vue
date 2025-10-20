@@ -286,19 +286,19 @@
                         </el-col>
                     </el-row>
 
-                    <el-form-item label="Discount Product Type">
+                    <!-- <el-form-item label="Discount Product Type">
                         <el-radio-group v-model="currentOffer.reward.discount_product_type">
                             <el-radio label="same_product">Same Product</el-radio>
                             <el-radio label="specific_product">Specific Product</el-radio>
                             <el-radio label="specific_product_category">Category</el-radio>
                             <el-radio label="all_products">All Products</el-radio>
                         </el-radio-group>
-                    </el-form-item>
+                    </el-form-item> -->
 
                     <el-form-item v-if="currentOffer.reward.discount_product_type === 'specific_product'"
                         label="Select Product">
-                        <el-select v-model="currentOffer.reward.discount_product_id" placeholder="Choose product"
-                            style="width: 100%">
+                        <el-select v-model="currentOffer.reward.specific_products" placeholder="Choose product"
+                            style="width: 100%" multiple>
                             <el-option v-for="product in products" :key="product.ID" :label="product.post_title"
                                 :value="product.ID" />
                         </el-select>
@@ -306,7 +306,7 @@
 
                     <el-form-item v-if="currentOffer.reward.discount_product_type === 'specific_product_category'"
                         label="Select Category">
-                        <el-select v-model="currentOffer.reward.discount_product_category" placeholder="Choose category"
+                        <el-select v-model="currentOffer.reward.specific_categories" placeholder="Choose category"
                             style="width: 100%">
                             <el-option v-for="category in categories" :key="category.term_id" :label="category.name"
                                 :value="category.term_id" />

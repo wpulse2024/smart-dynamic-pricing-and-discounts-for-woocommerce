@@ -70,7 +70,9 @@ export const couponRuleTemplates = [
                     discountedItems: 1,
                     discountType: 'percentage',
                     discountValue: 100,
-                    discount_product_type: 'same_product'
+                    discount_product_type: 'same_product',
+                    specific_products: [], // user can choose different product(s)
+                    specific_categories: [] // or entire category
                 }
             }
         ],
