@@ -34,6 +34,11 @@ class ValidateApplyDiscount
             return false;
         }
 
+        // 5️⃣ Handle schedule logic
+        if (!self::passesScheduleCheck($rule)) {
+            return false;
+        }
+
         // ✅ All checks passed
         return true;
     }
@@ -112,6 +117,15 @@ class ValidateApplyDiscount
         if (!$scope) return false;
 
         $user = wp_get_current_user();
+        //check if user is not logged in and scope is not all users
+        if (!$user->exists() && Arr::get($scope, 'scopeType') !== 'all_users') {
+            //show an woocommerce notice
+            if (!is_cart()) {
+                return;
+            }
+            wc_add_notice(__('You must be logged in to apply this discount'), 'notice');
+            return false;
+        }
         $user_id = $user->ID;
         $user_roles = $user->roles;
 
@@ -126,6 +140,44 @@ class ValidateApplyDiscount
                 return true;
         }
     }
+
+    protected static function passesScheduleCheck($rule)
+    {
+        $schedule = $rule->schedule ?? null;
+        if (empty($schedule)) {
+            return true; // No schedule = always active
+        }
+    
+        $start = Arr::get($schedule, 'start');
+        $end = Arr::get($schedule, 'end');
+        $daysOfWeek = Arr::get($schedule, 'daysOfWeek', []);
+        // $specificDates = Arr::get($schedule, 'specificDates', []); // optional future use
+    
+        $now = new \DateTime('now');
+        $today = $now->format('Y-m-d');
+        $dayOfWeek = $now->format('l'); // Monday, Tuesday, etc.
+;
+        // --- Check start & end date ---
+        if ($start && $today < $start) {
+            return false; // Not started yet
+        }
+        if ($end && $today > $end) {
+            return false; // Already expired
+        }
+    
+        // --- Check day of week if defined ---
+        if (!empty($daysOfWeek) && !in_array($dayOfWeek, $daysOfWeek, true)) {
+            return false;
+        }
+    
+        // --- (Optional) check specific date list ---
+        // if (!empty($specificDates) && !in_array($today, $specificDates, true)) {
+        //     return false;
+        // }
+    
+        return true;
+    }
+    
 
     /**
      * Utility: check if two arrays have any common values

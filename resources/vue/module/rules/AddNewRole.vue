@@ -181,13 +181,13 @@
                 <el-row :gutter="20">
                     <el-col :span="12">
                         <el-form-item label="Start Date">
-                            <el-date-picker v-model="ruleForm.schedule.start" type="datetime"
+                            <el-date-picker format="YYYY-MM-DD" value-format="YYYY-MM-DD" v-model="ruleForm.schedule.start" type="datetime"
                                 placeholder="Select start date" style="width: 100%" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="End Date">
-                            <el-date-picker v-model="ruleForm.schedule.end" type="datetime"
+                            <el-date-picker format="YYYY-MM-DD" value-format="YYYY-MM-DD" v-model="ruleForm.schedule.end" type="datetime"
                                 placeholder="Select end date" style="width: 100%" />
                         </el-form-item>
                     </el-col>
@@ -195,13 +195,13 @@
 
                 <el-form-item label="Days of Week (Optional)">
                     <el-checkbox-group v-model="ruleForm.schedule.daysOfWeek">
-                        <el-checkbox label="monday">Monday</el-checkbox>
-                        <el-checkbox label="tuesday">Tuesday</el-checkbox>
-                        <el-checkbox label="wednesday">Wednesday</el-checkbox>
-                        <el-checkbox label="thursday">Thursday</el-checkbox>
-                        <el-checkbox label="friday">Friday</el-checkbox>
-                        <el-checkbox label="saturday">Saturday</el-checkbox>
-                        <el-checkbox label="sunday">Sunday</el-checkbox>
+                        <el-checkbox label="Monday">Monday</el-checkbox>
+                        <el-checkbox label="Tuesday">Tuesday</el-checkbox>
+                        <el-checkbox label="Wednesday">Wednesday</el-checkbox>
+                        <el-checkbox label="Thursday">Thursday</el-checkbox>
+                        <el-checkbox label="Friday">Friday</el-checkbox>
+                        <el-checkbox label="Saturday">Saturday</el-checkbox>
+                        <el-checkbox label="Sunday">Sunday</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
             </el-card>
@@ -676,14 +676,6 @@ export default {
             const now = new Date().toISOString();
             this.ruleForm.meta.createdAt = now;
             this.ruleForm.meta.updatedAt = now;
-
-            // Convert dates to ISO strings
-            if (this.ruleForm.schedule.start) {
-                this.ruleForm.schedule.start = new Date(this.ruleForm.schedule.start).toISOString();
-            }
-            if (this.ruleForm.schedule.end) {
-                this.ruleForm.schedule.end = new Date(this.ruleForm.schedule.end).toISOString();
-            }
 
             console.log('Saving rule:', this.ruleForm);
 
