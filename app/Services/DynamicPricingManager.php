@@ -4,6 +4,7 @@ namespace SmartDynamicPricingDiscounts\Services;
 
 use SmartDynamicPricingDiscounts\Models\Rule;
 use SmartDynamicPricingDiscounts\Helpers\ValidateApplyDiscount;
+use SmartDynamicPricingDiscounts\Handler\SpecialDiscountHandler;
 use WC_Cart;
 
 class DynamicPricingManager
@@ -11,6 +12,7 @@ class DynamicPricingManager
     protected $rules = [];
     protected $wpdb;
     protected $applied_discounts = [];
+    protected $processed_products = []; // 🆕 Track which products already have a rule applied
 
     public function __construct($wpdb)
     {
@@ -32,7 +34,16 @@ class DynamicPricingManager
             return $rule;
         }, $rules);
 
-        $this->rules = array_filter($rules, fn($r) => $r->status === 'active');
+        // ✅ Only active rules
+        $active_rules = array_filter($rules, fn($r) => $r->status === 'active');
+        // ✅ Sort by priority (lower number = higher priority)
+        usort($active_rules, function ($a, $b) {
+            $a_priority = (int) ($a->priority ?? 999);
+            $b_priority = (int) ($b->priority ?? 999);
+            return $a_priority <=> $b_priority;
+        });
+
+        $this->rules = $active_rules;
     }
 
     /**
@@ -44,8 +55,17 @@ class DynamicPricingManager
             return;
         }
 
+        $this->processed_products = []; // reset on each calculation
+
         foreach ($this->rules as $rule) {
             foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
+                $product_id = $cart_item['product_id'];
+
+                // ✅ Skip if this product already got a discount from a higher-priority rule
+                if (isset($this->processed_products[$product_id])) {
+                    continue;
+                }
+
                 if (!ValidateApplyDiscount::validate($rule, $cart_item, $cart_item_key)) {
                     continue;
                 }
@@ -55,108 +75,22 @@ class DynamicPricingManager
                 }
 
                 foreach ($rule->offers as $offer) {
-                    if (($offer['type'] ?? '') !== 'special_offer') {
-                        continue;
+                    
+                    if (($offer['type'] ?? '') == 'special_offer') {
+                        $handler = new SpecialDiscountHandler();
+                        $applied = $handler->handle($cart, $cart_item, $offer, $rule->name);
+
+                        if ($applied['success']) {
+                            $this->processed_products[$product_id] = true;
+                            $this->showsApplyDiscountMessage($applied['totalDiscount'], $applied['rule_name'], $applied['base_product']);
+                            break;
+                        }
                     }
-
-                    $this->apply_offer_to_cart($cart, $cart_item, $offer, $rule->name);
                 }
             }
         }
     }
 
-    /**
-     * Core logic to apply each offer.
-     */
-    protected function apply_offer_to_cart(WC_Cart $cart, $cart_item, $offer, $rule_name)
-    {
-        $condition = $offer['condition'] ?? [];
-        $reward = $offer['reward'] ?? [];
-
-        $buy = (int) ($condition['purchaseQuantity'] ?? 0);
-        $repeat = (bool) ($condition['repeat'] ?? false);
-
-        $get = (int) ($reward['discountedItems'] ?? 0);
-        $discount_value = (float) ($reward['discountValue'] ?? 0);
-        $discount_type = $reward['discountType'] ?? 'percentage';
-        $discount_product_type = $reward['discount_product_type'] ?? 'same_product';
-
-        if ($buy <= 0 || $get <= 0) {
-            return;
-        }
-
-        $base_product_id = $cart_item['product_id'];
-        $qty = $cart_item['quantity'];
-        $base_product = $cart_item['data'];
-        $base_price = (float) $base_product->get_regular_price();
-
-        // --- CASE 1: same product ---
-        if ($discount_product_type === 'same_product') {
-            $group_size = $buy + $get;
-            $times = $repeat ? floor($qty / $group_size) : ($qty >= $group_size ? 1 : 0);
-            if ($times <= 0) return;
-
-            $discounted_qty = $times * $get;
-            $full_price_qty = $qty - $discounted_qty;
-
-            $discounted_price = $this->calculate_discounted_price($base_price, $discount_type, $discount_value);
-      
-            $new_total = ($full_price_qty * $base_price) + ($discounted_qty * $discounted_price);
-            $base_product->set_price(round($new_total / $qty, wc_get_price_decimals()));
-            // give a clear message which product is discounted and by how much and which rule is applied
-            $totalDiscount = ($base_price * $qty) - $new_total;
-            $this->showsApplyDiscountMessage($totalDiscount, $rule_name, $base_product);
-        }
-
-        // --- CASE 2: specific products (cross-product BOGO) ---
-        elseif ($discount_product_type === 'specific_products') {
-            $target_products = $reward['specific_products'] ?? [];
-            if (empty($target_products)) return;
-
-            foreach ($cart->get_cart() as $target_key => $target_item) {
-                $target_product_id = $target_item['product_id'];
-                if (!in_array($target_product_id, $target_products, true)) {
-                    continue;
-                }
-
-                // Determine how many discounted items we can give
-                $available_to_discount = min($get, $target_item['quantity']);
-
-                $group_size = $buy + $get;
-                $times = $repeat ? floor($qty / $group_size) : ($qty >= $buy ? 1 : 0);
-                if ($times <= 0) continue;
-
-                $discount_qty = min($times * $available_to_discount, $target_item['quantity']);
-                $target_product = $target_item['data'];
-                $target_base_price = (float) $target_product->get_regular_price();
-                $discounted_price = $this->calculate_discounted_price($target_base_price, $discount_type, $discount_value);
-
-                // Adjust target product price proportionally
-                $full_price_qty = $target_item['quantity'] - $discount_qty;
-                $new_total = ($full_price_qty * $target_base_price) + ($discount_qty * $discounted_price);
-                $target_product->set_price(round($new_total / $target_item['quantity'], wc_get_price_decimals()));
-            }
-        }
-    }
-
-    /**
-     * Compute discounted price for an item.
-     */
-    protected function calculate_discounted_price($base_price, $discount_type, $discount_value)
-    {
-        if ($discount_type === 'percentage') {
-            return $base_price * (1 - ($discount_value / 100));
-        }
-        if ($discount_type === 'fixed') {
-            return max(0, $base_price - $discount_value);
-        }
-        return $base_price;
-    }
-
-   
-    /**
-     * Store discount messages instead of showing immediately
-     */
     protected function showsApplyDiscountMessage($totalDiscount, $rule_name, $base_product)
     {
         $product_name = $base_product->get_name();
@@ -172,18 +106,14 @@ class DynamicPricingManager
         }
     }
 
-    /**
-     * Output messages once cart is ready (safe for notices)
-     */
     public function show_discount_notices()
     {
         if (!is_cart()) {
-            return; // 🚫 only show on cart page
+            return;
         }
-        
         foreach ($this->applied_discounts as $message) {
             wc_add_notice($message, 'notice');
         }
-        $this->applied_discounts = []; // clear after showing
+        $this->applied_discounts = [];
     }
 }

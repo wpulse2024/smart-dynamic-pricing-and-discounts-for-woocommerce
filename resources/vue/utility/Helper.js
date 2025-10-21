@@ -28,7 +28,7 @@ export const couponRuleTemplates = [
                     discountedItems: 1,
                     discountType: 'percentage',
                     discountValue: 100,
-                    discount_product_type: 'custom', // can be 'same_product' or 'custom'
+                    discount_product_type: 'same_product', // can be 'same_product' or 'custom'
                     reward_scope: {
                         type: 'custom_selection', // 'custom_selection' | 'same_product'
                         products: [], // user can choose different product(s)

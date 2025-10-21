@@ -70,4 +70,15 @@ class Helper
     {
         return json_decode(json_encode($object), true);
     }
+
+    public static function calculate_discounted_price($base_price, $discount_type, $discount_value)
+    {
+        if ($discount_type === 'percentage') {
+            return $base_price * (1 - ($discount_value / 100));
+        }
+        if ($discount_type === 'fixed') {
+            return max(0, $base_price - $discount_value);
+        }
+        return $base_price;
+    }
 }
