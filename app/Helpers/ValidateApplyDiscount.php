@@ -29,6 +29,11 @@ class ValidateApplyDiscount
             return false;
         }
 
+        // 4️⃣ Handle user scope logic
+        if (!self::passesUserScopeCheck($rule, $cart_item, $cart_item_key)) {
+            return false;
+        }
+
         // ✅ All checks passed
         return true;
     }
@@ -94,6 +99,28 @@ class ValidateApplyDiscount
                     $product->get_tag_ids(),
                     Arr::get($exclusion, 'tags', [])
                 );
+
+            default:
+                return true;
+        }
+    }
+
+    protected static function passesUserScopeCheck($rule, $cart_item, $cart_item_key)
+    {
+        $scope = $rule->user_scope ?? null;
+
+        if (!$scope) return false;
+
+        $user = wp_get_current_user();
+        $user_id = $user->ID;
+        $user_roles = $user->roles;
+
+        switch (Arr::get($scope, 'scopeType')) {
+            case 'specific_users':
+                return in_array($user_id, Arr::get($scope, 'users', []), true);
+
+            case 'user_roles':
+                return self::hasIntersection($user_roles, Arr::get($scope, 'roles', []));
 
             default:
                 return true;

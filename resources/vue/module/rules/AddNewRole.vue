@@ -138,15 +138,14 @@
 
                 <el-form-item v-if="ruleForm.user_scope.scopeType === 'specific_users'" label="Select Users">
                     <el-select v-model="ruleForm.user_scope.users" multiple placeholder="Choose users"
-                        style="width: 100%">
+                        style="width: 100%" filterable>
                         <el-option v-for="user in users" :key="user.id" :label="user.user_login" :value="user.id" />
                     </el-select>
                 </el-form-item>
-
                 <el-form-item v-if="ruleForm.user_scope.scopeType === 'user_roles'" label="Select Roles">
-                    <el-select v-model="ruleForm.user_scope.roles" multiple placeholder="Choose roles"
+                    <el-select filterable v-model="ruleForm.user_scope.roles" multiple placeholder="Choose roles"
                         style="width: 100%">
-                        <el-option v-for="role in roles" :key="role.id" :label="role.name" :value="role.id" />
+                        <el-option v-for="(role, key) in roles" :key="key" :label="role" :value="key" />
                     </el-select>
                 </el-form-item>
 
