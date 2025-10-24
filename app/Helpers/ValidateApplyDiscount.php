@@ -156,7 +156,7 @@ class ValidateApplyDiscount
         $now = new \DateTime('now');
         $today = $now->format('Y-m-d');
         $dayOfWeek = $now->format('l'); // Monday, Tuesday, etc.
-;
+
         // --- Check start & end date ---
         if ($start && $today < $start) {
             return false; // Not started yet

@@ -1,18 +1,19 @@
 <?php
 /**
  * Plugin Name: Smart Dynamic Pricing And Discounts For Woocommerce
- * Plugin URI: https://example.com/smart-dynamic-pricing-and-discounts-for-woocommerce
- * Description: New Description
+ * Description: A powerful WooCommerce addon to create smart dynamic pricing, discounts, and tiered pricing rules with an intuitive Vue 3 admin interface.
  * Version: 1.0.0
- * Author: Nitesh Das
- * Author URI: https://example.com
+ * Author: WPulse
+ * Author URI: https://profiles.wordpress.org/wpulse/
  * Text Domain: smart-dynamic-pricing-and-discounts-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 5.0
- * Tested up to: 6.4
+ * Tested up to: 6.8
+ * WC requires at least: 5.0
+ * WC tested up to: 8.0
  * Requires PHP: 7.4
  * License: GPL v2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires Plugins: woocommerce
  */
 
 // Prevent direct access

@@ -88,8 +88,6 @@ class Plugin
      */
     protected function init(): void
     {
-        // Load text domain
-        add_action('init', [$this, 'loadTextDomain']);
         
         // Register routes
         add_action('init', [$this, 'registerRoutes']);
@@ -110,18 +108,6 @@ class Plugin
         
         // Register shortcodes
         add_action('init', ['SmartDynamicPricingDiscounts\\Controllers\\ShortcodeController', 'register']);
-    }
-
-    /**
-     * Load text domain for translations
-     */
-    public function loadTextDomain(): void
-    {
-        load_plugin_textdomain(
-            'smart-dynamic-pricing-and-discounts-for-woocommerce',
-            false,
-            dirname(SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_BASENAME) . '/languages'
-        );
     }
 
     /**
