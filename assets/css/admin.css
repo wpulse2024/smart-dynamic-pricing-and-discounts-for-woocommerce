@@ -52,7 +52,7 @@
   gap: 0.5rem;
 }
 .fraise_navbar-left .fraise_navbar-logo {
-  width: 32px;
+  width: 100%;
   height: 32px;
 }
 .fraise_navbar-left .fraise_navbar-brand {

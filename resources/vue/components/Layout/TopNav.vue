@@ -2,10 +2,7 @@
     <header class="fraise_navbar">
         <!-- Logo & Brand -->
         <div class="fraise_navbar-left">
-            <img src="" alt="My Plugin Logo" class="fraise_navbar-logo" />
-            <span class="fraise_navbar-brand">
-                My<span class="brand-bold">Plugin</span>
-            </span>
+            <img :src="iconUrl" alt="My Plugin Logo" class="fraise_navbar-logo" />
         </div>
 
         <!-- Navigation Links -->
@@ -51,6 +48,7 @@ export default defineComponent({
     },
     data() {
         return {
+            iconUrl: window.SmartDynamicPricingDiscount?.iconUrl,
             navItems: [
                 {
                     label: 'Dashboard',

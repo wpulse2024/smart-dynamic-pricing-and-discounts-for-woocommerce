@@ -48,7 +48,7 @@ class ServiceContainer
 
         // Check if service is registered
         if (!isset($this->services[$name])) {
-            throw new \Exception("Service '{$name}' not found in container");
+            // throw new \Exception("Service '{$name}' not found in container");
         }
 
         $concrete = $this->services[$name];

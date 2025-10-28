@@ -37,7 +37,7 @@ This plugin is built for both store owners and developers who want full control 
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/smart-dynamic-pricing-and-discounts-for-woocommerce/`, or install directly from the WordPress Plugins screen.
+1. Upload the plugin files to `/wp-content/plugins/smart-pricing/`, or install directly from the WordPress Plugins screen.
 2. Activate the plugin through the “Plugins” menu in WordPress.
 3. Go to **WooCommerce → Pricing Rules** to configure your discount and pricing settings.
 

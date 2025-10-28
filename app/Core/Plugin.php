@@ -132,29 +132,29 @@ class Plugin
     {
         global $submenu;
         add_menu_page(
-            'smart-dynamic-pricing-and-discounts-for-woocommerce',
-            __('Smart Discounts', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+            'smart-pricing',
+            __('Smart Pricing', 'smart-pricing'),
             'manage_options',
-            'smart-dynamic-pricing-and-discounts-for-woocommerce.php',
+            'smart-pricing.php',
             array($this, 'renderAdminPage'),
-            'dashicons-editor-code',
+            $this->renderLogo(),
             25
         );
 
-        $submenu['smart-dynamic-pricing-and-discounts-for-woocommerce.php']['dashboard'] = array(
-            __('Dashboard', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+        $submenu['smart-pricing.php']['dashboard'] = array(
+            __('Dashboard', 'smart-pricing'),
             'manage_options',
-            'admin.php?page=smart-dynamic-pricing-and-discounts-for-woocommerce.php#/',
+            'admin.php?page=smart-pricing.php#/',
         );
-        $submenu['smart-dynamic-pricing-and-discounts-for-woocommerce.php']['rules'] = array(
-            __('Pricing Rules', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+        $submenu['smart-pricing.php']['rules'] = array(
+            __('Pricing Rules', 'smart-pricing'),
             'manage_options',
-            'admin.php?page=smart-dynamic-pricing-and-discounts-for-woocommerce.php#/roles',
+            'admin.php?page=smart-pricing.php#/roles',
         );
-        $submenu['smart-dynamic-pricing-and-discounts-for-woocommerce.php']['settings'] = array(
-            __('Settings', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+        $submenu['smart-pricing.php']['settings'] = array(
+            __('Settings', 'smart-pricing'),
             'manage_options',
-            'admin.php?page=smart-dynamic-pricing-and-discounts-for-woocommerce.php#/settings',
+            'admin.php?page=smart-pricing.php#/settings',
         );
     }
 
@@ -166,13 +166,18 @@ class Plugin
         echo '<div id="my-plugin-admin"></div>';
     }
 
+
+    public function renderLogo() {
+        return SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/logo.png';
+    }
+
     /**
      * Render settings page
      */
     public function renderSettingsPage(): void
     {
         echo '<div class="wrap">';
-        echo '<h1>' . __('My Plugin Settings', 'smart-dynamic-pricing-and-discounts-for-woocommerce') . '</h1>';
+        echo '<h1>' . esc_html__('My Plugin Settings', 'smart-pricing') . '</h1>';
         echo '<div id="my-plugin-settings"></div>';
         echo '</div>';
     }
@@ -183,14 +188,14 @@ class Plugin
     public function enqueuePublicAssets(): void
     {
         wp_enqueue_style(
-            'my-plugin-public',
+            'SmartDynamicPricingDiscountAdmin',
             SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/css/public.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
-            'my-plugin-public',
+            'SmartDynamicPricingDiscountAdmin',
             SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/js/public.js',
             ['jquery'],
             $this->version,
@@ -204,19 +209,19 @@ class Plugin
     public function enqueueAdminAssets(string $hook): void
     {
         // Only load on our admin pages
-        if (strpos($hook, 'smart-dynamic-pricing-and-discounts-for-woocommerce') === false) {
+        if (strpos($hook, 'smart-pricing') === false) {
             return;
         }
         
         wp_enqueue_style(
-            'smart-dynamic-pricing-and-discounts-for-woocommerce-admin',
+            'smart-pricing-admin',
             SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/css/admin.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
-            'smart-dynamic-pricing-and-discounts-for-woocommerce-admin',
+            'smart-pricing-admin',
             SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/js/admin.js',
             ['jquery'],
             $this->version,
@@ -243,7 +248,7 @@ class Plugin
         $allUserRoles = wp_roles()->get_names();
         
         // Localize script with data
-        wp_localize_script('smart-dynamic-pricing-and-discounts-for-woocommerce-admin', 'SmartDynamicPricingDiscount', [
+        wp_localize_script('smart-pricing-admin', 'SmartDynamicPricingDiscount', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'restUrl' => rest_url('my-plugin/v1/'),
@@ -253,10 +258,11 @@ class Plugin
             'tags' => $tags,
             'users' => $users,
             'roles' => $allUserRoles,
+            'iconUrl' => SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/icon.png',
             'strings' => [
-                'loading' => __('Loading...', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
-                'error' => __('An error occurred', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
-                'success' => __('Success!', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+                'loading' => __('Loading...', 'smart-pricing'),
+                'error' => __('An error occurred', 'smart-pricing'),
+                'success' => __('Success!', 'smart-pricing'),
             ]
         ]);
     }

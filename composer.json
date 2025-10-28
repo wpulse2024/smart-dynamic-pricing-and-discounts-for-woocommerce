@@ -1,5 +1,5 @@
 {
-    "name": "smart-dynamic-pricing-and-discounts-for-woocommerce/wordpress-plugin",
+    "name": "smart-pricing/wordpress-plugin",
     "description": "A WordPress plugin with Laravel Lite architecture",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",

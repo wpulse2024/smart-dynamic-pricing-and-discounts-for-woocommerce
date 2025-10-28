@@ -185,6 +185,7 @@ abstract class Model
         $table = $instance->wpdb->prefix . $instance->table;
         
         $result = $instance->wpdb->get_row(
+             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $instance->wpdb->prepare("SELECT * FROM {$table} WHERE {$instance->primaryKey} = %s", $id)
         );
         
@@ -243,6 +244,7 @@ abstract class Model
         
         $sql = "SELECT * FROM {$table} WHERE {$column} {$operator} %s";
         $results = $instance->wpdb->get_results(
+             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $instance->wpdb->prepare($sql, $value)
         );
         

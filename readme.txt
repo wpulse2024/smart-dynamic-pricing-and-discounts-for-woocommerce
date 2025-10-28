@@ -1,6 +1,6 @@
-=== Smart Dynamic Pricing And Discounts For Woocommerce ===
+=== SmartPricing - Smart Dynamic Pricing And Discounts For Woocommerce ===
 Contributors: wpulse, dasnitesh780
-Tags: woocommerce, dynamic pricing, discounts, tiered pricing, bulk pricing, b2b, role-based pricing
+Tags: woocommerce, dynamic pricing, discounts, tiered pricing
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
@@ -37,7 +37,7 @@ This plugin is built for both store owners and developers who want full control 
 
 == Installation ==
 
-1. Upload the plugin files to `/wp-content/plugins/smart-dynamic-pricing-and-discounts-for-woocommerce/`, or install directly from the WordPress Plugins screen.
+1. Upload the plugin files to `/wp-content/plugins/smart-pricing/`, or install directly from the WordPress Plugins screen.
 2. Activate the plugin through the “Plugins” menu in WordPress.
 3. Go to **WooCommerce → Pricing Rules** to configure your discount and pricing settings.
 

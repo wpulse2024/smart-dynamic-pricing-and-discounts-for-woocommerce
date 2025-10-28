@@ -73,11 +73,11 @@ class HandleOfferMessageOnCart
                    // push product id to array
                    $this->applied_discounts[] = $cart_item['product_id'];
                    if ($times > 0) {
-                       echo '<p style="color:#2e7d32; font-size:13px; margin-top:4px;" class="offer-applied">Applied - '. $rule->name .'</p>';
+                       echo '<p style="color:#2e7d32; font-size:13px; margin-top:4px;" class="offer-applied">Applied - '. esc_html( $rule->name ) .'</p>';
                    } else if ($qty < $buy) {
-                       echo '<p style="color:#f16334; font-size:13px; margin-top:4px;" class="offer-not-applied">Buy ' . ($buy - $qty) . ' more to get - ' . $rule->name . ' offer</p>';
+                       echo '<p style="color:#f16334; font-size:13px; margin-top:4px;" class="offer-not-applied">Buy ' . esc_html(($buy - $qty)) . ' more to get - ' . esc_html( $rule->name ) . ' offer</p>';
                    } else if ($qty == $buy) {
-                       echo '<p style="color:#0073aa; font-size:13px; margin-top:4px;" class="offer-applied">You are qualify for the get - ' . $rule->name . ' offer</p>';
+                       echo '<p style="color:#0073aa; font-size:13px; margin-top:4px;" class="offer-applied">You are qualify for the get - ' . esc_html( $rule->name ) . ' offer</p>';
                    }
                }
            }
@@ -126,7 +126,7 @@ class HandleOfferMessageOnCart
                 $this->applied_discounts[] = $product->get_id();
 
                 echo '<div class="single-offer-note" style="margin:10px 0px; padding:8px 12px; background:#f8f8f8; border-radius:6px; font-size:14px;">';
-                echo '🎁 <strong>Special Offer:</strong> Buy <strong>' . $buy . '</strong> to get <strong>' . $get . '</strong> free!';
+                echo '🎁 <strong>Special Offer:</strong> Buy <strong>' . esc_html( $buy ) . '</strong> to get <strong>' . esc_html( $get ) . '</strong> free!';
                 echo '</div>';
             }
         }

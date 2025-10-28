@@ -77,7 +77,7 @@ class RenameCommand extends WP_CLI_Command
      */
     protected function updateMainPluginFile(string $slug, string $namespace, string $author, string $description): void
     {
-        $pluginFile = SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'smart-dynamic-pricing-and-discounts-for-woocommerce.php';
+        $pluginFile = SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'smart-pricing.php';
         
         if (!file_exists($pluginFile)) {
             throw new Exception('Main plugin file not found');
@@ -173,7 +173,7 @@ class RenameCommand extends WP_CLI_Command
         foreach ($files as $file) {
             $content = file_get_contents($file);
             $content = preg_replace('/\'my-plugin\'/', "'{$slug}'", $content);
-            $content = preg_replace('/"smart-dynamic-pricing-and-discounts-for-woocommerce"/', "\"{$slug}\"", $content);
+            $content = preg_replace('/"smart-pricing"/', "\"{$slug}\"", $content);
             
             file_put_contents($file, $content);
         }

@@ -234,7 +234,7 @@ class Router
             foreach ($this->routes as $route) {
                 if (strpos($route['path'], '/admin/') === 0) {
                     $pageTitle = ucwords(str_replace(['/admin/', '-', '_'], ['', ' ', ' '], $route['path']));
-                    $menuSlug = 'smart-dynamic-pricing-and-discounts-for-woocommerce' . $route['path'];
+                    $menuSlug = 'smart-pricing' . $route['path'];
 
                     add_menu_page(
                         $pageTitle,

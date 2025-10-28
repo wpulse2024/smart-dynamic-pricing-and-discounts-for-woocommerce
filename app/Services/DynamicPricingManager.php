@@ -95,7 +95,7 @@ class DynamicPricingManager
 
         if (!isset($this->applied_discounts[$message_key])) {
             $this->applied_discounts[$message_key] = sprintf(
-                __('Discount applied: %s — on %s — You saved %s', 'smart-dynamic-pricing-and-discounts-for-woocommerce'),
+                'Discount applied: %s — on %s — You saved %s',
                 $rule_name,
                 $product_name,
                 wc_price($totalDiscount)
