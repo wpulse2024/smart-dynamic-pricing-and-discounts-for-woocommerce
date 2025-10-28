@@ -43,6 +43,34 @@ class ValidateApplyDiscount
         return true;
     }
 
+    public static function isValidProduct($rule, $product)
+    {
+        // 1️⃣ Check if rule is active
+        if (($rule->status ?? '') !== 'active') {
+            return false;
+        }
+
+        $product_id = $product->get_id();
+        if (!$product) {
+            return false;
+        }
+
+        // 2️⃣ Handle product inclusion logic
+        if (!self::passesInclusionCheck($rule, $product_id, $product)) {
+            if(Arr::get($rule->product_scope, 'scopeType', '') != 'all_products') {
+                return false;
+            }
+        }
+
+        // 3️⃣ Handle product exclusion logic
+        if (!self::passesExclusionCheck($rule, $product_id, $product)) {
+            return false;
+        }
+
+        // ✅ All checks passed
+        return true;
+    }
+
     /**
      * Check if product matches inclusion scope
      */
@@ -164,7 +192,6 @@ class ValidateApplyDiscount
         if ($end && $today > $end) {
             return false; // Already expired
         }
-    
         // --- Check day of week if defined ---
         if (!empty($daysOfWeek) && !in_array($dayOfWeek, $daysOfWeek, true)) {
             return false;

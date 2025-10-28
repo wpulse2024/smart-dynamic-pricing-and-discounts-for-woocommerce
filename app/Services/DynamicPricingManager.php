@@ -54,9 +54,7 @@ class DynamicPricingManager
         if (is_admin() && !defined('DOING_AJAX')) {
             return;
         }
-
         $this->processed_products = []; // reset on each calculation
-
         foreach ($this->rules as $rule) {
             foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
                 $product_id = $cart_item['product_id'];
@@ -65,7 +63,7 @@ class DynamicPricingManager
                 if (isset($this->processed_products[$product_id])) {
                     continue;
                 }
-
+ 
                 if (!ValidateApplyDiscount::validate($rule, $cart_item, $cart_item_key)) {
                     continue;
                 }
@@ -73,7 +71,6 @@ class DynamicPricingManager
                 if (empty($rule->offers) || !is_array($rule->offers)) {
                     continue;
                 }
-
                 foreach ($rule->offers as $offer) {
                     
                     if (($offer['type'] ?? '') == 'special_offer') {
@@ -82,7 +79,7 @@ class DynamicPricingManager
 
                         if ($applied['success']) {
                             $this->processed_products[$product_id] = true;
-                            $this->showsApplyDiscountMessage($applied['totalDiscount'], $applied['rule_name'], $applied['base_product']);
+                            // $this->showsApplyDiscountMessage($applied['totalDiscount'], $applied['rule_name'], $applied['base_product']);
                             break;
                         }
                     }

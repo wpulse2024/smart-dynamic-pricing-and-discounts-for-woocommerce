@@ -16,6 +16,7 @@ class Action
         add_action('plugins_loaded', function() {
             global $wpdb;
             new \SmartDynamicPricingDiscounts\Services\DynamicPricingManager($wpdb);
+            new \SmartDynamicPricingDiscounts\Handler\HandleOfferMessageOnCart();
         });
     }
 }
