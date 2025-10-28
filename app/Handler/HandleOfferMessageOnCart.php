@@ -8,6 +8,7 @@ use SmartDynamicPricingDiscounts\Helpers\ValidateApplyDiscount;
 class HandleOfferMessageOnCart
 {
     protected $rules = [];
+    protected $applied_discounts = [];
    public function __construct()
    {
         $rules = Rule::all();
@@ -46,6 +47,10 @@ class HandleOfferMessageOnCart
                 continue;
             }
            foreach ($rule->offers as $offer) {
+               // check if offer is special offer
+               if(in_array($cart_item['product_id'], $this->applied_discounts)) {
+                   continue;
+               }
                if (($offer['type'] ?? '') == 'special_offer') {
                    $condition = $offer['condition'] ?? [];
                    $reward = $offer['reward'] ?? [];
@@ -65,7 +70,8 @@ class HandleOfferMessageOnCart
                    $qty = $cart_item['quantity'];
                    $group_size = $buy + $get;
                    $times = $repeat ? floor($qty / $group_size) : ($qty >= $group_size ? 1 : 0);
-
+                   // push product id to array
+                   $this->applied_discounts[] = $cart_item['product_id'];
                    if ($times > 0) {
                        echo '<p style="color:#2e7d32; font-size:13px; margin-top:4px;" class="offer-applied">Applied - '. $rule->name .'</p>';
                    } else if ($qty < $buy) {
@@ -89,6 +95,10 @@ class HandleOfferMessageOnCart
 
         foreach ($this->rules as $rule) {
 
+            if(in_array($product->get_id(), $this->applied_discounts)) {
+                continue;
+            }
+
             if (!ValidateApplyDiscount::isValidProduct($rule, $product)) {
                 continue;
             }
@@ -111,6 +121,9 @@ class HandleOfferMessageOnCart
                 if ($buy <= 0 || $get <= 0) {
                     continue;
                 }
+
+                // push product id to array
+                $this->applied_discounts[] = $product->get_id();
 
                 echo '<div class="single-offer-note" style="margin:10px 0px; padding:8px 12px; background:#f8f8f8; border-radius:6px; font-size:14px;">';
                 echo '🎁 <strong>Special Offer:</strong> Buy <strong>' . $buy . '</strong> to get <strong>' . $get . '</strong> free!';
