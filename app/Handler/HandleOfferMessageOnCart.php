@@ -80,6 +80,18 @@ class HandleOfferMessageOnCart
                        echo '<p style="color:#0073aa; font-size:13px; margin-top:4px;" class="offer-applied">You are qualify for the get - ' . esc_html( $rule->name ) . ' offer</p>';
                    }
                }
+               if (($offer['type'] ?? '') == 'quantity_discount') {
+                   $tiers = $offer['tiers'] ?? [];
+                   $qty = $cart_item['quantity'];
+                   foreach ($tiers as $tier) {
+                       $min = (int) ($tier['min'] ?? 0);
+                       $max = (int) ($tier['max'] ?? 0);
+                       if ($qty >= $min && $qty <= $max) {
+                           $this->applied_discounts[] = $cart_item['product_id'];
+                           echo '<p style="color:#2e7d32; font-size:13px; margin-top:4px;" class="offer-applied">Applied - '. esc_html( $rule->name ) .'</p>';
+                       }
+                   }
+               }
            }
        }
    }
@@ -108,26 +120,59 @@ class HandleOfferMessageOnCart
             }
 
             foreach ($rule->offers as $offer) {
-                if (($offer['type'] ?? '') !== 'special_offer') {
-                    continue;
+                if (($offer['type'] ?? '') == 'special_offer') {
+
+                    $condition = $offer['condition'] ?? [];
+                    $reward = $offer['reward'] ?? [];
+
+                    $buy = (int) ($condition['purchaseQuantity'] ?? 0);
+                    $get = (int) ($reward['discountedItems'] ?? 0);
+
+                    if ($buy <= 0 || $get <= 0) {
+                        continue;
+                    }
+
+                    // push product id to array
+                    $this->applied_discounts[] = $product->get_id();
+
+                    echo '<div class="single-offer-note" style="margin:10px 0px; padding:8px 12px; background:#f8f8f8; border-radius:6px; font-size:14px;">';
+                    echo '🎁 <strong>Special Offer:</strong> Buy <strong>' . esc_html( $buy ) . '</strong> to get <strong>' . esc_html( $get ) . '</strong> free!';
+                    echo '</div>';
                 }
-
-                $condition = $offer['condition'] ?? [];
-                $reward = $offer['reward'] ?? [];
-
-                $buy = (int) ($condition['purchaseQuantity'] ?? 0);
-                $get = (int) ($reward['discountedItems'] ?? 0);
-
-                if ($buy <= 0 || $get <= 0) {
-                    continue;
+                if (($offer['type'] ?? '') == 'quantity_discount') {
+                    $tiers = $offer['tiers'] ?? [];
+                    if (empty($tiers)) {
+                        continue;
+                    }
+                    $this->applied_discounts[] = $product->get_id();
+                    // shows tiers table price 
+                    echo '<div class="single-offer-note" style="margin: 20px 0; padding: 0; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">';
+                        echo '<table class="offer-tiers-table" style="width: 100%; border-collapse: collapse;">';
+                            echo '<thead>';
+                                echo '<tr style="background: linear-gradient(to bottom, #f9fafb, #f3f4f6);">';
+                                    echo '<th style="text-align: left; padding: 12px 16px; font-weight: 600; font-size: 13px; color: #374151; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e5e7eb;">Quantity</th>';
+                                    echo '<th style="text-align: left; padding: 12px 16px; font-weight: 600; font-size: 13px; color: #374151; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e5e7eb;">Discount</th>';
+                                echo '</tr>';
+                            echo '</thead>';
+                            echo '<tbody>';
+                            foreach ($tiers as $index => $tier) {
+                                $min = (int) ($tier['min'] ?? 0);
+                                $max = (int) ($tier['max'] ?? 0);
+                                $discount_type = $tier['discountType'] ?? 'percentage';
+                                $discount_value = (float) ($tier['value'] ?? 0);
+                                
+                                $bg_color = $index % 2 === 0 ? '#ffffff' : '#f9fafb';
+                                $discount_display = $discount_type === 'percentage' ? $discount_value . '%' : wc_price($discount_value);
+                                
+                                echo '<tr style="background: ' . $bg_color . '; transition: background 0.2s ease;">';
+                                    echo '<td style="text-align: left; padding: 14px 16px; font-size: 14px; color: #1f2937; border-bottom: 1px solid #f3f4f6;">' . esc_html($min) . ' - ' . esc_html($max) . '</td>';
+                                    echo '<td style="text-align: left; padding: 14px 16px; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f3f4f6;">' . wp_kses_post($discount_display) . '</td>';
+                                echo '</tr>';
+                            }
+                            echo '</tbody>';
+                        echo '</table>';
+                    echo '</div>';
                 }
-
-                // push product id to array
-                $this->applied_discounts[] = $product->get_id();
-
-                echo '<div class="single-offer-note" style="margin:10px 0px; padding:8px 12px; background:#f8f8f8; border-radius:6px; font-size:14px;">';
-                echo '🎁 <strong>Special Offer:</strong> Buy <strong>' . esc_html( $buy ) . '</strong> to get <strong>' . esc_html( $get ) . '</strong> free!';
-                echo '</div>';
             }
         }
     }

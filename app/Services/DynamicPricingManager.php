@@ -5,6 +5,7 @@ namespace SmartDynamicPricingDiscounts\Services;
 use SmartDynamicPricingDiscounts\Models\Rule;
 use SmartDynamicPricingDiscounts\Helpers\ValidateApplyDiscount;
 use SmartDynamicPricingDiscounts\Handler\SpecialDiscountHandler;
+use SmartDynamicPricingDiscounts\Handler\QuantityDiscountHandler;
 use WC_Cart;
 
 class DynamicPricingManager
@@ -72,7 +73,6 @@ class DynamicPricingManager
                     continue;
                 }
                 foreach ($rule->offers as $offer) {
-                    
                     if (($offer['type'] ?? '') == 'special_offer') {
                         $handler = new SpecialDiscountHandler();
                         $applied = $handler->handle($cart, $cart_item, $offer, $rule->name);
@@ -80,6 +80,15 @@ class DynamicPricingManager
                         if ($applied['success']) {
                             $this->processed_products[$product_id] = true;
                             // $this->showsApplyDiscountMessage($applied['totalDiscount'], $applied['rule_name'], $applied['base_product']);
+                            break;
+                        }
+                    }
+                    if (($offer['type'] ?? '') == 'quantity_discount') {
+                        $handler = new QuantityDiscountHandler();
+                        $applied = $handler->handle($cart, $cart_item, $offer, $rule->name);
+
+                        if ($applied['success']) {
+                            $this->processed_products[$product_id] = true;
                             break;
                         }
                     }
