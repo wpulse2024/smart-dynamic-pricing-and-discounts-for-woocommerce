@@ -6,6 +6,8 @@ use SmartPricing\Models\Rule;
 use SmartPricing\Helpers\ValidateApplyDiscount;
 use SmartPricing\Handler\SpecialDiscountHandler;
 use SmartPricing\Handler\QuantityDiscountHandler;
+use SmartPricing\Handler\HandleGlobalDiscount;
+use SmartPricing\Helpers\Helper;
 use WC_Cart;
 
 class DynamicPricingManager
@@ -19,6 +21,8 @@ class DynamicPricingManager
     {
         $this->wpdb = $wpdb;
         $this->loadRules();
+        add_action('woocommerce_product_get_price', [$this, 'apply_product_discounts'], 10, 2);
+        add_action('woocommerce_product_variation_get_price', [$this, 'apply_product_discounts'], 10, 2);
         add_action('woocommerce_before_calculate_totals', [$this, 'apply_cart_discounts'], 10);
         add_action('woocommerce_before_cart', [$this, 'show_discount_notices']); 
     }
@@ -92,9 +96,47 @@ class DynamicPricingManager
                             break;
                         }
                     }
+                    if (($offer['type'] ?? '') == 'global_discount') {
+                        $handler = new HandleGlobalDiscount();
+                        $applied = $handler->handle($cart, $cart_item, $offer, $rule->name);
+
+                        if ($applied['success']) {
+                            $this->processed_products[$product_id] = true;
+                            break;
+                        }
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Apply product discounts before WooCommerce calculates the price.
+     */
+    public function apply_product_discounts($price, $product)
+    {
+        if (is_admin() && !defined('DOING_AJAX')) {
+            return $price;
+        }
+
+        foreach ($this->rules as $rule) {
+            if (!ValidateApplyDiscount::isValidProduct($rule, $product)) {
+                continue;
+            }
+            if (empty($rule->offers) || !is_array($rule->offers)) {
+                continue;
+            }
+            foreach ($rule->offers as $offer) {
+                if (($offer['type'] ?? '') == 'global_discount') {
+                    $productPrice = (float) $product->get_regular_price();
+                    $discount_value = (float) ($offer['reward']['value'] ?? 0);
+                    $discount_type = $offer['reward']['discountType'] ?? 'percentage';
+                    $discounted_price = Helper::calculate_discounted_price($productPrice, $discount_type, $discount_value);
+                    return $discounted_price;
+                }
+            }
+        }
+        return $price;
     }
 
     protected function showsApplyDiscountMessage($totalDiscount, $rule_name, $base_product)

@@ -92,6 +92,10 @@ class HandleOfferMessageOnCart
                        }
                    }
                }
+               if (($offer['type'] ?? '') == 'global_discount') {
+                   $this->applied_discounts[] = $cart_item['product_id'];
+                   echo '<p style="color:#2e7d32; font-size:13px; margin-top:4px;" class="offer-applied">Applied - '. esc_html( $rule->name ) .'</p>';
+               }
            }
        }
    }
