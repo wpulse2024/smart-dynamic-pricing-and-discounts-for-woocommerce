@@ -1,10 +1,15 @@
 <template>
     <div class="fraise_pricing-rules-wrapper">
         <div class="fraise_pricing-rules-header">
-            <h2 class="fraise_title">Pricing Rules</h2>
-            <p class="fraise_subtitle">
-                Manage your dynamic pricing rules with ease.
-            </p>
+            <div class="fraise_pricing-rules-header-left">
+                <h2 class="fraise_title">Pricing Rules</h2>
+                <p class="fraise_subtitle">
+                    Manage your dynamic pricing rules with ease.
+                </p>
+            </div>
+            <div class="fraise_pricing-rules-header-right">
+                <QuickActions />
+            </div>
         </div>
 
         <!-- Data Table -->
@@ -73,11 +78,13 @@
 <script>
 import { defineComponent } from "vue";
 import Icon from '../../icons/Icon.vue';
+import QuickActions from "../dashboard/partials/QuickActions.vue";
 
 export default defineComponent({
     name: "PricingRulesTable",
     components: {
-        Icon
+        Icon,
+        QuickActions,
     },
     data() {
         return {
@@ -195,6 +202,11 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.fraise_pricing-rules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .rule_name {
     color: var(--fraise-primary-color);
     text-decoration: none;

@@ -19,8 +19,9 @@
               display: flex;
               align-items: center;
               height: 38px;
+
               .el-icon {
-                margin-right: 4px;
+                  margin-right: 4px;
               }
           }
 
@@ -58,11 +59,12 @@
       }
 
       .el-dialog__header {
-        border-bottom: 1px solid #e5e7eb;
-        padding: 14px 20px;
+          border-bottom: 1px solid #e5e7eb;
+          padding: 14px 20px;
       }
+
       .el-dialog__body {
-        padding: 14px 20px;
+          padding: 14px 20px;
       }
 
       .fraise_template-grid {
@@ -79,6 +81,27 @@
           text-align: center;
           border: 2px solid transparent;
           transition: all 0.2s ease;
+          overflow: hidden;
+          position: relative;
+
+          &.upcoming {
+              &::before {
+                content: "Coming";
+                position: absolute;
+                width: 100%;
+                top: 7px;
+                left: -68px;
+                background: $fraise-dark-500;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 0.75rem;
+                transform: rotate(327deg);
+                padding: 4px 10px;
+              }
+          }
 
           .fraise_template-icon {
               width: 40px;

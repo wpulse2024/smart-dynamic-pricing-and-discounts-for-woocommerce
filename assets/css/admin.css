@@ -311,6 +311,24 @@
   text-align: center;
   border: 2px solid transparent;
   transition: all 0.2s ease;
+  overflow: hidden;
+  position: relative;
+}
+.fraise_modal .fraise_template-card.upcoming::before {
+  content: "Coming";
+  position: absolute;
+  width: 100%;
+  top: 7px;
+  left: -68px;
+  background: #253241;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+  transform: rotate(327deg);
+  padding: 4px 10px;
 }
 .fraise_modal .fraise_template-card .fraise_template-icon {
   width: 40px;

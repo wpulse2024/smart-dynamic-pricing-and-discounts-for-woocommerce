@@ -1,6 +1,6 @@
 <template>
     <div class="fraise_quick-actions">
-        <h3 class="fraise_quick-actions-title">Quick Actions</h3>
+        <!-- <h3 class="fraise_quick-actions-title">Quick Actions</h3> -->
 
         <div class="fraise_btn-wrapper">
             <!-- Create From Template -->
@@ -19,7 +19,7 @@
                 <div>
                     <p class="fraise_modal-subtitle">Select a pre-built template to get started quickly</p>
                     <div class="fraise_template-grid">
-                        <div class="fraise_template-card" v-for="(template, index) in templates" :key="index" @click="createCustomRule('template', template.key)">
+                        <div :class="['fraise_template-card', { 'upcoming': template?.is_upcoming }]" v-for="(template, index) in templates" :key="index" @click="createCustomRule('template', template.key, template?.is_upcoming)">
                             <div class="fraise_template-icon" :style="{ background: template.color }">
                                 <el-icon :size="24">
                                     <component :is="template.icon" />
@@ -33,8 +33,11 @@
                 <div class="create_from_scratch_wrapper">
                     <p class="fraise_modal-subtitle">Create From Scratch Choose Type of Discount</p>
                     <ul class="create_from_scratch_list">
-                        <li @click="createCustomRule('custom', template.key)" v-for="(template, index) in discountTypes" :key="index">
-                            {{ template.title }}
+                        <li :class="{ 'upcoming': template?.is_upcoming }" @click="createCustomRule('custom', template.key, template?.is_upcoming)" v-for="(template, index) in discountTypes" :key="index">
+                            <el-tooltip v-if="template?.is_upcoming" content="Coming soon!" placement="top">
+                                {{ template.title }}
+                            </el-tooltip>
+                            <span v-if="!template?.is_upcoming">{{ template.title }}</span>
                         </li>
                     </ul>
                 </div>
@@ -79,10 +82,10 @@ export default {
             discountTypes: [
                 { title: 'Quantity Discount', key: 'quantity_discount' },
                 { title: 'Special Offer', key: 'special_offer' },
-                { title: 'Gift with Purchase', key: 'gift_with_purchase' },
                 { title: 'Global Discount', key: 'global_discount' },
-                { title: 'Cart Discount', key: 'cart_discount' },
-                { title: 'Category Discount', key: 'category_discount' },
+                { title: 'Gift with Purchase', key: 'gift_with_purchase', is_upcoming: true },
+                { title: 'Cart Discount', key: 'cart_discount', is_upcoming: true },
+                { title: 'Category Discount', key: 'category_discount', is_upcoming: true },
             ],
             templates: [
                 { title: '3×2 Offer', desc: 'Buy 3 items, pay for 2', color: '#6366f1', icon: 'Goods', key: 'buy3pay2' },
@@ -90,9 +93,9 @@ export default {
                 { title: '50% Off Second Unit', desc: 'Half price on second item', color: '#10b981', icon: 'Discount', key: 'half_second' },
                 { title: 'Quantity Discount', desc: 'Bulk purchase savings', color: '#f97316', icon: 'ShoppingCart', key: 'bulk_discount' },
                 { title: 'User Role Discount', desc: 'Special pricing by role', color: '#ec4899', icon: 'User', key: 'role_discount' },
-                { title: 'Free Gift on Cart', desc: 'Free product with purchase', color: '#f59e0b', icon: 'Star', key: 'free_gift_on_cart' },
-                { title: 'Cart Discount', desc: 'Percentage off cart total', color: '#ef4444', icon: 'Discount', key: 'cart_discount' },
-                { title: 'Free Shipping', desc: 'Free delivery on orders', color: '#06b6d4', icon: 'Truck', key: 'free_shipping' },
+                { title: 'Free Gift on Cart', desc: 'Free product with purchase', color: '#f59e0b', icon: 'Star', key: 'free_gift_on_cart', is_upcoming: true },
+                { title: 'Cart Discount', desc: 'Percentage off cart total', color: '#ef4444', icon: 'Discount', key: 'cart_discount', is_upcoming: true },
+                { title: 'Free Shipping', desc: 'Free delivery on orders', color: '#06b6d4', icon: 'Truck', key: 'free_shipping', is_upcoming: true },
             ],
             rule: {
                 // 🏷️ Basic Info
@@ -249,11 +252,16 @@ export default {
             this.customRuleDialogVisible = false
             this.$message.success('Rule saved successfully!')
         },
-        createCustomRule(type, templateKey) {
-            if (type === 'template') {
-                this.$router.push({ name: 'add-new-role-template', params: { template: templateKey }})
+        createCustomRule(type, templateKey, is_upcoming = false) {
+            if (is_upcoming) {
+                this.$message.warning('Coming soon!')
+                return;
             } else {
-                this.$router.push({ name: 'create-new-rule', params: { type: templateKey }})
+                if (type === 'template') {
+                    this.$router.push({ name: 'add-new-role-template', params: { template: templateKey }})
+                } else {
+                    this.$router.push({ name: 'create-new-rule', params: { type: templateKey }})
+                }
             }
         }
     },
@@ -283,6 +291,10 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 12px;
+    .upcoming {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 }
 
 .create_from_scratch_list li {
