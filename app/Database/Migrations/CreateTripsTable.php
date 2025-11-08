@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Database\Migrations;
+namespace SmartPricing\Database\Migrations;
 
-use SmartDynamicPricingDiscounts\Database\Database;
+use SmartPricing\Database\Database;
 
 /**
  * Migration to create trips table
@@ -51,7 +51,7 @@ class CreateTripsTable
             ]
         ];
 
-        $this->database->createTable('smart_dynamic_pricing_discounts_roles', $columns, $options);
+        $this->database->createTable('smart_pricing_discounts_roles', $columns, $options);
     }
 
     /**
@@ -59,6 +59,6 @@ class CreateTripsTable
      */
     public function down(): void
     {
-        $this->database->dropTable('smart_dynamic_pricing_discounts_roles');
+        $this->database->dropTable('smart_pricing_discounts_roles');
     }
 }

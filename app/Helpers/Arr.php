@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Helpers;
+namespace SmartPricing\Helpers;
 
 class Arr
 {

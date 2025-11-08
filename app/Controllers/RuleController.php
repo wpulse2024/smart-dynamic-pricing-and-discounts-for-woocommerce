@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Controllers;
+namespace SmartPricing\Controllers;
 
-use SmartDynamicPricingDiscounts\Models\Rule;
+use SmartPricing\Models\Rule;
 
 /**
  * Rule Controller
@@ -36,6 +36,7 @@ class RuleController extends Controller
      */
     public function show(int $id): void
     {
+        $id = intval($id);
         $rule = Rule::find($id);
         
         if (!$rule) {
@@ -60,49 +61,65 @@ class RuleController extends Controller
     public function store(): void
     {
         $data = $this->validate([
-            'name' => 'required|max:255',
-            'status' => 'required|in:active,inactive',
-            'priority' => 'required|numeric',
-            'rule_type' => 'required|max:255',
-            'product_scope' => 'required',
-            'user_scope' => 'required',
-            'schedule' => 'required',
-            'offers' => 'required',
-            'meta' => 'required',
+            'name'           => 'required|max:255',
+            'status'         => 'required|in:active,inactive',
+            'priority'       => 'required|numeric',
+            'rule_type'      => 'required|max:255',
+            'product_scope'  => 'required',
+            'user_scope'     => 'required',
+            'schedule'       => 'required',
+            'offers'         => 'required',
+            'meta'           => 'required',
         ]);
 
-        $formatData = [
-            'name' => $data['name'],
-            'status' => $data['status'],
-            'priority' => $data['priority'],
-            'rule_type' => $data['rule_type'],
-            'product_scope' => maybe_serialize($data['product_scope']),
-            'user_scope' => maybe_serialize($data['user_scope']),
-            'schedule' => maybe_serialize($data['schedule']),
-            'offers' => maybe_serialize($data['offers']),
-            'meta' => maybe_serialize($data['meta'])
+        // Sanitize scalar fields
+        $sanitized = [
+            'name'      => sanitize_text_field($data['name']),
+            'status'    => sanitize_text_field($data['status']),
+            'priority'  => intval($data['priority']),
+            'rule_type' => sanitize_text_field($data['rule_type']),
         ];
 
+        // Sanitize array-based fields recursively
+        $sanitize_array = function ($value) use (&$sanitize_array) {
+            if (is_array($value)) {
+                return array_map($sanitize_array, $value);
+            }
+            return is_scalar($value) ? sanitize_text_field($value) : '';
+        };
+
+        $sanitized['product_scope'] = maybe_serialize($sanitize_array($data['product_scope']));
+        $sanitized['user_scope']    = maybe_serialize($sanitize_array($data['user_scope']));
+        $sanitized['schedule']      = maybe_serialize($sanitize_array($data['schedule']));
+        $sanitized['offers']        = maybe_serialize($sanitize_array($data['offers']));
+        $sanitized['meta']          = maybe_serialize($sanitize_array($data['meta']));
+
+        // Update existing rule
         if (isset($data['id'])) {
-            $rule = Rule::find($data['id']);
+            $rule = Rule::find(intval($data['id']));
             if (!$rule) {
                 $this->error('Rule not found', 404);
                 return;
             }
-            $rule->fill($formatData);
+
+            $rule->fill($sanitized);
             $rule->save();
+
             $this->success([
                 'rule' => $rule->toArray()
             ], 'Rule updated successfully');
+
             return;
         }
 
-        $rule = Rule::create($formatData);
-        
+        // Create new rule
+        $rule = Rule::create($sanitized);
+
         $this->success([
             'rule' => $rule->toArray()
         ], 'Rule created successfully', 201);
     }
+
 
     /**
      * Delete a rule

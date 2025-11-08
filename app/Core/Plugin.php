@@ -1,10 +1,10 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Core;
+namespace SmartPricing\Core;
 
-use SmartDynamicPricingDiscounts\Routes\Router;
-use SmartDynamicPricingDiscounts\Database\Database;
-use SmartDynamicPricingDiscounts\Services\ServiceContainer;
+use SmartPricing\Routes\Router;
+use SmartPricing\Database\Database;
+use SmartPricing\Services\ServiceContainer;
 
 
 /**
@@ -42,7 +42,7 @@ class Plugin
      */
     protected function __construct()
     {
-        $this->version = SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION;
+        $this->version = SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION;
         $this->container = new ServiceContainer();
         $this->router = new Router();
         $this->database = new Database();
@@ -100,14 +100,14 @@ class Plugin
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
         
         // Register AJAX handlers
-        add_action('wp_ajax_my_plugin_action', [$this, 'handleAjaxRequest']);
-        add_action('wp_ajax_nopriv_my_plugin_action', [$this, 'handleAjaxRequest']);
+        add_action('wp_ajax_smart-pricing_action', [$this, 'handleAjaxRequest']);
+        add_action('wp_ajax_nopriv_smart-pricing_action', [$this, 'handleAjaxRequest']);
         
         // Initialize components
         $this->initializeComponents();
         
         // Register shortcodes
-        add_action('init', ['SmartDynamicPricingDiscounts\\Controllers\\ShortcodeController', 'register']);
+        add_action('init', ['SmartPricing\\Controllers\\ShortcodeController', 'register']);
     }
 
     /**
@@ -116,7 +116,7 @@ class Plugin
     public function registerRoutes(): void
     {
         // Register API routes
-        \SmartDynamicPricingDiscounts\Routes\ApiRoutes::register();
+        \SmartPricing\Routes\ApiRoutes::register();
         
         // Register REST API routes
         $this->router->registerRestRoutes('my-plugin/v1');
@@ -168,7 +168,7 @@ class Plugin
 
 
     public function renderLogo() {
-        return SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/logo.png';
+        return SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/logo.png';
     }
 
     /**
@@ -189,14 +189,14 @@ class Plugin
     {
         wp_enqueue_style(
             'SmartDynamicPricingDiscountAdmin',
-            SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/css/public.css',
+            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/css/public.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
             'SmartDynamicPricingDiscountAdmin',
-            SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/js/public.js',
+            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/js/public.js',
             ['jquery'],
             $this->version,
             true
@@ -215,14 +215,14 @@ class Plugin
         
         wp_enqueue_style(
             'smart-pricing-admin',
-            SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/css/admin.css',
+            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/css/admin.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
             'smart-pricing-admin',
-            SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/js/admin.js',
+            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/js/admin.js',
             ['jquery'],
             $this->version,
             true
@@ -252,13 +252,13 @@ class Plugin
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'restUrl' => rest_url('my-plugin/v1/'),
-            'nonce' => wp_create_nonce('my_plugin_nonce'),
+            'nonce' => wp_create_nonce('smart-pricing_nonce'),
             'products' => $products,
             'categories' => $categories,
             'tags' => $tags,
             'users' => $users,
             'roles' => $allUserRoles,
-            'iconUrl' => SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/icon.png',
+            'iconUrl' => SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/icon.png',
             'strings' => [
                 'loading' => __('Loading...', 'smart-pricing'),
                 'error' => __('An error occurred', 'smart-pricing'),
@@ -273,7 +273,7 @@ class Plugin
     public function handleAjaxRequest(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'my_plugin_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'smart-pricing_nonce')) {
             wp_die('Security check failed');
         }
         
@@ -291,8 +291,8 @@ class Plugin
     {
         // Initialize services
         $services = [
-            'SmartDynamicPricingDiscounts\\Services\\TripService',
-            'SmartDynamicPricingDiscounts\\Services\\UserService',
+            'SmartPricing\\Services\\TripService',
+            'SmartPricing\\Services\\UserService',
         ];
         
         foreach ($services as $service) {
@@ -346,7 +346,7 @@ class Plugin
         
         // Run migrations
         $migrations = [
-            'SmartDynamicPricingDiscounts\\Database\\Migrations\\CreateTripsTable',
+            'SmartPricing\\Database\\Migrations\\CreateTripsTable',
         ];
         
         foreach ($migrations as $migration) {
@@ -357,8 +357,8 @@ class Plugin
         }
         
         // Set activation flag
-        update_option('my_plugin_activated', true);
-        update_option('my_plugin_version', SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION);
+        update_option('smart-pricing_activated', true);
+        update_option('smart-pricing_version', SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION);
         
         // Flush rewrite rules
         flush_rewrite_rules();
@@ -370,7 +370,7 @@ class Plugin
     public static function deactivate(): void
     {
         // Remove activation flag
-        delete_option('my_plugin_activated');
+        delete_option('smart-pricing_activated');
         
         // Flush rewrite rules
         flush_rewrite_rules();
@@ -393,7 +393,7 @@ class Plugin
         }
         
         // Remove all plugin options
-        delete_option('my_plugin_version');
-        delete_option('my_plugin_settings');
+        delete_option('smart-pricing_version');
+        delete_option('smart-pricing_settings');
     }
 }

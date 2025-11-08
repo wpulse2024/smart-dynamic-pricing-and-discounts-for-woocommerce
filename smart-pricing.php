@@ -22,15 +22,15 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION', '1.0.0');
-define('SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_FILE', __FILE__);
-define('SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH', plugin_dir_path(__FILE__));
-define('SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL', plugin_dir_url(__FILE__));
-define('SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_BASENAME', plugin_basename(__FILE__));
+define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION', '1.0.0');
+define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_FILE', __FILE__);
+define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH', plugin_dir_path(__FILE__));
+define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL', plugin_dir_url(__FILE__));
+define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_BASENAME', plugin_basename(__FILE__));
 
 // Autoload dependencies
-if (file_exists(SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'vendor/autoload.php')) {
-    require_once SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'vendor/autoload.php';
+if (file_exists(SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'vendor/autoload.php')) {
+    require_once SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'vendor/autoload.php';
 }
 
 add_action( 'before_woocommerce_init', function() {
@@ -40,21 +40,21 @@ add_action( 'before_woocommerce_init', function() {
 });
 
 // Bootstrap the plugin
-use SmartDynamicPricingDiscounts\Core\Plugin;
+use SmartPricing\Core\Plugin;
 
 /**
  * Initialize the plugin
  */
-function my_plugin_init() {
+function smart_pricing_init() {
     return Plugin::getInstance();
 }
 
 // Initialize the plugin
-$GLOBALS['my_plugin'] = my_plugin_init();
+$GLOBALS['smart-pricing'] = smart_pricing_init();
 
 // Register WP-CLI commands
 if (defined('WP_CLI') && WP_CLI) {
-    require_once SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'includes/cli/RenameCommand.php';
+    require_once SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'includes/cli/RenameCommand.php';
     \WP_CLI::add_command('myplugin', 'MyPlugin\\CLI\\RenameCommand');
 }
 

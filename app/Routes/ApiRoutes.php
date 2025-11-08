@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Routes;
+namespace SmartPricing\Routes;
 
-use SmartDynamicPricingDiscounts\Core\Plugin;
+use SmartPricing\Core\Plugin;
 
 /**
  * API Routes

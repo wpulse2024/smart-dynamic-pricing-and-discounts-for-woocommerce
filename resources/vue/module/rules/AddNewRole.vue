@@ -691,12 +691,12 @@ export default {
                 },
                 body: JSON.stringify(this.ruleForm)
             })
-                .then(res => res.json())
-                .then(data => {
-                    this.$message.success('Rule saved successfully', 'success');
-                    this.$router.push({ name: 'roles' });
-                })
-                .catch(err => console.error('Error:', err));
+            .then(res => res.json())
+            .then(data => {
+                this.$message.success('Rule saved successfully', 'success');
+                this.$router.push({ name: 'roles' });
+            })
+            .catch(err => console.error('Error:', err));
 
         }
     }

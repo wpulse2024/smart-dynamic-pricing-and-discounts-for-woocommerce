@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Database\Seeders;
+namespace SmartPricing\Database\Seeders;
 
-use SmartDynamicPricingDiscounts\Models\Trip;
+use SmartPricing\Models\Trip;
 
 /**
  * Trip seeder

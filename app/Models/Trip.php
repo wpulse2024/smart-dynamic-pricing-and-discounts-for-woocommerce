@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Models;
+namespace SmartPricing\Models;
 
 /**
  * Trip model

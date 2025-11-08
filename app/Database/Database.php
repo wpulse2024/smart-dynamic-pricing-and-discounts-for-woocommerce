@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Database;
+namespace SmartPricing\Database;
 
 /**
  * Database migration helper class

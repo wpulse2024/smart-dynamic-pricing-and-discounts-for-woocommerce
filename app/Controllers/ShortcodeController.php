@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Controllers;
+namespace SmartPricing\Controllers;
 
-use SmartDynamicPricingDiscounts\Models\Trip;
+use SmartPricing\Models\Trip;
 
 /**
  * Shortcode Controller
@@ -14,8 +14,8 @@ class ShortcodeController
      */
     public static function register(): void
     {
-        add_shortcode('my_plugin_trips', [self::class, 'displayTrips']);
-        add_shortcode('my_plugin_upcoming_trips', [self::class, 'displayUpcomingTrips']);
+        add_shortcode('smart-pricing_trips', [self::class, 'displayTrips']);
+        add_shortcode('smart-pricing_upcoming_trips', [self::class, 'displayUpcomingTrips']);
     }
 
     /**

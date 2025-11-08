@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Models;
+namespace SmartPricing\Models;
 
-use SmartDynamicPricingDiscounts\Core\Database;
+use SmartPricing\Core\Database;
 
 /**
  * Base Model class - Lightweight ORM using $wpdb
@@ -65,7 +65,7 @@ abstract class Model
     protected function getTableName(): string
     {
         $class = get_class($this);
-        $class = str_replace('SmartDynamicPricingDiscounts\\Models\\', '', $class);
+        $class = str_replace('SmartPricing\\Models\\', '', $class);
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $class)) . 's';
     }
 

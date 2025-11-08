@@ -11,5 +11,5 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 // Include the plugin's uninstall method
 if (file_exists(plugin_dir_path(__FILE__) . 'app/Core/Plugin.php')) {
     require_once plugin_dir_path(__FILE__) . 'app/Core/Plugin.php';
-    \SmartDynamicPricingDiscounts\Core\Plugin::uninstall();
+    \SmartPricing\Core\Plugin::uninstall();
 }

@@ -65,8 +65,8 @@ add_action('init', function() {
 The plugin includes shortcodes for displaying trips on the frontend:
 
 ```
-[my_plugin_trips limit="5" status="active"]
-[my_plugin_upcoming_trips limit="3"]
+[smart-pricing_trips limit="5" status="active"]
+[smart-pricing_upcoming_trips limit="3"]
 ```
 
 ## API Usage

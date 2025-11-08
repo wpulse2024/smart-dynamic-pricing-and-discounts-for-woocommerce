@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Controllers;
+namespace SmartPricing\Controllers;
 
 /**
  * Base Controller class
@@ -8,7 +8,7 @@ namespace SmartDynamicPricingDiscounts\Controllers;
 abstract class Controller
 {
     /**
-     * The request data
+     * The sanitized request data
      */
     protected $request;
 
@@ -17,7 +17,8 @@ abstract class Controller
      */
     public function __construct()
     {
-        $this->request = $this->getRequestData();
+        $rawData = $this->getRequestData();
+        $this->request = $this->sanitize($rawData);
     }
 
     /**
@@ -26,24 +27,51 @@ abstract class Controller
     protected function getRequestData(): array
     {
         $data = [];
-        
+
         // Get JSON input
         $json = file_get_contents('php://input');
         if (!empty($json)) {
             $data = json_decode($json, true) ?? [];
         }
-        
+
         // Merge with POST data
         if (!empty($_POST)) {
             $data = array_merge($data, $_POST);
         }
-        
+
         // Merge with GET data
         if (!empty($_GET)) {
             $data = array_merge($data, $_GET);
         }
-        
+
         return $data;
+    }
+
+    /**
+     * 🔒 Sanitize input recursively using WordPress sanitization rules
+     */
+    protected function sanitize(array $data): array
+    {
+        $clean = [];
+
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $clean[$key] = $this->sanitize($value); // recursive sanitization
+            } elseif (is_numeric($value)) {
+                $clean[$key] = sanitize_text_field($value);
+            } elseif (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                $clean[$key] = sanitize_email($value);
+            } elseif (filter_var($value, FILTER_VALIDATE_URL)) {
+                $clean[$key] = esc_url_raw($value);
+            } elseif (in_array($key, ['content', 'description', 'html'], true)) {
+                // allow limited HTML for content fields
+                $clean[$key] = wp_kses_post($value);
+            } else {
+                $clean[$key] = sanitize_text_field($value);
+            }
+        }
+
+        return $clean;
     }
 
     /**
@@ -69,7 +97,7 @@ abstract class Controller
     {
         http_response_code($status);
         header('Content-Type: application/json');
-        echo json_encode($data);
+        echo wp_json_encode($data);
         exit;
     }
 
@@ -81,7 +109,7 @@ abstract class Controller
         $this->json([
             'success' => true,
             'message' => $message,
-            'data' => $data
+            'data'    => $data,
         ]);
     }
 
@@ -93,7 +121,7 @@ abstract class Controller
         $this->json([
             'success' => false,
             'message' => $message,
-            'data' => $data
+            'data'    => $data,
         ], $status);
     }
 
@@ -103,31 +131,31 @@ abstract class Controller
     protected function validate(array $rules): array
     {
         $errors = [];
-        
+
         foreach ($rules as $field => $rule) {
             $value = $this->get($field);
-            
+
             if (strpos($rule, 'required') !== false && empty($value)) {
                 $errors[$field] = ucfirst($field) . ' is required';
             }
-            
-            if (strpos($rule, 'email') !== false && !empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+
+            if (strpos($rule, 'email') !== false && !empty($value) && !is_email($value)) {
                 $errors[$field] = ucfirst($field) . ' must be a valid email';
             }
-            
+
             if (preg_match('/min:(\d+)/', $rule, $matches) && !empty($value) && strlen($value) < $matches[1]) {
                 $errors[$field] = ucfirst($field) . ' must be at least ' . $matches[1] . ' characters';
             }
-            
+
             if (preg_match('/max:(\d+)/', $rule, $matches) && !empty($value) && strlen($value) > $matches[1]) {
                 $errors[$field] = ucfirst($field) . ' must not exceed ' . $matches[1] . ' characters';
             }
         }
-        
+
         if (!empty($errors)) {
             $this->error('Validation failed', 422, ['errors' => $errors]);
         }
-        
+
         return $this->request;
     }
 

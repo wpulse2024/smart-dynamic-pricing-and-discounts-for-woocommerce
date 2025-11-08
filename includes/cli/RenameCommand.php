@@ -77,7 +77,7 @@ class RenameCommand extends WP_CLI_Command
      */
     protected function updateMainPluginFile(string $slug, string $namespace, string $author, string $description): void
     {
-        $pluginFile = SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'smart-pricing.php';
+        $pluginFile = SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'smart-pricing.php';
         
         if (!file_exists($pluginFile)) {
             throw new Exception('Main plugin file not found');
@@ -93,7 +93,7 @@ class RenameCommand extends WP_CLI_Command
         $content = preg_replace('/Text Domain: .*/', "Text Domain: {$slug}", $content);
         
         // Update constants
-        $content = preg_replace('/define\(\'SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_/', "define('" . strtoupper(str_replace('-', '_', $slug)) . '_', $content);
+        $content = preg_replace('/define\(\'SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_/', "define('" . strtoupper(str_replace('-', '_', $slug)) . '_', $content);
         
         file_put_contents($pluginFile, $content);
         
@@ -105,7 +105,7 @@ class RenameCommand extends WP_CLI_Command
      */
     protected function updateComposerJson(string $slug, string $namespace, string $author): void
     {
-        $composerFile = SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'composer.json';
+        $composerFile = SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'composer.json';
         
         if (!file_exists($composerFile)) {
             return;
@@ -127,7 +127,7 @@ class RenameCommand extends WP_CLI_Command
      */
     protected function updatePackageJson(string $slug, string $author, string $description): void
     {
-        $packageFile = SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'package.json';
+        $packageFile = SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'package.json';
         
         if (!file_exists($packageFile)) {
             return;
@@ -149,7 +149,7 @@ class RenameCommand extends WP_CLI_Command
      */
     protected function updateNamespaceInFiles(string $namespace): void
     {
-        $files = $this->getPhpFiles(SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'app/');
+        $files = $this->getPhpFiles(SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'app/');
         
         foreach ($files as $file) {
             $content = file_get_contents($file);
@@ -168,7 +168,7 @@ class RenameCommand extends WP_CLI_Command
      */
     protected function updateTextDomain(string $slug): void
     {
-        $files = $this->getPhpFiles(SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH);
+        $files = $this->getPhpFiles(SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH);
         
         foreach ($files as $file) {
             $content = file_get_contents($file);
@@ -186,12 +186,12 @@ class RenameCommand extends WP_CLI_Command
      */
     protected function updateConstants(string $slug, string $namespace): void
     {
-        $files = $this->getPhpFiles(SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH);
+        $files = $this->getPhpFiles(SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH);
         $constantPrefix = strtoupper(str_replace('-', '_', $slug));
         
         foreach ($files as $file) {
             $content = file_get_contents($file);
-            $content = preg_replace('/SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_/', "{$constantPrefix}_", $content);
+            $content = preg_replace('/SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_/', "{$constantPrefix}_", $content);
             
             file_put_contents($file, $content);
         }

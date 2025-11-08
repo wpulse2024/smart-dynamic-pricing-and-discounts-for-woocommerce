@@ -13,23 +13,13 @@
         "php": ">=7.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
-            "SmartDynamicPricingDiscounts\\": "app/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "MyPlugin\\Tests\\": "tests/"
+            "SmartPricing\\": "app/"
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "post-install-cmd": [
-            "MyPlugin\\Core\\Installer::postInstall"
-        ]
     },
     "config": {
         "optimize-autoloader": true,

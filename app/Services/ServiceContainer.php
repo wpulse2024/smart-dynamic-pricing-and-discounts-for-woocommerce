@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Services;
+namespace SmartPricing\Services;
 
 /**
  * Simple Service Container for dependency injection

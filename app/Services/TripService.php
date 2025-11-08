@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Services;
+namespace SmartPricing\Services;
 
-use SmartDynamicPricingDiscounts\Models\Trip;
+use SmartPricing\Models\Trip;
 
 /**
  * Trip Service - Business logic for trips

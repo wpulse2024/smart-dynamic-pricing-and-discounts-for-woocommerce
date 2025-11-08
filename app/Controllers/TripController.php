@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Controllers;
+namespace SmartPricing\Controllers;
 
-use SmartDynamicPricingDiscounts\Models\Trip;
+use SmartPricing\Models\Trip;
 
 /**
  * Trip Controller

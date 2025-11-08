@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Core;
+namespace SmartPricing\Core;
 
 /**
  * Plugin installer
@@ -14,9 +14,9 @@ class Installer
     {
         // Create necessary directories
         $directories = [
-            SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'assets/js',
-            SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'assets/css',
-            SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'languages'
+            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'assets/js',
+            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'assets/css',
+            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'languages'
         ];
         
         foreach ($directories as $directory) {
@@ -27,6 +27,6 @@ class Installer
         
         // Create .htaccess for public directory
         $htaccessContent = "Options -Indexes\n";
-        file_put_contents(SMART_DYNAMIC_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'public/.htaccess', $htaccessContent);
+        file_put_contents(SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'public/.htaccess', $htaccessContent);
     }
 }

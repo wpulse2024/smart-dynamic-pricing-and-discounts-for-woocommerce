@@ -1,11 +1,11 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Services;
+namespace SmartPricing\Services;
 
-use SmartDynamicPricingDiscounts\Models\Rule;
-use SmartDynamicPricingDiscounts\Helpers\ValidateApplyDiscount;
-use SmartDynamicPricingDiscounts\Handler\SpecialDiscountHandler;
-use SmartDynamicPricingDiscounts\Handler\QuantityDiscountHandler;
+use SmartPricing\Models\Rule;
+use SmartPricing\Helpers\ValidateApplyDiscount;
+use SmartPricing\Handler\SpecialDiscountHandler;
+use SmartPricing\Handler\QuantityDiscountHandler;
 use WC_Cart;
 
 class DynamicPricingManager

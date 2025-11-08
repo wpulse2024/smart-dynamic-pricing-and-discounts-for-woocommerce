@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Helpers;
+namespace SmartPricing\Helpers;
 
 class ValidateApplyDiscount
 {
@@ -151,7 +151,7 @@ class ValidateApplyDiscount
             if (!is_cart()) {
                 return;
             }
-            wc_add_notice('You must be logged in to apply this discount', 'notice');
+            wc_add_notice(__('You must be logged in to apply this discount', 'smart-pricing'), 'notice');
             return false;
         }
         $user_id = $user->ID;

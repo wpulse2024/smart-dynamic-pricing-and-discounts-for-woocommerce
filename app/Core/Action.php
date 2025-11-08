@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Core;
+namespace SmartPricing\Core;
 
 /**
  * Action class for handling plugin actions
@@ -15,8 +15,8 @@ class Action
         // Add action logic here
         add_action('plugins_loaded', function() {
             global $wpdb;
-            new \SmartDynamicPricingDiscounts\Services\DynamicPricingManager($wpdb);
-            new \SmartDynamicPricingDiscounts\Handler\HandleOfferMessageOnCart();
+            new \SmartPricing\Services\DynamicPricingManager($wpdb);
+            new \SmartPricing\Handler\HandleOfferMessageOnCart();
         });
     }
 }

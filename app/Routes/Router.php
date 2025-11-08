@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricingDiscounts\Routes;
+namespace SmartPricing\Routes;
 
 /**
  * Router class for handling REST and admin routes
@@ -15,35 +15,12 @@ class Router
     /** ---------------------------
      *  Basic HTTP Method Registration
      *  --------------------------- */
-    public function get(string $path, $handler, array $middleware = []): self
-    {
-        return $this->addRoute('GET', $path, $handler, $middleware);
-    }
-
-    public function post(string $path, $handler, array $middleware = []): self
-    {
-        return $this->addRoute('POST', $path, $handler, $middleware);
-    }
-
-    public function put(string $path, $handler, array $middleware = []): self
-    {
-        return $this->addRoute('PUT', $path, $handler, $middleware);
-    }
-
-    public function delete(string $path, $handler, array $middleware = []): self
-    {
-        return $this->addRoute('DELETE', $path, $handler, $middleware);
-    }
-
-    public function patch(string $path, $handler, array $middleware = []): self
-    {
-        return $this->addRoute('PATCH', $path, $handler, $middleware);
-    }
-
-    public function any(string $path, $handler, array $middleware = []): self
-    {
-        return $this->addRoute('ANY', $path, $handler, $middleware);
-    }
+    public function get(string $path, $handler, array $middleware = []): self { return $this->addRoute('GET', $path, $handler, $middleware); }
+    public function post(string $path, $handler, array $middleware = []): self { return $this->addRoute('POST', $path, $handler, $middleware); }
+    public function put(string $path, $handler, array $middleware = []): self { return $this->addRoute('PUT', $path, $handler, $middleware); }
+    public function delete(string $path, $handler, array $middleware = []): self { return $this->addRoute('DELETE', $path, $handler, $middleware); }
+    public function patch(string $path, $handler, array $middleware = []): self { return $this->addRoute('PATCH', $path, $handler, $middleware); }
+    public function any(string $path, $handler, array $middleware = []): self { return $this->addRoute('ANY', $path, $handler, $middleware); }
 
     /** ---------------------------
      *  Add a Route
@@ -92,7 +69,6 @@ class Router
     protected function convertToRegex(string $path): string
     {
         $pattern = str_replace('/', '\/', $path);
-        // Convert {id} → (?P<id>[^/]+)
         $pattern = preg_replace('/\{([^}]+)\}/', '(?P<$1>[^\/]+)', $pattern);
         return '/^' . $pattern . '$/';
     }
@@ -109,14 +85,12 @@ class Router
             return;
         }
 
-        // Execute middleware
         foreach ($route['middleware'] as $middleware) {
             if (!$this->executeMiddleware($middleware)) {
                 return;
             }
         }
 
-        // Execute route handler
         $this->executeHandler($route['handler'], $route['params'] ?? []);
     }
 
@@ -129,7 +103,6 @@ class Router
             if (($route['method'] === $method || $route['method'] === 'ANY') &&
                 preg_match($route['pattern'], $path, $matches)) {
 
-                // Extract named params
                 $params = [];
                 if (preg_match_all('/\(\?P<([^>]+)>/', $route['pattern'], $paramNames)) {
                     foreach ($paramNames[1] as $name) {
@@ -150,7 +123,7 @@ class Router
     protected function executeMiddleware($middleware): bool
     {
         if (is_string($middleware)) {
-            $middlewareClass = "SmartDynamicPricingDiscounts\\Middleware\\{$middleware}";
+            $middlewareClass = "SmartPricing\\Middleware\\{$middleware}";
             if (class_exists($middlewareClass)) {
                 $middlewareInstance = new $middlewareClass();
                 return $middlewareInstance->handle();
@@ -169,7 +142,7 @@ class Router
     {
         if (is_string($handler) && strpos($handler, '@') !== false) {
             [$controller, $method] = explode('@', $handler);
-            $controllerClass = "SmartDynamicPricingDiscounts\\Controllers\\{$controller}";
+            $controllerClass = "SmartPricing\\Controllers\\{$controller}";
 
             if (class_exists($controllerClass)) {
                 $controllerInstance = new $controllerClass();
@@ -187,18 +160,16 @@ class Router
     }
 
     /** ---------------------------
-     *  Register WordPress REST Routes
+     *  Register WordPress REST Routes with Nonce Validation
      *  --------------------------- */
-    public function registerRestRoutes(string $namespace = 'my-plugin/v1'): void
+    public function registerRestRoutes(string $namespace = 'smart-dynamic-pricing/v1'): void
     {
         add_action('rest_api_init', function() use ($namespace) {
             foreach ($this->routes as $route) {
-                // Determine HTTP methods
                 $methods = $route['method'] === 'ANY'
                     ? ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
                     : [$route['method']];
 
-                // Convert /rules/{id} → rules/(?P<id>[^/]+)
                 $path = ltrim($route['path'], '/');
                 $path = preg_replace('/\{([^}]+)\}/', '(?P<$1>[^/]+)', $path);
 
@@ -207,12 +178,17 @@ class Router
                     'callback' => function($request) use ($route) {
                         $_SERVER['REQUEST_METHOD'] = $request->get_method();
                         $_POST = $request->get_params();
-
-                        // Extract named parameters (like id)
                         $params = $request->get_url_params();
                         $this->executeHandler($route['handler'], $params);
                     },
                     'permission_callback' => function($request) use ($route) {
+                        // ✅ Global REST Nonce Validation
+                        $nonce = $request->get_header('X-WP-Nonce');
+                        if (empty($nonce) || !wp_verify_nonce($nonce, 'wp_rest')) {
+                            return new \WP_Error('rest_nonce_invalid', __('Invalid or missing nonce.', 'smart-dynamic-pricing'), ['status' => 403]);
+                        }
+
+                        // Then execute custom middlewares if any
                         foreach ($route['middleware'] as $middleware) {
                             if (!$this->executeMiddleware($middleware)) {
                                 return false;
@@ -255,18 +231,12 @@ class Router
      *  --------------------------- */
     protected function notFound(): void
     {
-        http_response_code(404);
-        header('Content-Type: application/json');
-        echo json_encode(['error' => 'Not Found']);
-        exit;
+        wp_send_json_error(['error' => 'Not Found'], 404);
     }
 
     protected function error(string $message, int $status = 500): void
     {
-        http_response_code($status);
-        header('Content-Type: application/json');
-        echo json_encode(['error' => $message]);
-        exit;
+        wp_send_json_error(['error' => $message], $status);
     }
 
     /** ---------------------------
