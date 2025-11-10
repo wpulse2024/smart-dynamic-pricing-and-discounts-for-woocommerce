@@ -51,12 +51,12 @@ export default defineComponent({
             iconUrl: window.SmartDynamicPricingDiscount?.iconUrl,
             navItems: [
                 {
-                    label: 'Dashboard',
+                    label: 'Rules',
                     to: '/',
                 },
                 {
-                    label: 'Rules',
-                    to: '/roles',
+                    label: 'Documentation',
+                    to: '/documentation',
                 },
             ],
         };

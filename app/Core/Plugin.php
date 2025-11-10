@@ -141,21 +141,26 @@ class Plugin
             25
         );
 
-        $submenu['smart-pricing.php']['dashboard'] = array(
-            __('Dashboard', 'smart-pricing'),
-            'manage_options',
-            'admin.php?page=smart-pricing.php#/',
-        );
+        // $submenu['smart-pricing.php']['dashboard'] = array(
+        //     __('Dashboard', 'smart-pricing'),
+        //     'manage_options',
+        //     'admin.php?page=smart-pricing.php#/',
+        // );
         $submenu['smart-pricing.php']['rules'] = array(
             __('Pricing Rules', 'smart-pricing'),
             'manage_options',
-            'admin.php?page=smart-pricing.php#/roles',
+            'admin.php?page=smart-pricing.php#/',
         );
-        $submenu['smart-pricing.php']['settings'] = array(
-            __('Settings', 'smart-pricing'),
+        $submenu['smart-pricing.php']['documentation'] = array(
+            __('Documentation', 'smart-pricing'),
             'manage_options',
-            'admin.php?page=smart-pricing.php#/settings',
+            'admin.php?page=smart-pricing.php#/documentation',
         );
+        // $submenu['smart-pricing.php']['settings'] = array(
+        //     __('Settings', 'smart-pricing'),
+        //     'manage_options',
+        //     'admin.php?page=smart-pricing.php#/settings',
+        // );
     }
 
     /**
@@ -347,6 +352,7 @@ class Plugin
         // Run migrations
         $migrations = [
             'SmartPricing\\Database\\Migrations\\CreateTripsTable',
+            'SmartPricing\\Database\\Migrations\\AppliedDiscountsTable',
         ];
         
         foreach ($migrations as $migration) {

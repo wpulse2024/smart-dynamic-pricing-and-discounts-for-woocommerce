@@ -1,90 +1,115 @@
-=== SmartPricing - Smart Dynamic Pricing And Discounts For Woocommerce ===
-Contributors: wpulse, dasnitesh780
-Tags: woocommerce, dynamic pricing, discounts, tiered pricing
-Requires at least: 5.0
-Tested up to: 6.8
-Requires PHP: 7.4
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+# SmartPricing – Smart Dynamic Pricing And Discounts For WooCommerce
+**Contributors:** wpulse, dasnitesh780 , chadni54 
+**Tags:** woocommerce, dynamic pricing, discounts, tiered pricing, bogo
+**Requires at least:** 5.0  
+**Tested up to:** 6.8  
+**Requires PHP:** 7.4  
+**Stable tag:** 1.0.0
+**License:** GPLv2 or later  
+**License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
 
-A powerful WooCommerce plugin to create smart dynamic pricing, discounts, and tiered pricing rules with an intuitive Vue 3 admin interface.
+A powerful WooCommerce addon to create smart dynamic pricing, discounts, and upsell strategies that help you boost sales and increase average order value.
 
-== Description ==
+---
 
-**Smart Dynamic Pricing and Discounts for WooCommerce** helps you easily set up flexible pricing strategies such as bulk discounts, quantity-based pricing, and role-based pricing — all managed from a clean and modern admin interface.
+## 🧩 Description
 
-This plugin is built for both store owners and developers who want full control over product pricing logic. Whether you want to offer wholesale discounts, flash deals, or custom pricing per user role, this plugin makes it simple and powerful.
+**SmartPricing** is the best-selling WooCommerce plugin for creating promotions and upsell strategies in your store.  
+Easily configure offers like **3x2**, **2x1**, **BOGO**, **free products in the cart**, **quantity discounts**, **cart-based discounts**, and more — all from a beautiful and intuitive **Vue 3 admin interface**.
 
-### 💡 Key Features
+### 🚀 Key Features
 
-- Dynamic product pricing and quantity discounts  
-- Role-based and conditional pricing rules  
-- Tiered pricing and bulk discount setup  
-- Fully integrated with WooCommerce cart and checkout  
-- Vue 3 powered admin interface  
-- REST API support for advanced integrations  
-- Secure and optimized with nonce and capability checks  
-- Built-in validation and input sanitization  
+- **Create popular promotions:**  
+  Set up 3x2, 2x1, Buy One Get One (BOGO), and “Buy X Get Y Free” offers in just a few clicks.
+- **Cart-based discounts:**  
+  Offer discounts or free shipping based on cart total or product quantity.
+- **Global or category-based discounts:**  
+  Apply rules to the entire shop or specific product categories.
+- **User role discounts:**  
+  Offer different prices or discounts to wholesale customers, vendors, or members.
+- **Schedule time-based promotions:**  
+  Automate discounts for events like **Black Friday**, **Cyber Monday**, **Christmas**, or custom dates.
+- **Gift products and upsells:**  
+  Add free gifts to the cart when customers buy specific products or spend a set amount.
+- **Flexible quantity discounts:**  
+  Create tiered or bulk pricing rules (e.g., Buy 5+ for 10% off, Buy 10+ for 20% off).
+- **Dynamic conditions:**  
+  Combine multiple conditions (cart total, quantity, user role, category) for advanced promotional strategies.
+- **Fully compatible with WooCommerce themes and builders.**
 
-### 🧩 Use Cases
+---
 
-- Offer **“Buy more, save more”** deals  
-- Set **different prices for different user roles** (e.g., wholesalers, retailers)  
-- Create **quantity-based discount tiers** automatically  
-- Run **flash or seasonal sales** easily  
-- Display tiered pricing tables on product pages  
+## 💡 Benefits
 
-== Installation ==
+- Increase your **average order value** with targeted quantity and cart discounts.
+- **Boost conversions** by offering time-sensitive deals and free gifts.
+- **Automate** seasonal promotions and let them start and end automatically.
+- **Encourage loyalty** through user-role-based pricing and discounts.
+- Reduce manual work and manage all pricing rules in a clean, unified dashboard.
 
-1. Upload the plugin files to `/wp-content/plugins/smart-pricing/`, or install directly from the WordPress Plugins screen.
-2. Activate the plugin through the “Plugins” menu in WordPress.
-3. Go to **WooCommerce → Pricing Rules** to configure your discount and pricing settings.
+---
 
-== Frequently Asked Questions ==
+## 🖥️ Use Cases
 
-= Does it support role-based pricing? =
-Yes. You can set custom prices and discounts for specific user roles such as wholesalers, retailers, or customers.
+- **3x2 or 2x1 promotions** for specific products or categories.  
+- **BOGO offers** to clear stock or introduce new items.  
+- **Black Friday or seasonal deals** scheduled automatically.  
+- **Free shipping or gifts** for customers spending over a threshold.  
+- **Dynamic cart discounts** like “10% off orders above $100.”  
 
-= Can I show tiered pricing tables on product pages? =
-Absolutely. The plugin lets you display quantity-based price tables above or below the add-to-cart button.
+---
 
-= Will this work with my theme? =
-Yes. It’s compatible with all WooCommerce-compliant themes.
+## 📸 Screenshots
 
-= Do I need coding knowledge? =
-Not at all. Everything can be managed visually from your WordPress admin.
+1. Templates for popular promotions (3x2, BOGO, Black Friday, etc.)  
+2. Create discounts from scratch — quantity, category, or global  
+3. Vue-powered admin interface for easy rule setup  
+4. Cart and checkout examples of applied discounts  
 
-= Is it developer-friendly? =
-Yes. The plugin follows modern coding standards and provides hooks and filters for extension.
+---
 
-== Screenshots ==
+## ⚙️ Installation
 
-1. Plugin dashboard showing all pricing rules  
-2. Tiered pricing configuration screen  
-3. Vue 3 based admin interface  
-4. Frontend display of pricing table  
+1. Upload the plugin files to the `/wp-content/plugins/smart-pricing` directory, or install directly through the **Plugins** screen in WordPress.  
+2. Activate the plugin through the **Plugins** screen.  
+3. Navigate to **WooCommerce → SmartPricing** in your WordPress dashboard.  
+4. Choose a template or start from scratch to create your first promotion.  
 
-== Changelog ==
+---
 
-= 1.0.2 – 22 October, 2025 =
-* Fixed undefined `price_type` key on cart and checkout page.
-* Fixed single product tiered pricing settings not saving properly.
-* Fixed pricing table not displaying on product page until general settings are saved.
+## 🧠 Frequently Asked Questions
 
-= 1.0.1 – Initial Release =
-* First public release with dynamic pricing, Vue admin, and WooCommerce integration.
+### 🔹 Does SmartPricing work with any theme?
+Yes! It’s fully compatible with all WooCommerce-compatible themes and page builders like Elementor, Divi, and Gutenberg.
 
-== Upgrade Notice ==
+### 🔹 Can I set different discounts for different user roles?
+Absolutely. You can assign discounts to customers, wholesalers, or custom user roles.
 
-= 1.0.2 =
-This update fixes key pricing-related issues. Update now for better stability and functionality.
+### 🔹 Can I schedule promotions?
+Yes, you can start and end discounts automatically based on date and time — ideal for seasonal campaigns like Black Friday or Christmas.
 
-== Support ==
+### 🔹 Does it support variable and grouped products?
+Yes, SmartPricing supports **simple, variable, and grouped** product types.
 
-For help, feedback, or feature requests, please contact the plugin author or open a support request in the plugin’s support forum.
+### 🔹 Is it compatible with multi-language and multi-currency setups?
+Yes. SmartPricing supports **WPML**, **Polylang**, and most currency switcher plugins.
 
-== License ==
+---
 
-This plugin is licensed under the GPLv2 or later.  
-Copyright © 2025 WPulse.
+## 🧾 Changelog
+
+### 1.0.0
+- Initial release — dynamic pricing and discount engine with Vue 3 admin interface.  
+
+---
+
+## 📜 License
+
+This plugin is licensed under the [GPL v2 or later](https://www.gnu.org/licenses/gpl-2.0.html).
+
+---
+
+## 👨‍💻 Author
+
+**WPulse**  
+[https://profiles.wordpress.org/wpulse/](https://profiles.wordpress.org/wpulse/)
