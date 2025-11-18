@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartPricing\Controllers;
+namespace SmartDynamicPricing\Controllers;
 
 use ReflectionClass;
 
@@ -37,7 +37,7 @@ abstract class Controller
         // Example: RuleController → Rule
         $class      = (new ReflectionClass($this))->getShortName();
         $modelName  = str_replace('Controller', '', $class);
-        $modelClass = "SmartPricing\\Models\\{$modelName}";
+        $modelClass = "SmartDynamicPricing\\Models\\{$modelName}";
 
         if (class_exists($modelClass)) {
             $this->model = new $modelClass();

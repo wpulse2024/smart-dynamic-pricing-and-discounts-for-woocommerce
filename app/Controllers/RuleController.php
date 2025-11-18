@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartPricing\Controllers;
+namespace SmartDynamicPricing\Controllers;
 
-use SmartPricing\Models\Rule;
+use SmartDynamicPricing\Models\Rule;
 
 /**
  * Rule Controller

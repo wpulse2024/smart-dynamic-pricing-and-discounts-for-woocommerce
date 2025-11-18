@@ -10,7 +10,7 @@
             </button>
             <div class="logo">
               <span class="logo-icon">🏷️</span>
-              <h1>SmartPricing</h1>
+              <h1>SmartDynamicPricing</h1>
             </div>
           </div>
           <div class="header-right">
@@ -55,13 +55,13 @@
               <h2 class="section-title">Introduction</h2>
               <div class="prose">
                 <p class="lead">
-                  Welcome to <strong>SmartPricing</strong> – the most powerful and flexible dynamic pricing and discount plugin for WooCommerce.
+                  Welcome to <strong>SmartDynamicPricing</strong> – the most powerful and flexible dynamic pricing and discount plugin for WooCommerce.
                 </p>
                 <p>
-                  SmartPricing empowers store owners to create sophisticated promotional campaigns with ease. From simple percentage discounts to complex buy-one-get-one (BOGO) offers, quantity-based pricing tiers, role-specific pricing, and scheduled promotions – SmartPricing handles it all.
+                  SmartDynamicPricing empowers store owners to create sophisticated promotional campaigns with ease. From simple percentage discounts to complex buy-one-get-one (BOGO) offers, quantity-based pricing tiers, role-specific pricing, and scheduled promotions – SmartDynamicPricing handles it all.
                 </p>
                 <div class="info-box info-box-dark">
-                  <h3>Why Choose SmartPricing?</h3>
+                  <h3>Why Choose SmartDynamicPricing?</h3>
                   <ul>
                     <li>Increase average order value with quantity discounts</li>
                     <li>Boost customer loyalty with role-based pricing</li>
@@ -119,10 +119,10 @@
               <h3 class="subsection-title">Method 1: WordPress Dashboard</h3>
               <ol class="numbered-list">
                 <li>Navigate to <code>Plugins → Add New</code></li>
-                <li>Search for "SmartPricing"</li>
-                <li>Click <strong>Install Now</strong> next to SmartPricing plugin</li>
+                <li>Search for "SmartDynamicPricing"</li>
+                <li>Click <strong>Install Now</strong> next to SmartDynamicPricing plugin</li>
                 <li>After installation, click <strong>Activate</strong></li>
-                <li>You'll see a new <strong>SmartPricing</strong> menu in your WordPress admin sidebar</li>
+                <li>You'll see a new <strong>SmartDynamicPricing</strong> menu in your WordPress admin sidebar</li>
               </ol>
   
               <h3 class="subsection-title">Method 2: Manual Upload</h3>
@@ -134,7 +134,7 @@
               </ol>
   
               <div class="info-box info-box-blue">
-                <p><strong>Note:</strong> SmartPricing requires WooCommerce 5.0 or higher to function properly.</p>
+                <p><strong>Note:</strong> SmartDynamicPricing requires WooCommerce 5.0 or higher to function properly.</p>
               </div>
             </section>
   
@@ -142,9 +142,9 @@
             <section id="getting-started" class="content-section">
               <h2 class="section-title">Getting Started</h2>
               
-              <h3 class="subsection-title">Accessing SmartPricing Panel</h3>
+              <h3 class="subsection-title">Accessing SmartDynamicPricing Panel</h3>
               <p>
-                After activation, you'll find the SmartPricing menu in your WordPress admin sidebar. Click on <strong>Rules</strong> to access the main pricing rules dashboard.
+                After activation, you'll find the SmartDynamicPricing menu in your WordPress admin sidebar. Click on <strong>Rules</strong> to access the main pricing rules dashboard.
               </p>
   
               <h3 class="subsection-title">Creating Your First Promotion</h3>
@@ -380,7 +380,7 @@
               </ul>
   
               <h3 class="subsection-title">Theme Compatibility</h3>
-              <p>SmartPricing works with any properly coded WooCommerce theme. We've specifically tested with popular themes like Astra, OceanWP, Storefront, Flatsome, and Divi.</p>
+              <p>SmartDynamicPricing works with any properly coded WooCommerce theme. We've specifically tested with popular themes like Astra, OceanWP, Storefront, Flatsome, and Divi.</p>
             </section>
   
             <!-- Troubleshooting -->
@@ -445,12 +445,12 @@
               
               <div class="faq-item">
                 <h3>Can I combine multiple discount rules?</h3>
-                <p>SmartPricing applies the best available discount based on priority settings. By default, only one rule applies per product. However, you can configure rules to stack by adjusting priority levels and enabling "Apply on Discounted Products."</p>
+                <p>SmartDynamicPricing applies the best available discount based on priority settings. By default, only one rule applies per product. However, you can configure rules to stack by adjusting priority levels and enabling "Apply on Discounted Products."</p>
               </div>
   
               <div class="faq-item">
-                <h3>Does SmartPricing work with WooCommerce coupons?</h3>
-                <p>Yes! SmartPricing discounts work alongside standard WooCommerce coupons. You can control whether SmartPricing rules apply to already-discounted items using the "Apply on Discounted Products" setting in each rule.</p>
+                <h3>Does SmartDynamicPricing work with WooCommerce coupons?</h3>
+                <p>Yes! SmartDynamicPricing discounts work alongside standard WooCommerce coupons. You can control whether SmartDynamicPricing rules apply to already-discounted items using the "Apply on Discounted Products" setting in each rule.</p>
               </div>
   
               <div class="faq-item">
@@ -460,7 +460,7 @@
   
               <div class="faq-item">
                 <h3>How do I show discount badges on product pages?</h3>
-                <p>SmartPricing automatically displays discount information on product and cart pages. You can customize the display through your theme's template files or by using our shortcodes. Contact support for customization assistance.</p>
+                <p>SmartDynamicPricing automatically displays discount information on product and cart pages. You can customize the display through your theme's template files or by using our shortcodes. Contact support for customization assistance.</p>
               </div>
   
               <div class="faq-item">
@@ -474,8 +474,8 @@
               </div>
   
               <div class="faq-item">
-                <h3>Does SmartPricing support variable products?</h3>
-                <p>Yes! SmartPricing fully supports WooCommerce variable products. Discounts apply to individual variations based on your product scope settings. You can target specific variations or apply rules to all variations.</p>
+                <h3>Does SmartDynamicPricing support variable products?</h3>
+                <p>Yes! SmartDynamicPricing fully supports WooCommerce variable products. Discounts apply to individual variations based on your product scope settings. You can target specific variations or apply rules to all variations.</p>
               </div>
   
               <div class="faq-item">
@@ -530,7 +530,7 @@
               
               <div class="support-hero">
                 <h3>Need Help?</h3>
-                <p>Our support team is here to help you get the most out of SmartPricing. Whether you need technical assistance, have questions about features, or want to suggest improvements, we're just a message away.</p>
+                <p>Our support team is here to help you get the most out of SmartDynamicPricing. Whether you need technical assistance, have questions about features, or want to suggest improvements, we're just a message away.</p>
                 
                 <div class="support-grid">
                   <div class="support-column">
@@ -562,10 +562,10 @@
   
               <div class="info-box info-box-green">
                 <h3>Report a Bug</h3>
-                <p>Found a bug? Help us improve SmartPricing by reporting it. Please include:</p>
+                <p>Found a bug? Help us improve SmartDynamicPricing by reporting it. Please include:</p>
                 <ul class="bullet-list small">
                   <li>WordPress and WooCommerce versions</li>
-                  <li>SmartPricing version</li>
+                  <li>SmartDynamicPricing version</li>
                   <li>Steps to reproduce the issue</li>
                   <li>Screenshots or error messages</li>
                   <li>List of active plugins</li>
@@ -576,15 +576,15 @@
   
             <!-- Call to Action -->
             <section class="cta-section">
-              <h2>Love SmartPricing?</h2>
-              <p>Help other store owners discover SmartPricing by leaving a review on WordPress.org</p>
+              <h2>Love SmartDynamicPricing?</h2>
+              <p>Help other store owners discover SmartDynamicPricing by leaving a review on WordPress.org</p>
               <button class="cta-button">⭐ Leave a Review</button>
               <p class="cta-footer">Your feedback helps us improve and grow. Thank you for your support!</p>
             </section>
   
             <!-- Footer -->
             <footer class="footer">
-              <p>SmartPricing v1.0.2 | Developed by WPulse | © 2025 All Rights Reserved</p>
+              <p>SmartDynamicPricing v1.0.2 | Developed by WPulse | © 2025 All Rights Reserved</p>
               <p>
                 <a href="#">Privacy Policy</a>
                 <span> • </span>

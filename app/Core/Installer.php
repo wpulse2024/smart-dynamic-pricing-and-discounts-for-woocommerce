@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartPricing\Core;
+namespace SmartDynamicPricing\Core;
 
 /**
  * Plugin installer

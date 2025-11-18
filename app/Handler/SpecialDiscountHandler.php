@@ -1,9 +1,9 @@
 <?php
 
-namespace SmartPricing\Handler;
+namespace SmartDynamicPricing\Handler;
 
 use WC_Cart;
-use SmartPricing\Helpers\Helper;
+use SmartDynamicPricing\Helpers\Helper;
 
 class SpecialDiscountHandler
 {

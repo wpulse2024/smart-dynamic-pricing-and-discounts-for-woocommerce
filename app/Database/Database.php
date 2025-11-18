@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartPricing\Database;
+namespace SmartDynamicPricing\Database;
 
 /**
  * Database migration helper class
@@ -172,24 +172,6 @@ class Database
         $fullTableName = $this->wpdb->prefix . $tableName;
          // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         return $this->wpdb->get_results("DESCRIBE {$fullTableName}", ARRAY_A);
-    }
-
-    /**
-     * Run a custom SQL query
-     */
-    public function query(string $sql): mixed
-    {
-         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        return $this->wpdb->query($sql);
-    }
-
-    /**
-     * Get a single result
-     */
-    public function getVar(string $sql): mixed
-    {
-         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        return $this->wpdb->get_var($sql);
     }
 
     /**

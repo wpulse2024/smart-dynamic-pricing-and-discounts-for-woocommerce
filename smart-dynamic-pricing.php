@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: SmartPricing - Smart Dynamic Pricing And Discounts For Woocommerce
+ * Plugin Name: SmartDynamicPricing - Smart Dynamic Pricing And Discounts For Woocommerce
  * Description: A powerful WooCommerce addon to create smart dynamic pricing, discounts, and tiered pricing rules with an intuitive Vue 3 admin interface.
  * Version: 1.0.0
  * Author: WPulse
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION', '1.0.0');
 define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_FILE', __FILE__);
 define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH', plugin_dir_path(__FILE__));
-define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL', plugin_dir_url(__FILE__));
+define('SMART_DYNAMIC_PRICING_URL', plugin_dir_url(__FILE__));
 define('SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_BASENAME', plugin_basename(__FILE__));
 
 // Autoload dependencies
@@ -40,7 +40,7 @@ add_action( 'before_woocommerce_init', function() {
 });
 
 // Bootstrap the plugin
-use SmartPricing\Core\Plugin;
+use SmartDynamicPricing\Core\Plugin;
 
 /**
  * Initialize the plugin

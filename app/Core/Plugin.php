@@ -1,10 +1,10 @@
 <?php
 
-namespace SmartPricing\Core;
+namespace SmartDynamicPricing\Core;
 
-use SmartPricing\Routes\Router;
-use SmartPricing\Database\Database;
-use SmartPricing\Services\ServiceContainer;
+use SmartDynamicPricing\Routes\Router;
+use SmartDynamicPricing\Database\Database;
+use SmartDynamicPricing\Services\ServiceContainer;
 
 
 /**
@@ -107,7 +107,7 @@ class Plugin
         $this->initializeComponents();
         
         // Register shortcodes
-        add_action('init', ['SmartPricing\\Controllers\\ShortcodeController', 'register']);
+        add_action('init', ['SmartDynamicPricing\\Controllers\\ShortcodeController', 'register']);
     }
 
     /**
@@ -116,10 +116,10 @@ class Plugin
     public function registerRoutes(): void
     {
         // Register API routes
-        \SmartPricing\Routes\ApiRoutes::register();
+        \SmartDynamicPricing\Routes\ApiRoutes::register();
         
         // Register REST API routes
-        $this->router->registerRestRoutes('my-plugin/v1');
+        $this->router->registerRestRoutes('smart-dynamic-pricing/v1');
         
         // Register admin routes
         $this->router->registerAdminRoutes();
@@ -173,7 +173,7 @@ class Plugin
 
 
     public function renderLogo() {
-        return SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/logo.png';
+        return SMART_DYNAMIC_PRICING_URL . 'assets/images/logo.png';
     }
 
     /**
@@ -194,14 +194,14 @@ class Plugin
     {
         wp_enqueue_style(
             'SmartDynamicPricingDiscountAdmin',
-            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/css/public.css',
+            SMART_DYNAMIC_PRICING_URL . 'public/css/public.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
             'SmartDynamicPricingDiscountAdmin',
-            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'public/js/public.js',
+            SMART_DYNAMIC_PRICING_URL . 'public/js/public.js',
             ['jquery'],
             $this->version,
             true
@@ -220,14 +220,14 @@ class Plugin
         
         wp_enqueue_style(
             'smart-dynamic-pricing-admin',
-            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/css/admin.css',
+            SMART_DYNAMIC_PRICING_URL . 'assets/css/admin.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
             'smart-dynamic-pricing-admin',
-            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/js/admin.js',
+            SMART_DYNAMIC_PRICING_URL . 'assets/js/admin.js',
             ['jquery'],
             $this->version,
             true
@@ -256,14 +256,14 @@ class Plugin
         wp_localize_script('smart-dynamic-pricing-admin', 'SmartDynamicPricingDiscount', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restNonce' => wp_create_nonce('wp_rest'),
-            'restUrl' => rest_url('my-plugin/v1/'),
-            'nonce' => wp_create_nonce('smart-pricing_nonce'),
+            'restUrl' => rest_url('smart-dynamic-pricing/v1/'),
+            'nonce' => wp_create_nonce('smart-dynamic-pricing_nonce'),
             'products' => $products,
             'categories' => $categories,
             'tags' => $tags,
             'users' => $users,
             'roles' => $allUserRoles,
-            'iconUrl' => SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/icon.png',
+            'iconUrl' => SMART_DYNAMIC_PRICING_URL . 'assets/images/icon.png',
             'strings' => [
                 'loading' => __('Loading...', 'smart-dynamic-pricing'),
                 'error' => __('An error occurred', 'smart-dynamic-pricing'),
@@ -278,7 +278,7 @@ class Plugin
     public function handleAjaxRequest(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'smart-pricing_nonce')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'smart-dynamic-pricing_nonce')) {
             wp_die('Security check failed');
         }
         
@@ -296,8 +296,8 @@ class Plugin
     {
         // Initialize services
         $services = [
-            'SmartPricing\\Services\\TripService',
-            'SmartPricing\\Services\\UserService',
+            'SmartDynamicPricing\\Services\\TripService',
+            'SmartDynamicPricing\\Services\\UserService',
         ];
         
         foreach ($services as $service) {
@@ -351,8 +351,8 @@ class Plugin
         
         // Run migrations
         $migrations = [
-            'SmartPricing\\Database\\Migrations\\CreateTripsTable',
-            'SmartPricing\\Database\\Migrations\\AppliedDiscountsTable',
+            'SmartDynamicPricing\\Database\\Migrations\\CreateTripsTable',
+            'SmartDynamicPricing\\Database\\Migrations\\AppliedDiscountsTable',
         ];
         
         foreach ($migrations as $migration) {

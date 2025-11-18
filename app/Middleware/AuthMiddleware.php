@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartPricing\Middleware;
+namespace SmartDynamicPricing\Middleware;
 
 /**
  * Authentication middleware

@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartPricing\Database\Migrations;
+namespace SmartDynamicPricing\Database\Migrations;
 
-use SmartPricing\Database\Database;
+use SmartDynamicPricing\Database\Database;
 
 /**
  * Migration to create trips table

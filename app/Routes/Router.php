@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartPricing\Routes;
+namespace SmartDynamicPricing\Routes;
 
 /**
  * Router class for handling REST and admin routes
@@ -123,7 +123,7 @@ class Router
     protected function executeMiddleware($middleware): bool
     {
         if (is_string($middleware)) {
-            $middlewareClass = "SmartPricing\\Middleware\\{$middleware}";
+            $middlewareClass = "SmartDynamicPricing\\Middleware\\{$middleware}";
             if (class_exists($middlewareClass)) {
                 $middlewareInstance = new $middlewareClass();
                 return $middlewareInstance->handle();
@@ -142,7 +142,7 @@ class Router
     {
         if (is_string($handler) && strpos($handler, '@') !== false) {
             [$controller, $method] = explode('@', $handler);
-            $controllerClass = "SmartPricing\\Controllers\\{$controller}";
+            $controllerClass = "SmartDynamicPricing\\Controllers\\{$controller}";
 
             if (class_exists($controllerClass)) {
                 $controllerInstance = new $controllerClass();

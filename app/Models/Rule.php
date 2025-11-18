@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartPricing\Models;
+namespace SmartDynamicPricing\Models;
 
 /**
  * Rule model

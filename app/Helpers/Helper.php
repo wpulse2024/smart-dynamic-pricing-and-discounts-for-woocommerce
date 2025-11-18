@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartPricing\Helpers;
+namespace SmartDynamicPricing\Helpers;
 
 /**
  * Helper functions

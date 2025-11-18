@@ -1,9 +1,9 @@
 <?php
 
-namespace SmartPricing\Handler;
+namespace SmartDynamicPricing\Handler;
 
-use SmartPricing\Models\Rule;
-use SmartPricing\Helpers\ValidateApplyDiscount;
+use SmartDynamicPricing\Models\Rule;
+use SmartDynamicPricing\Helpers\ValidateApplyDiscount;
 
 class HandleOfferMessageOnCart
 {
