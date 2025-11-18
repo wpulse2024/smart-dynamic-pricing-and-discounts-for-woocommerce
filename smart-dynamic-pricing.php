@@ -5,7 +5,7 @@
  * Version: 1.0.0
  * Author: WPulse
  * Author URI: https://profiles.wordpress.org/wpulse/
- * Text Domain: smart-pricing
+ * Text Domain: smart-dynamic-pricing
  * Domain Path: /languages
  * Requires at least: 5.0
  * Tested up to: 6.8
@@ -50,7 +50,7 @@ function smart_pricing_init() {
 }
 
 // Initialize the plugin
-$GLOBALS['smart-pricing'] = smart_pricing_init();
+$GLOBALS['smart-dynamic-pricing'] = smart_pricing_init();
 
 // Activation and deactivation hooks
 register_activation_hook(__FILE__, [Plugin::class, 'activate']);

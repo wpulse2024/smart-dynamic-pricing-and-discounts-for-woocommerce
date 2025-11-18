@@ -155,6 +155,12 @@ abstract class Model
         return $result !== false;
     }
 
+    public function getFillable(): array
+    {
+        return $this->fillable;
+    }
+
+
     /**
      * Delete the model from the database
      */

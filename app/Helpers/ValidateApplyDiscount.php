@@ -151,7 +151,7 @@ class ValidateApplyDiscount
             if (!is_cart()) {
                 return;
             }
-            wc_add_notice(__('You must be logged in to apply this discount', 'smart-pricing'), 'notice');
+            wc_add_notice(__('You must be logged in to apply this discount', 'smart-dynamic-pricing'), 'notice');
             return false;
         }
         $user_id = $user->ID;

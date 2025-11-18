@@ -132,34 +132,34 @@ class Plugin
     {
         global $submenu;
         add_menu_page(
-            'smart-pricing',
-            __('Smart Pricing', 'smart-pricing'),
+            'smart-dynamic-pricing',
+            __('Smart Pricing', 'smart-dynamic-pricing'),
             'manage_options',
-            'smart-pricing.php',
+            'smart-dynamic-pricing.php',
             array($this, 'renderAdminPage'),
             $this->renderLogo(),
             25
         );
 
-        // $submenu['smart-pricing.php']['dashboard'] = array(
-        //     __('Dashboard', 'smart-pricing'),
+        // $submenu['smart-dynamic-pricing.php']['dashboard'] = array(
+        //     __('Dashboard', 'smart-dynamic-pricing'),
         //     'manage_options',
-        //     'admin.php?page=smart-pricing.php#/',
+        //     'admin.php?page=smart-dynamic-pricing.php#/',
         // );
-        $submenu['smart-pricing.php']['rules'] = array(
-            __('Pricing Rules', 'smart-pricing'),
+        $submenu['smart-dynamic-pricing.php']['rules'] = array(
+            __('Pricing Rules', 'smart-dynamic-pricing'),
             'manage_options',
-            'admin.php?page=smart-pricing.php#/',
+            'admin.php?page=smart-dynamic-pricing.php#/',
         );
-        $submenu['smart-pricing.php']['documentation'] = array(
-            __('Documentation', 'smart-pricing'),
+        $submenu['smart-dynamic-pricing.php']['documentation'] = array(
+            __('Documentation', 'smart-dynamic-pricing'),
             'manage_options',
-            'admin.php?page=smart-pricing.php#/documentation',
+            'admin.php?page=smart-dynamic-pricing.php#/documentation',
         );
-        // $submenu['smart-pricing.php']['settings'] = array(
-        //     __('Settings', 'smart-pricing'),
+        // $submenu['smart-dynamic-pricing.php']['settings'] = array(
+        //     __('Settings', 'smart-dynamic-pricing'),
         //     'manage_options',
-        //     'admin.php?page=smart-pricing.php#/settings',
+        //     'admin.php?page=smart-dynamic-pricing.php#/settings',
         // );
     }
 
@@ -182,7 +182,7 @@ class Plugin
     public function renderSettingsPage(): void
     {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('My Plugin Settings', 'smart-pricing') . '</h1>';
+        echo '<h1>' . esc_html__('My Plugin Settings', 'smart-dynamic-pricing') . '</h1>';
         echo '<div id="my-plugin-settings"></div>';
         echo '</div>';
     }
@@ -214,19 +214,19 @@ class Plugin
     public function enqueueAdminAssets(string $hook): void
     {
         // Only load on our admin pages
-        if (strpos($hook, 'smart-pricing') === false) {
+        if (strpos($hook, 'smart-dynamic-pricing') === false) {
             return;
         }
         
         wp_enqueue_style(
-            'smart-pricing-admin',
+            'smart-dynamic-pricing-admin',
             SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/css/admin.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
-            'smart-pricing-admin',
+            'smart-dynamic-pricing-admin',
             SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/js/admin.js',
             ['jquery'],
             $this->version,
@@ -253,7 +253,7 @@ class Plugin
         $allUserRoles = wp_roles()->get_names();
         
         // Localize script with data
-        wp_localize_script('smart-pricing-admin', 'SmartDynamicPricingDiscount', [
+        wp_localize_script('smart-dynamic-pricing-admin', 'SmartDynamicPricingDiscount', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'restUrl' => rest_url('my-plugin/v1/'),
@@ -265,9 +265,9 @@ class Plugin
             'roles' => $allUserRoles,
             'iconUrl' => SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_URL . 'assets/images/icon.png',
             'strings' => [
-                'loading' => __('Loading...', 'smart-pricing'),
-                'error' => __('An error occurred', 'smart-pricing'),
-                'success' => __('Success!', 'smart-pricing'),
+                'loading' => __('Loading...', 'smart-dynamic-pricing'),
+                'error' => __('An error occurred', 'smart-dynamic-pricing'),
+                'success' => __('Success!', 'smart-dynamic-pricing'),
             ]
         ]);
     }

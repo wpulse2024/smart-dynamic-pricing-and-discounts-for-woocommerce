@@ -183,6 +183,9 @@ class Router
                     },
                     'permission_callback' => function($request) use ($route) {
                         // ✅ Global REST Nonce Validation
+                        if(!current_user_can('manage_options')) {
+                            return new \WP_Error('rest_forbidden', __('You do not have permission to access this resource.', 'smart-dynamic-pricing'), ['status' => 403]);
+                        }
                         $nonce = $request->get_header('X-WP-Nonce');
                         if (empty($nonce) || !wp_verify_nonce($nonce, 'wp_rest')) {
                             return new \WP_Error('rest_nonce_invalid', __('Invalid or missing nonce.', 'smart-dynamic-pricing'), ['status' => 403]);
@@ -210,7 +213,7 @@ class Router
             foreach ($this->routes as $route) {
                 if (strpos($route['path'], '/admin/') === 0) {
                     $pageTitle = ucwords(str_replace(['/admin/', '-', '_'], ['', ' ', ' '], $route['path']));
-                    $menuSlug = 'smart-pricing' . $route['path'];
+                    $menuSlug = 'smart-dynamic-pricing' . $route['path'];
 
                     add_menu_page(
                         $pageTitle,

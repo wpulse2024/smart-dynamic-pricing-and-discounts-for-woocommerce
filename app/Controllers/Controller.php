@@ -2,6 +2,8 @@
 
 namespace SmartPricing\Controllers;
 
+use ReflectionClass;
+
 /**
  * Base Controller class
  */
@@ -10,45 +12,77 @@ abstract class Controller
     /**
      * The sanitized request data
      */
-    protected $request;
+    protected $request = [];
+
+    /**
+     * Auto-detected model instance
+     */
+    protected $model = null;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $rawData = $this->getRequestData();
+        $this->resolveModel();
+        $rawData       = $this->getRequestData();
         $this->request = $this->sanitize($rawData);
     }
 
     /**
-     * Get request data from $_POST, $_GET, or JSON input
+     * Automatically resolve the model based on controller name
+     */
+    protected function resolveModel(): void
+    {
+        // Example: RuleController → Rule
+        $class      = (new ReflectionClass($this))->getShortName();
+        $modelName  = str_replace('Controller', '', $class);
+        $modelClass = "SmartPricing\\Models\\{$modelName}";
+
+        if (class_exists($modelClass)) {
+            $this->model = new $modelClass();
+        }
+    }
+
+    /**
+     * Get allowed fields only from model $fillable
+     */
+    protected function getAllowedFields(): array
+    {
+        if ($this->model && method_exists($this->model, 'getFillable')) {
+            return $this->model->getFillable();
+        }
+        return [];
+    }
+
+    /**
+     * Get request data ONLY for allowed fields
      */
     protected function getRequestData(): array
     {
-        $data = [];
-
-        // Get JSON input
-        $json = file_get_contents('php://input');
-        if (!empty($json)) {
-            $data = json_decode($json, true) ?? [];
+        if (!current_user_can('manage_options')) {
+            $this->error('Unauthorized', 401);
         }
 
-        // Merge with POST data
-        if (!empty($_POST)) {
-            $data = array_merge($data, $_POST);
-        }
+        $allowed = $this->getAllowedFields();
+        $data    = [];
 
-        // Merge with GET data
-        if (!empty($_GET)) {
-            $data = array_merge($data, $_GET);
+        // Collect raw inputs
+        $json  = json_decode(file_get_contents('php://input'), true) ?? [];
+        $input = array_merge($_GET, $_POST, $json);
+
+        // Only capture allowed keys (WordPress Review Team requirement)
+        foreach ($allowed as $key) {
+            if (array_key_exists($key, $input)) {
+                $data[$key] = $input[$key];
+            }
         }
 
         return $data;
     }
 
     /**
-     * 🔒 Sanitize input recursively using WordPress sanitization rules
+     * Sanitize input recursively using WordPress sanitization rules
      */
     protected function sanitize(array $data): array
     {
@@ -56,7 +90,7 @@ abstract class Controller
 
         foreach ($data as $key => $value) {
             if (is_array($value)) {
-                $clean[$key] = $this->sanitize($value); // recursive sanitization
+                $clean[$key] = $this->sanitize($value);
             } elseif (is_numeric($value)) {
                 $clean[$key] = sanitize_text_field($value);
             } elseif (filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -64,7 +98,6 @@ abstract class Controller
             } elseif (filter_var($value, FILTER_VALIDATE_URL)) {
                 $clean[$key] = esc_url_raw($value);
             } elseif (in_array($key, ['content', 'description', 'html'], true)) {
-                // allow limited HTML for content fields
                 $clean[$key] = wp_kses_post($value);
             } else {
                 $clean[$key] = sanitize_text_field($value);
@@ -160,7 +193,7 @@ abstract class Controller
     }
 
     /**
-     * Check if user is authenticated (WordPress user)
+     * Check if user is authenticated
      */
     protected function isAuthenticated(): bool
     {

@@ -26,6 +26,8 @@ class Rule extends Model
         'user_scope',
         'schedule',
         'offers',
-        'meta'
+        'meta',
+        'created_at',
+        'updated_at'
     ];
 }

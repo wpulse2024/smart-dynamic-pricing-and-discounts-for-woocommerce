@@ -70,7 +70,7 @@ Easily configure offers like **3x2**, **2x1**, **BOGO**, **free products in the 
 
 ## ⚙️ Installation
 
-1. Upload the plugin files to the `/wp-content/plugins/smart-pricing` directory, or install directly through the **Plugins** screen in WordPress.  
+1. Upload the plugin files to the `/wp-content/plugins/smart-dynamic-pricing` directory, or install directly through the **Plugins** screen in WordPress.  
 2. Activate the plugin through the **Plugins** screen.  
 3. Navigate to **WooCommerce → SmartPricing** in your WordPress dashboard.  
 4. Choose a template or start from scratch to create your first promotion.  
