@@ -24,9 +24,5 @@ class Installer
                 wp_mkdir_p($directory);
             }
         }
-        
-        // Create .htaccess for public directory
-        $htaccessContent = "Options -Indexes\n";
-        file_put_contents(SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'public/.htaccess', $htaccessContent);
     }
 }

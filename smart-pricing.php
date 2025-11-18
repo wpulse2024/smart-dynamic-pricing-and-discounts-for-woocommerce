@@ -52,24 +52,6 @@ function smart_pricing_init() {
 // Initialize the plugin
 $GLOBALS['smart-pricing'] = smart_pricing_init();
 
-// Register WP-CLI commands
-if (defined('WP_CLI') && WP_CLI) {
-    require_once SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'includes/cli/RenameCommand.php';
-    \WP_CLI::add_command('myplugin', 'MyPlugin\\CLI\\RenameCommand');
-}
-
-// add inline css
-add_action('admin_head', 'add_custom_admin_css');
-function add_custom_admin_css() {
-    echo '<style>.toplevel_page_smart-pricing {
-    .dashicons-before {
-        img {
-            width: 18px;
-        }
-    }
-}</style>';
-}
-
 // Activation and deactivation hooks
 register_activation_hook(__FILE__, [Plugin::class, 'activate']);
 register_deactivation_hook(__FILE__, [Plugin::class, 'deactivate']);
