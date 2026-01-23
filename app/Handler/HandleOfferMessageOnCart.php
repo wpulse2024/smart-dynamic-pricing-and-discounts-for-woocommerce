@@ -168,7 +168,7 @@ class HandleOfferMessageOnCart
                                 $bg_color = $index % 2 === 0 ? '#ffffff' : '#f9fafb';
                                 $discount_display = $discount_type === 'percentage' ? $discount_value . '%' : wc_price($discount_value);
                                 
-                                echo '<tr style="background: ' . $bg_color . '; transition: background 0.2s ease;">';
+                                echo '<tr style="background: ' . esc_attr($bg_color) . '; transition: background 0.2s ease;">';
                                     echo '<td style="text-align: left; padding: 14px 16px; font-size: 14px; color: #1f2937; border-bottom: 1px solid #f3f4f6;">' . esc_html($min) . ' - ' . esc_html($max) . '</td>';
                                     echo '<td style="text-align: left; padding: 14px 16px; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f3f4f6;">' . wp_kses_post($discount_display) . '</td>';
                                 echo '</tr>';
