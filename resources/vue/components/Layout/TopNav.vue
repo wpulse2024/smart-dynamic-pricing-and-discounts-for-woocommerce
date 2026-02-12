@@ -48,7 +48,7 @@ export default defineComponent({
     },
     data() {
         return {
-            iconUrl: window.SmartDynamicPricingDiscount?.iconUrl,
+            iconUrl: window.WpulsePricingRulesDiscount?.iconUrl,
             navItems: [
                 {
                     label: 'Rules',

@@ -1,9 +1,9 @@
 <?php
 
-namespace SmartDynamicPricing\Handler;
+namespace WpulsePricingRules\Handler;
 
 use WC_Cart;
-use SmartDynamicPricing\Helpers\Helper;
+use WpulsePricingRules\Helpers\Helper;
 
 class HandleGlobalDiscount
 {

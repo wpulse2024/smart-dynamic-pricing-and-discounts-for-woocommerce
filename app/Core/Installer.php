@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Core;
+namespace WpulsePricingRules\Core;
 
 /**
  * Plugin installer
@@ -14,9 +14,9 @@ class Installer
     {
         // Create necessary directories
         $directories = [
-            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'assets/js',
-            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'assets/css',
-            SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_PATH . 'languages'
+            WPULSE_PRICING_RULES_PATH . 'assets/js',
+            WPULSE_PRICING_RULES_PATH . 'assets/css',
+            WPULSE_PRICING_RULES_PATH . 'languages'
         ];
         
         foreach ($directories as $directory) {

@@ -1,13 +1,13 @@
 <?php
 
-namespace SmartDynamicPricing\Services;
+namespace WpulsePricingRules\Services;
 
-use SmartDynamicPricing\Models\Rule;
-use SmartDynamicPricing\Helpers\ValidateApplyDiscount;
-use SmartDynamicPricing\Handler\SpecialDiscountHandler;
-use SmartDynamicPricing\Handler\QuantityDiscountHandler;
-use SmartDynamicPricing\Handler\HandleGlobalDiscount;
-use SmartDynamicPricing\Helpers\Helper;
+use WpulsePricingRules\Models\Rule;
+use WpulsePricingRules\Helpers\ValidateApplyDiscount;
+use WpulsePricingRules\Handler\SpecialDiscountHandler;
+use WpulsePricingRules\Handler\QuantityDiscountHandler;
+use WpulsePricingRules\Handler\HandleGlobalDiscount;
+use WpulsePricingRules\Helpers\Helper;
 use WC_Cart;
 
 class DynamicPricingManager

@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricing\Routes;
+namespace WpulsePricingRules\Routes;
 
-use SmartDynamicPricing\Core\Plugin;
+use WpulsePricingRules\Core\Plugin;
 
 /**
  * API Routes

@@ -1,10 +1,10 @@
 <?php
 
-namespace SmartDynamicPricing\Core;
+namespace WpulsePricingRules\Core;
 
-use SmartDynamicPricing\Routes\Router;
-use SmartDynamicPricing\Database\Database;
-use SmartDynamicPricing\Services\ServiceContainer;
+use WpulsePricingRules\Routes\Router;
+use WpulsePricingRules\Database\Database;
+use WpulsePricingRules\Services\ServiceContainer;
 
 
 /**
@@ -42,7 +42,7 @@ class Plugin
      */
     protected function __construct()
     {
-        $this->version = SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION;
+        $this->version = WPULSE_PRICING_RULES_VERSION;
         $this->container = new ServiceContainer();
         $this->router = new Router();
         $this->database = new Database();
@@ -100,14 +100,14 @@ class Plugin
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
         
         // Register AJAX handlers
-        add_action('wp_ajax_smart-pricing_action', [$this, 'handleAjaxRequest']);
-        add_action('wp_ajax_nopriv_smart-pricing_action', [$this, 'handleAjaxRequest']);
+        add_action('wp_ajax_wpulse-pricing-rules_action', [$this, 'handleAjaxRequest']);
+        add_action('wp_ajax_nopriv_wpulse-pricing-rules_action', [$this, 'handleAjaxRequest']);
         
         // Initialize components
         $this->initializeComponents();
         
         // Register shortcodes
-        add_action('init', ['SmartDynamicPricing\\Controllers\\ShortcodeController', 'register']);
+        add_action('init', ['WpulsePricingRules\\Controllers\\ShortcodeController', 'register']);
     }
 
     /**
@@ -116,10 +116,10 @@ class Plugin
     public function registerRoutes(): void
     {
         // Register API routes
-        \SmartDynamicPricing\Routes\ApiRoutes::register();
+        \WpulsePricingRules\Routes\ApiRoutes::register();
         
         // Register REST API routes
-        $this->router->registerRestRoutes('smart-dynamic-pricing/v1');
+        $this->router->registerRestRoutes('wpulse-pricing-rules-for-woocommerce/v1');
         
         // Register admin routes
         $this->router->registerAdminRoutes();
@@ -132,34 +132,34 @@ class Plugin
     {
         global $submenu;
         add_menu_page(
-            'smart-dynamic-pricing',
-            __('Smart Pricing', 'smart-dynamic-pricing'),
+            'wpulse-pricing-rules-for-woocommerce',
+            __('WPulse Pricing Rules', 'wpulse-pricing-rules-for-woocommerce'),
             'manage_options',
-            'smart-dynamic-pricing.php',
+            'wpulse-pricing-rules-for-woocommerce.php',
             array($this, 'renderAdminPage'),
             $this->renderLogo(),
             25
         );
 
-        // $submenu['smart-dynamic-pricing.php']['dashboard'] = array(
-        //     __('Dashboard', 'smart-dynamic-pricing'),
+        // $submenu['wpulse-pricing-rules-for-woocommerce.php']['dashboard'] = array(
+        //     __('Dashboard', 'wpulse-pricing-rules-for-woocommerce'),
         //     'manage_options',
-        //     'admin.php?page=smart-dynamic-pricing.php#/',
+        //     'admin.php?page=wpulse-pricing-rules-for-woocommerce.php#/',
         // );
-        $submenu['smart-dynamic-pricing.php']['rules'] = array(
-            __('Pricing Rules', 'smart-dynamic-pricing'),
+        $submenu['wpulse-pricing-rules-for-woocommerce.php']['rules'] = array(
+            __('Pricing Rules', 'wpulse-pricing-rules-for-woocommerce'),
             'manage_options',
-            'admin.php?page=smart-dynamic-pricing.php#/',
+            'admin.php?page=wpulse-pricing-rules-for-woocommerce.php#/',
         );
-        $submenu['smart-dynamic-pricing.php']['documentation'] = array(
-            __('Documentation', 'smart-dynamic-pricing'),
+        $submenu['wpulse-pricing-rules-for-woocommerce.php']['documentation'] = array(
+            __('Documentation', 'wpulse-pricing-rules-for-woocommerce'),
             'manage_options',
-            'admin.php?page=smart-dynamic-pricing.php#/documentation',
+            'admin.php?page=wpulse-pricing-rules-for-woocommerce.php#/documentation',
         );
-        // $submenu['smart-dynamic-pricing.php']['settings'] = array(
-        //     __('Settings', 'smart-dynamic-pricing'),
+        // $submenu['wpulse-pricing-rules-for-woocommerce.php']['settings'] = array(
+        //     __('Settings', 'wpulse-pricing-rules-for-woocommerce'),
         //     'manage_options',
-        //     'admin.php?page=smart-dynamic-pricing.php#/settings',
+        //     'admin.php?page=wpulse-pricing-rules-for-woocommerce.php#/settings',
         // );
     }
 
@@ -173,7 +173,7 @@ class Plugin
 
 
     public function renderLogo() {
-        return SMART_DYNAMIC_PRICING_URL . 'assets/images/logo.png';
+        return WPULSE_PRICING_RULES_URL . 'assets/images/logo.png';
     }
 
     /**
@@ -182,7 +182,7 @@ class Plugin
     public function renderSettingsPage(): void
     {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('My Plugin Settings', 'smart-dynamic-pricing') . '</h1>';
+        echo '<h1>' . esc_html__('My Plugin Settings', 'wpulse-pricing-rules-for-woocommerce') . '</h1>';
         echo '<div id="my-plugin-settings"></div>';
         echo '</div>';
     }
@@ -192,20 +192,8 @@ class Plugin
      */
     public function enqueuePublicAssets(): void
     {
-        wp_enqueue_style(
-            'SmartDynamicPricingDiscountAdmin',
-            SMART_DYNAMIC_PRICING_URL . 'public/css/public.css',
-            [],
-            $this->version
-        );
-        
-        wp_enqueue_script(
-            'SmartDynamicPricingDiscountAdmin',
-            SMART_DYNAMIC_PRICING_URL . 'public/js/public.js',
-            ['jquery'],
-            $this->version,
-            true
-        );
+        // Public assets can be enqueued here if needed
+        // Currently no public assets are required
     }
 
     /**
@@ -214,20 +202,20 @@ class Plugin
     public function enqueueAdminAssets(string $hook): void
     {
         // Only load on our admin pages
-        if (strpos($hook, 'smart-dynamic-pricing') === false) {
+        if (strpos($hook, 'wpulse-pricing-rules-for-woocommerce') === false) {
             return;
         }
         
         wp_enqueue_style(
-            'smart-dynamic-pricing-admin',
-            SMART_DYNAMIC_PRICING_URL . 'assets/css/admin.css',
+            'wpulse-pricing-rules-for-woocommerce-admin',
+            WPULSE_PRICING_RULES_URL . 'assets/css/admin.css',
             [],
             $this->version
         );
         
         wp_enqueue_script(
-            'smart-dynamic-pricing-admin',
-            SMART_DYNAMIC_PRICING_URL . 'assets/js/admin.js',
+            'wpulse-pricing-rules-for-woocommerce-admin',
+            WPULSE_PRICING_RULES_URL . 'assets/js/admin.js',
             ['jquery'],
             $this->version,
             true
@@ -253,21 +241,21 @@ class Plugin
         $allUserRoles = wp_roles()->get_names();
         
         // Localize script with data
-        wp_localize_script('smart-dynamic-pricing-admin', 'SmartDynamicPricingDiscount', [
+        wp_localize_script('wpulse-pricing-rules-for-woocommerce-admin', 'WpulsePricingRulesDiscount', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restNonce' => wp_create_nonce('wp_rest'),
-            'restUrl' => rest_url('smart-dynamic-pricing/v1/'),
-            'nonce' => wp_create_nonce('smart-dynamic-pricing_nonce'),
+            'restUrl' => rest_url('wpulse-pricing-rules-for-woocommerce/v1/'),
+            'nonce' => wp_create_nonce('wpulse-pricing-rules_nonce'),
             'products' => $products,
             'categories' => $categories,
             'tags' => $tags,
             'users' => $users,
             'roles' => $allUserRoles,
-            'iconUrl' => SMART_DYNAMIC_PRICING_URL . 'assets/images/icon.png',
+            'iconUrl' => WPULSE_PRICING_RULES_URL . 'assets/images/icon.png',
             'strings' => [
-                'loading' => __('Loading...', 'smart-dynamic-pricing'),
-                'error' => __('An error occurred', 'smart-dynamic-pricing'),
-                'success' => __('Success!', 'smart-dynamic-pricing'),
+                'loading' => __('Loading...', 'wpulse-pricing-rules-for-woocommerce'),
+                'error' => __('An error occurred', 'wpulse-pricing-rules-for-woocommerce'),
+                'success' => __('Success!', 'wpulse-pricing-rules-for-woocommerce'),
             ]
         ]);
     }
@@ -278,12 +266,13 @@ class Plugin
     public function handleAjaxRequest(): void
     {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'smart-dynamic-pricing_nonce')) {
+        
+        if (!wp_verify_nonce(sanitize_text_field($_POST['nonce'] ?? ''), 'wpulse-pricing-rules_nonce')) {
             wp_die('Security check failed');
         }
         
-        $action = $_POST['action'] ?? '';
-        $method = $_POST['method'] ?? 'GET';
+        $action = sanitize_text_field($_POST['action'] ?? '');
+        $method = sanitize_text_field($_POST['method'] ?? 'GET');
         
         // Route to appropriate handler
         $this->router->handle($method, '/ajax/' . $action);
@@ -296,8 +285,7 @@ class Plugin
     {
         // Initialize services
         $services = [
-            'SmartDynamicPricing\\Services\\TripService',
-            'SmartDynamicPricing\\Services\\UserService',
+            'WpulsePricingRules\\Services\\TripService',
         ];
         
         foreach ($services as $service) {
@@ -351,8 +339,8 @@ class Plugin
         
         // Run migrations
         $migrations = [
-            'SmartDynamicPricing\\Database\\Migrations\\CreateTripsTable',
-            'SmartDynamicPricing\\Database\\Migrations\\AppliedDiscountsTable',
+            'WpulsePricingRules\\Database\\Migrations\\CreateTripsTable',
+            'WpulsePricingRules\\Database\\Migrations\\AppliedDiscountsTable',
         ];
         
         foreach ($migrations as $migration) {
@@ -363,8 +351,8 @@ class Plugin
         }
         
         // Set activation flag
-        update_option('smart-pricing_activated', true);
-        update_option('smart-pricing_version', SMART_PRICING_AND_DISCOUNTS_FOR_WOOCOMMERCE_VERSION);
+        update_option('wpulse-pricing-rules_activated', true);
+        update_option('wpulse-pricing-rules_version', WPULSE_PRICING_RULES_VERSION);
         
         // Flush rewrite rules
         flush_rewrite_rules();
@@ -376,7 +364,7 @@ class Plugin
     public static function deactivate(): void
     {
         // Remove activation flag
-        delete_option('smart-pricing_activated');
+        delete_option('wpulse-pricing-rules_activated');
         
         // Flush rewrite rules
         flush_rewrite_rules();
@@ -399,7 +387,7 @@ class Plugin
         }
         
         // Remove all plugin options
-        delete_option('smart-pricing_version');
-        delete_option('smart-pricing_settings');
+        delete_option('wpulse-pricing-rules_version');
+        delete_option('wpulse-pricing-rules_settings');
     }
 }

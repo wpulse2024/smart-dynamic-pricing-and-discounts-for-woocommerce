@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricing\Database\Migrations;
+namespace WpulsePricingRules\Database\Migrations;
 
-use SmartDynamicPricing\Database\Database;
+use WpulsePricingRules\Database\Database;
 
 class AppliedDiscountsTable
 {
@@ -36,11 +36,11 @@ class AppliedDiscountsTable
             ]
         ];
 
-        $this->database->createTable('smart_pricing_discounts_applied', $columns, $options);
+        $this->database->createTable('wpulse_pricing_rules_applied', $columns, $options);
     }
 
     public function down(): void
     {
-        $this->database->dropTable('smart_pricing_discounts_applied');
+        $this->database->dropTable('wpulse_pricing_rules_applied');
     }
 }

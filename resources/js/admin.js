@@ -7,7 +7,7 @@ import router from '../vue/routes.js';
 
 window.$ = window.jQuery = jQuery;
 function $t (string) {
-    return window?.SmartDynamicPricingDiscount?.i18n[string] || string;
+    return window?.WpulsePricingRulesDiscount?.i18n[string] || string;
 }
 
 // ad active class to the current menu item

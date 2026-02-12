@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Controllers;
+namespace WpulsePricingRules\Controllers;
 
 use ReflectionClass;
 
@@ -37,7 +37,7 @@ abstract class Controller
         // Example: RuleController → Rule
         $class      = (new ReflectionClass($this))->getShortName();
         $modelName  = str_replace('Controller', '', $class);
-        $modelClass = "SmartDynamicPricing\\Models\\{$modelName}";
+        $modelClass = "WpulsePricingRules\\Models\\{$modelName}";
 
         if (class_exists($modelClass)) {
             $this->model = new $modelClass();
@@ -67,8 +67,8 @@ abstract class Controller
         $allowed = $this->getAllowedFields();
         $data    = [];
 
-        // Collect raw inputs
-        $json  = json_decode(file_get_contents('php://input'), true) ?? [];
+        // Collect raw inputs - sanitize JSON input first
+        $json = $this->getJsonInput();
         $input = array_merge($_GET, $_POST, $json);
 
         // Only capture allowed keys (WordPress Review Team requirement)
@@ -79,6 +79,50 @@ abstract class Controller
         }
 
         return $data;
+    }
+
+    /**
+     * Safely get and decode JSON input from php://input
+     * Validates JSON structure and applies security limits before decoding
+     * Note: Decoded values are sanitized later in the sanitize() method
+     */
+    protected function getJsonInput(): array
+    {
+        $raw_input = file_get_contents('php://input');
+        
+        // Return empty array if no input
+        if (empty($raw_input)) {
+            return [];
+        }
+
+        // Limit input size to prevent DoS attacks (max 1MB)
+        if (strlen($raw_input) > 1048576) {
+            if (defined('WP_DEBUG') && WP_DEBUG && WP_DEBUG_LOG) {
+                error_log('wpulse-pricing-rules: JSON input exceeds size limit');
+            }
+            return [];
+        }
+
+        // Validate JSON structure and decode with depth limit to prevent DoS
+        // Max depth of 10 prevents deeply nested JSON attacks
+        $json = json_decode($raw_input, true, 10);
+        
+        // Check for JSON decode errors
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // Log error but don't expose details to user
+            if (defined('WP_DEBUG') && WP_DEBUG && WP_DEBUG_LOG) {
+                error_log('wpulse-pricing-rules: JSON decode error - ' . json_last_error_msg());
+            }
+            return [];
+        }
+
+        // Ensure we have an array (not object or other types)
+        // The decoded values will be sanitized in the sanitize() method
+        if (!is_array($json)) {
+            return [];
+        }
+
+        return $json;
     }
 
     /**
@@ -137,13 +181,13 @@ abstract class Controller
     /**
      * Return a success response
      */
-    protected function success(array $data = [], string $message = 'Success'): void
+    protected function success(array $data = [], string $message = 'Success', int $status = 200): void
     {
         $this->json([
             'success' => true,
             'message' => $message,
             'data'    => $data,
-        ]);
+        ], $status);
     }
 
     /**

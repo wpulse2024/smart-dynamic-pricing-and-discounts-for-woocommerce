@@ -1,4 +1,4 @@
-# SmartDynamicPricing – Smart Dynamic Pricing And Discounts For WooCommerce
+# WPulse Pricing Rules for WooCommerce
 **Contributors:** wpulse, dasnitesh780 , chadni54 
 **Tags:** woocommerce, dynamic pricing, discounts, tiered pricing, bogo
 **Requires at least:** 5.0  
@@ -14,7 +14,7 @@ A powerful WooCommerce addon to create smart dynamic pricing, discounts, and ups
 
 ## 🧩 Description
 
-**SmartDynamicPricing** is the best-selling WooCommerce plugin for creating promotions and upsell strategies in your store.  
+**WPulse Pricing Rules** is the best-selling WooCommerce plugin for creating promotions and upsell strategies in your store.  
 Easily configure offers like **3x2**, **2x1**, **BOGO**, **free products in the cart**, **quantity discounts**, **cart-based discounts**, and more — all from a beautiful and intuitive **Vue 3 admin interface**.
 
 ### 🚀 Key Features
@@ -70,17 +70,17 @@ Easily configure offers like **3x2**, **2x1**, **BOGO**, **free products in the 
 
 ## ⚙️ Installation
 
-1. Upload the plugin files to the `/wp-content/plugins/smart-dynamic-pricing` directory, or install directly through the **Plugins** screen in WordPress.  
+1. Upload the plugin files to the `/wp-content/plugins/wpulse-pricing-rules-for-woocommerce-for-woocommerce` directory, or install directly through the **Plugins** screen in WordPress.  
 2. Activate the plugin through the **Plugins** screen.  
-3. Navigate to **WooCommerce → SmartDynamicPricing** in your WordPress dashboard.  
+3. Navigate to **WooCommerce → WPulse Pricing Rules** in your WordPress dashboard.  
 4. Choose a template or start from scratch to create your first promotion.  
 
 ---
 
 ## 🧠 Frequently Asked Questions
 
-### 🔹 Does SmartDynamicPricing work with any theme?
-Yes! It’s fully compatible with all WooCommerce-compatible themes and page builders like Elementor, Divi, and Gutenberg.
+### 🔹 Does WPulse Pricing Rules work with any theme?
+Yes! It's fully compatible with all WooCommerce-compatible themes and page builders like Elementor, Divi, and Gutenberg.
 
 ### 🔹 Can I set different discounts for different user roles?
 Absolutely. You can assign discounts to customers, wholesalers, or custom user roles.
@@ -89,10 +89,10 @@ Absolutely. You can assign discounts to customers, wholesalers, or custom user r
 Yes, you can start and end discounts automatically based on date and time — ideal for seasonal campaigns like Black Friday or Christmas.
 
 ### 🔹 Does it support variable and grouped products?
-Yes, SmartDynamicPricing supports **simple, variable, and grouped** product types.
+Yes, WPulse Pricing Rules supports **simple, variable, and grouped** product types.
 
 ### 🔹 Is it compatible with multi-language and multi-currency setups?
-Yes. SmartDynamicPricing supports **WPML**, **Polylang**, and most currency switcher plugins.
+Yes. WPulse Pricing Rules supports **WPML**, **Polylang**, and most currency switcher plugins.
 
 ---
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Routes;
+namespace WpulsePricingRules\Routes;
 
 /**
  * Router class for handling REST and admin routes
@@ -123,7 +123,7 @@ class Router
     protected function executeMiddleware($middleware): bool
     {
         if (is_string($middleware)) {
-            $middlewareClass = "SmartDynamicPricing\\Middleware\\{$middleware}";
+            $middlewareClass = "WpulsePricingRules\\Middleware\\{$middleware}";
             if (class_exists($middlewareClass)) {
                 $middlewareInstance = new $middlewareClass();
                 return $middlewareInstance->handle();
@@ -142,7 +142,7 @@ class Router
     {
         if (is_string($handler) && strpos($handler, '@') !== false) {
             [$controller, $method] = explode('@', $handler);
-            $controllerClass = "SmartDynamicPricing\\Controllers\\{$controller}";
+            $controllerClass = "WpulsePricingRules\\Controllers\\{$controller}";
 
             if (class_exists($controllerClass)) {
                 $controllerInstance = new $controllerClass();
@@ -162,7 +162,7 @@ class Router
     /** ---------------------------
      *  Register WordPress REST Routes with Nonce Validation
      *  --------------------------- */
-    public function registerRestRoutes(string $namespace = 'smart-dynamic-pricing/v1'): void
+    public function registerRestRoutes(string $namespace = 'wpulse-pricing-rules-for-woocommerce/v1'): void
     {
         add_action('rest_api_init', function() use ($namespace) {
             foreach ($this->routes as $route) {
@@ -184,11 +184,11 @@ class Router
                     'permission_callback' => function($request) use ($route) {
                         // ✅ Global REST Nonce Validation
                         if(!current_user_can('manage_options')) {
-                            return new \WP_Error('rest_forbidden', __('You do not have permission to access this resource.', 'smart-dynamic-pricing'), ['status' => 403]);
+                            return new \WP_Error('rest_forbidden', __('You do not have permission to access this resource.', 'wpulse-pricing-rules-for-woocommerce'), ['status' => 403]);
                         }
                         $nonce = $request->get_header('X-WP-Nonce');
                         if (empty($nonce) || !wp_verify_nonce($nonce, 'wp_rest')) {
-                            return new \WP_Error('rest_nonce_invalid', __('Invalid or missing nonce.', 'smart-dynamic-pricing'), ['status' => 403]);
+                            return new \WP_Error('rest_nonce_invalid', __('Invalid or missing nonce.', 'wpulse-pricing-rules-for-woocommerce'), ['status' => 403]);
                         }
 
                         // Then execute custom middlewares if any
@@ -213,7 +213,7 @@ class Router
             foreach ($this->routes as $route) {
                 if (strpos($route['path'], '/admin/') === 0) {
                     $pageTitle = ucwords(str_replace(['/admin/', '-', '_'], ['', ' ', ' '], $route['path']));
-                    $menuSlug = 'smart-dynamic-pricing' . $route['path'];
+                    $menuSlug = 'wpulse-pricing-rules-for-woocommerce' . $route['path'];
 
                     add_menu_page(
                         $pageTitle,

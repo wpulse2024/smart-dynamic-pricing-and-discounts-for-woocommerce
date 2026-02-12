@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Models;
+namespace WpulsePricingRules\Models;
 
 /**
  * Trip model
@@ -53,9 +53,11 @@ class Trip extends Model
     public static function getUpcoming(): array
     {
         $instance = new static();
-        $table = $instance->wpdb->prefix . $instance->table;
+        global $wpdb;
+        $table = $wpdb->prefix . $instance->table;
         
-        $results = $instance->wpdb->get_results(
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $results = $wpdb->get_results(
             "SELECT * FROM {$table} WHERE start_date > NOW() AND status = 'active' ORDER BY start_date ASC"
         );
         
@@ -76,9 +78,11 @@ class Trip extends Model
     public static function getPast(): array
     {
         $instance = new static();
-        $table = $instance->wpdb->prefix . $instance->table;
+        global $wpdb;
+        $table = $wpdb->prefix . $instance->table;
         
-        $results = $instance->wpdb->get_results(
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $results = $wpdb->get_results(
             "SELECT * FROM {$table} WHERE end_date < NOW() ORDER BY end_date DESC"
         );
         

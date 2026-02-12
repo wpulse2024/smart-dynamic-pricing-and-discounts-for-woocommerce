@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricing\Controllers;
+namespace WpulsePricingRules\Controllers;
 
-use SmartDynamicPricing\Models\Trip;
+use WpulsePricingRules\Models\Trip;
 
 /**
  * Shortcode Controller
@@ -14,8 +14,8 @@ class ShortcodeController
      */
     public static function register(): void
     {
-        add_shortcode('smart-pricing_trips', [self::class, 'displayTrips']);
-        add_shortcode('smart-pricing_upcoming_trips', [self::class, 'displayUpcomingTrips']);
+        add_shortcode('wpulse-pricing-rules_trips', [self::class, 'displayTrips']);
+        add_shortcode('wpulse-pricing-rules_upcoming_trips', [self::class, 'displayUpcomingTrips']);
     }
 
     /**

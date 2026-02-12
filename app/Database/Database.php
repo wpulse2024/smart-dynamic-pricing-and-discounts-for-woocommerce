@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Database;
+namespace WpulsePricingRules\Database;
 
 /**
  * Database migration helper class
@@ -72,10 +72,9 @@ class Database
     public function dropTable(string $tableName): bool
     {
         $fullTableName = $this->wpdb->prefix . $tableName;
-        $sql = $this->wpdb->prepare(
-            "DROP TABLE IF EXISTS `%s`",
-            $fullTableName
-        );
+        // Table names cannot be prepared, so we escape them manually
+        $escapedTableName = esc_sql($fullTableName);
+        $sql = "DROP TABLE IF EXISTS `{$escapedTableName}`";
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         return $this->wpdb->query($sql) !== false;
     }
@@ -132,14 +131,11 @@ class Database
     public function tableExists(string $tableName): bool
     {
         $fullTableName = $this->wpdb->prefix . $tableName;
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $wpdb->prepare() is correctly used below.
+        // Table names cannot be prepared, so we escape them manually
+        $escapedTableName = esc_sql($fullTableName);
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $result = $this->wpdb->get_var(
-             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $this->wpdb->prepare(
-                "SHOW TABLES LIKE %s",
-                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                $fullTableName
-            )
+            "SHOW TABLES LIKE '{$escapedTableName}'"
         );
         
         return $result === $fullTableName;
@@ -148,21 +144,20 @@ class Database
     /**
      * Check if a column exists in a table
      */
-    public function columnExists(string $tableName, string $columnName): bool
-    {
-        $fullTableName = $this->wpdb->prefix . $tableName;
-        $result = $this->wpdb->get_var(
-             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $this->wpdb->prepare(
-                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                "SHOW COLUMNS FROM {$fullTableName} LIKE %s",
-                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                $columnName
-            )
-        );
+    // public function columnExists(string $tableName, string $columnName): bool
+    // {
+    //     $fullTableName = $this->wpdb->prefix . $tableName;
+    //     // Table names cannot be prepared, so we escape them manually
+    //     $escapedTableName = esc_sql($fullTableName);
+    //     $result = $this->wpdb->get_var(
+    //         $this->wpdb->prepare(
+    //             "SHOW COLUMNS FROM `{$escapedTableName}` LIKE %s",
+    //             $columnName
+    //         )
+    //     );
         
-        return !empty($result);
-    }
+    //     return !empty($result);
+    // }
 
     /**
      * Get table structure

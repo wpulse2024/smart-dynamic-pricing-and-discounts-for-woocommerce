@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Models;
+namespace WpulsePricingRules\Models;
 
 /**
  * Rule model
@@ -10,7 +10,7 @@ class Rule extends Model
     /**
      * The table name
      */
-    protected $table = 'smart_pricing_discounts_roles';
+    protected $table = 'wpulse_pricing_rules_discounts';
 
     /**
      * The attributes that are mass assignable

@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Helpers;
+namespace WpulsePricingRules\Helpers;
 
 class ValidateApplyDiscount
 {
@@ -151,7 +151,7 @@ class ValidateApplyDiscount
             if (!is_cart()) {
                 return;
             }
-            wc_add_notice(__('You must be logged in to apply this discount', 'smart-dynamic-pricing'), 'notice');
+            wc_add_notice(__('You must be logged in to apply this discount', 'wpulse-pricing-rules-for-woocommerce'), 'notice');
             return false;
         }
         $user_id = $user->ID;

@@ -1,8 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Models;
-
-use SmartDynamicPricing\Core\Database;
+namespace WpulsePricingRules\Models;
 
 /**
  * Base Model class - Lightweight ORM using $wpdb
@@ -65,7 +63,7 @@ abstract class Model
     protected function getTableName(): string
     {
         $class = get_class($this);
-        $class = str_replace('SmartDynamicPricing\\Models\\', '', $class);
+        $class = str_replace('WpulsePricingRules\\Models\\', '', $class);
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $class)) . 's';
     }
 
@@ -188,11 +186,12 @@ abstract class Model
     public static function find($id): ?self
     {
         $instance = new static();
-        $table = $instance->wpdb->prefix . $instance->table;
+        global $wpdb;
+        $table = $wpdb->prefix . $instance->table;
         
-        $result = $instance->wpdb->get_row(
-             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $instance->wpdb->prepare("SELECT * FROM {$table} WHERE {$instance->primaryKey} = %s", $id)
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $result = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$table} WHERE {$instance->primaryKey} = %s", $id)
         );
         
         if ($result) {
@@ -210,9 +209,11 @@ abstract class Model
     public static function all(): array
     {
         $instance = new static();
-        $table = $instance->wpdb->prefix . $instance->table;
+        global $wpdb;
+        $table = $wpdb->prefix . $instance->table;
         
-        $results = $instance->wpdb->get_results("SELECT * FROM {$table}");
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $results = $wpdb->get_results("SELECT * FROM {$table}");
         
         $models = [];
         foreach ($results as $result) {
@@ -241,7 +242,8 @@ abstract class Model
     public static function where(string $column, $operator, $value = null): array
     {
         $instance = new static();
-        $table = $instance->wpdb->prefix . $instance->table;
+        global $wpdb;
+        $table = $wpdb->prefix . $instance->table;
         
         if ($value === null) {
             $value = $operator;
@@ -249,9 +251,10 @@ abstract class Model
         }
         
         $sql = "SELECT * FROM {$table} WHERE {$column} {$operator} %s";
-        $results = $instance->wpdb->get_results(
-             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $instance->wpdb->prepare($sql, $value)
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $results = $wpdb->get_results(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            $wpdb->prepare($sql, $value)
         );
         
         $models = [];

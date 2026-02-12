@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Middleware;
+namespace WpulsePricingRules\Middleware;
 
 /**
  * Authentication middleware

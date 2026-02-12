@@ -464,7 +464,16 @@
             <!-- Action Buttons -->
             <div class="fraise_form-actions">
                 <el-button size="medium" @click="$router.go(-1)">Cancel</el-button>
-                <el-button size="medium" type="primary" @click="saveRule" :icon="Check">Save Rule</el-button>
+                <el-button
+                    size="medium"
+                    type="primary"
+                    :loading="isSaving"
+                    :disabled="isSaving"
+                    @click="saveRule"
+                    :icon="Check"
+                >
+                    Save Rule
+                </el-button>
             </div>
         </el-form>
     </div>
@@ -503,15 +512,16 @@ export default {
     },
     data() {
         return {
-            products: SmartDynamicPricingDiscount.products,
-            categories: SmartDynamicPricingDiscount.categories,
-            tags: SmartDynamicPricingDiscount.tags,
+            isSaving: false,
+            products: WpulsePricingRulesDiscount.products,
+            categories: WpulsePricingRulesDiscount.categories,
+            tags: WpulsePricingRulesDiscount.tags,
             template: this.$route.params.template || this.$route.params.type,
-            users: SmartDynamicPricingDiscount.users,
-            roles: SmartDynamicPricingDiscount.roles,
+            users: WpulsePricingRulesDiscount.users,
+            roles: WpulsePricingRulesDiscount.roles,
             templateData: null,
-            nonce: SmartDynamicPricingDiscount?.restNonce,
-            restUrl: SmartDynamicPricingDiscount?.restUrl,
+            nonce: WpulsePricingRulesDiscount?.restNonce,
+            restUrl: WpulsePricingRulesDiscount?.restUrl,
             ruleForm: {
                 id: '',
                 name: '',
@@ -666,38 +676,58 @@ export default {
             }
         },
         async saveRule() {
+            // Prevent multiple submissions
+            if (this.isSaving) {
+                return;
+            }
+
             // Validate form
             if (!this.ruleForm.name) {
                 this.$message.error('Please enter a rule name');
                 return;
             }
 
-            // Set metadata
-            const now = new Date().toISOString();
-            this.ruleForm.meta.createdAt = now;
-            this.ruleForm.meta.updatedAt = now;
+            this.isSaving = true;
 
-            console.log('Saving rule:', this.ruleForm);
+            try {
+                // Set metadata
+                const now = new Date().toISOString();
+                if (!this.ruleForm.meta.createdAt) {
+                    this.ruleForm.meta.createdAt = now;
+                }
+                this.ruleForm.meta.updatedAt = now;
 
-            if (this.$route.name === 'edit-rule') {
-                this.ruleForm.id = this.$route.params.id;
-            }
+                if (this.$route.name === 'edit-rule') {
+                    this.ruleForm.id = this.$route.params.id;
+                }
 
-            fetch(this.restUrl + 'api/rules', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': this.nonce
-                },
-                body: JSON.stringify(this.ruleForm)
-            })
-            .then(res => res.json())
-            .then(data => {
-                this.$message.success('Rule saved successfully', 'success');
+                const response = await fetch(this.restUrl + 'api/rules', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-WP-Nonce': this.nonce
+                    },
+                    body: JSON.stringify(this.ruleForm)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data?.success === false) {
+                    this.$message.error(data?.message || 'Failed to save rule');
+                    this.isSaving = false;
+                    return;
+                }
+
+                this.$message.success(data?.message || 'Rule saved successfully');
+                // Redirect to home (rules list) after successful creation/update
                 this.$router.push({ name: 'roles' });
-            })
-            .catch(err => console.error('Error:', err));
-
+            } catch (err) {
+                console.error('Error:', err);
+                this.$message.error('An error occurred while saving the rule');
+            } finally {
+                // Re-enable button in case of error; router push will unmount on success
+                this.isSaving = false;
+            }
         }
     }
 };

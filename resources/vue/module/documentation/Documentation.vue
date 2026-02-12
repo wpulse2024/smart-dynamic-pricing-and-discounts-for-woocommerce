@@ -10,7 +10,7 @@
             </button>
             <div class="logo">
               <span class="logo-icon">🏷️</span>
-              <h1>SmartDynamicPricing</h1>
+              <h1>WPulse Pricing Rules</h1>
             </div>
           </div>
           <div class="header-right">
@@ -55,13 +55,13 @@
               <h2 class="section-title">Introduction</h2>
               <div class="prose">
                 <p class="lead">
-                  Welcome to <strong>SmartDynamicPricing</strong> – the most powerful and flexible dynamic pricing and discount plugin for WooCommerce.
+                  Welcome to <strong>WPulse Pricing Rules</strong> – the most powerful and flexible dynamic pricing and discount plugin for WooCommerce.
                 </p>
                 <p>
-                  SmartDynamicPricing empowers store owners to create sophisticated promotional campaigns with ease. From simple percentage discounts to complex buy-one-get-one (BOGO) offers, quantity-based pricing tiers, role-specific pricing, and scheduled promotions – SmartDynamicPricing handles it all.
+                  WPulse Pricing Rules empowers store owners to create sophisticated promotional campaigns with ease. From simple percentage discounts to complex buy-one-get-one (BOGO) offers, quantity-based pricing tiers, role-specific pricing, and scheduled promotions – WPulse Pricing Rules handles it all.
                 </p>
                 <div class="info-box info-box-dark">
-                  <h3>Why Choose SmartDynamicPricing?</h3>
+                  <h3>Why Choose WPulse Pricing Rules?</h3>
                   <ul>
                     <li>Increase average order value with quantity discounts</li>
                     <li>Boost customer loyalty with role-based pricing</li>
@@ -119,10 +119,10 @@
               <h3 class="subsection-title">Method 1: WordPress Dashboard</h3>
               <ol class="numbered-list">
                 <li>Navigate to <code>Plugins → Add New</code></li>
-                <li>Search for "SmartDynamicPricing"</li>
-                <li>Click <strong>Install Now</strong> next to SmartDynamicPricing plugin</li>
+                <li>Search for "WPulse Pricing Rules"</li>
+                <li>Click <strong>Install Now</strong> next to WPulse Pricing Rules plugin</li>
                 <li>After installation, click <strong>Activate</strong></li>
-                <li>You'll see a new <strong>SmartDynamicPricing</strong> menu in your WordPress admin sidebar</li>
+                <li>You'll see a new <strong>WPulse Pricing Rules</strong> menu in your WordPress admin sidebar</li>
               </ol>
   
               <h3 class="subsection-title">Method 2: Manual Upload</h3>
@@ -134,7 +134,7 @@
               </ol>
   
               <div class="info-box info-box-blue">
-                <p><strong>Note:</strong> SmartDynamicPricing requires WooCommerce 5.0 or higher to function properly.</p>
+                <p><strong>Note:</strong> WPulse Pricing Rules requires WooCommerce 5.0 or higher to function properly.</p>
               </div>
             </section>
   
@@ -142,9 +142,9 @@
             <section id="getting-started" class="content-section">
               <h2 class="section-title">Getting Started</h2>
               
-              <h3 class="subsection-title">Accessing SmartDynamicPricing Panel</h3>
+              <h3 class="subsection-title">Accessing WPulse Pricing Rules Panel</h3>
               <p>
-                After activation, you'll find the SmartDynamicPricing menu in your WordPress admin sidebar. Click on <strong>Rules</strong> to access the main pricing rules dashboard.
+                After activation, you'll find the WPulse Pricing Rules menu in your WordPress admin sidebar. Click on <strong>Rules</strong> to access the main pricing rules dashboard.
               </p>
   
               <h3 class="subsection-title">Creating Your First Promotion</h3>
@@ -380,7 +380,7 @@
               </ul>
   
               <h3 class="subsection-title">Theme Compatibility</h3>
-              <p>SmartDynamicPricing works with any properly coded WooCommerce theme. We've specifically tested with popular themes like Astra, OceanWP, Storefront, Flatsome, and Divi.</p>
+              <p>WPulse Pricing Rules works with any properly coded WooCommerce theme. We've specifically tested with popular themes like Astra, OceanWP, Storefront, Flatsome, and Divi.</p>
             </section>
   
             <!-- Troubleshooting -->
@@ -445,12 +445,12 @@
               
               <div class="faq-item">
                 <h3>Can I combine multiple discount rules?</h3>
-                <p>SmartDynamicPricing applies the best available discount based on priority settings. By default, only one rule applies per product. However, you can configure rules to stack by adjusting priority levels and enabling "Apply on Discounted Products."</p>
+                <p>WPulse Pricing Rules applies the best available discount based on priority settings. By default, only one rule applies per product. However, you can configure rules to stack by adjusting priority levels and enabling "Apply on Discounted Products."</p>
               </div>
   
               <div class="faq-item">
-                <h3>Does SmartDynamicPricing work with WooCommerce coupons?</h3>
-                <p>Yes! SmartDynamicPricing discounts work alongside standard WooCommerce coupons. You can control whether SmartDynamicPricing rules apply to already-discounted items using the "Apply on Discounted Products" setting in each rule.</p>
+                <h3>Does WPulse Pricing Rules work with WooCommerce coupons?</h3>
+                <p>Yes! WPulse Pricing Rules discounts work alongside standard WooCommerce coupons. You can control whether WPulse Pricing Rules rules apply to already-discounted items using the "Apply on Discounted Products" setting in each rule.</p>
               </div>
   
               <div class="faq-item">
@@ -460,7 +460,7 @@
   
               <div class="faq-item">
                 <h3>How do I show discount badges on product pages?</h3>
-                <p>SmartDynamicPricing automatically displays discount information on product and cart pages. You can customize the display through your theme's template files or by using our shortcodes. Contact support for customization assistance.</p>
+                <p>WPulse Pricing Rules automatically displays discount information on product and cart pages. You can customize the display through your theme's template files or by using our shortcodes. Contact support for customization assistance.</p>
               </div>
   
               <div class="faq-item">
@@ -474,8 +474,8 @@
               </div>
   
               <div class="faq-item">
-                <h3>Does SmartDynamicPricing support variable products?</h3>
-                <p>Yes! SmartDynamicPricing fully supports WooCommerce variable products. Discounts apply to individual variations based on your product scope settings. You can target specific variations or apply rules to all variations.</p>
+                <h3>Does WPulse Pricing Rules support variable products?</h3>
+                <p>Yes! WPulse Pricing Rules fully supports WooCommerce variable products. Discounts apply to individual variations based on your product scope settings. You can target specific variations or apply rules to all variations.</p>
               </div>
   
               <div class="faq-item">
@@ -530,7 +530,7 @@
               
               <div class="support-hero">
                 <h3>Need Help?</h3>
-                <p>Our support team is here to help you get the most out of SmartDynamicPricing. Whether you need technical assistance, have questions about features, or want to suggest improvements, we're just a message away.</p>
+                <p>Our support team is here to help you get the most out of WPulse Pricing Rules. Whether you need technical assistance, have questions about features, or want to suggest improvements, we're just a message away.</p>
                 
                 <div class="support-grid">
                   <div class="support-column">
@@ -562,10 +562,10 @@
   
               <div class="info-box info-box-green">
                 <h3>Report a Bug</h3>
-                <p>Found a bug? Help us improve SmartDynamicPricing by reporting it. Please include:</p>
+                <p>Found a bug? Help us improve WPulse Pricing Rules by reporting it. Please include:</p>
                 <ul class="bullet-list small">
                   <li>WordPress and WooCommerce versions</li>
-                  <li>SmartDynamicPricing version</li>
+                  <li>WPulse Pricing Rules version</li>
                   <li>Steps to reproduce the issue</li>
                   <li>Screenshots or error messages</li>
                   <li>List of active plugins</li>
@@ -576,15 +576,15 @@
   
             <!-- Call to Action -->
             <section class="cta-section">
-              <h2>Love SmartDynamicPricing?</h2>
-              <p>Help other store owners discover SmartDynamicPricing by leaving a review on WordPress.org</p>
+              <h2>Love WPulse Pricing Rules?</h2>
+              <p>Help other store owners discover WPulse Pricing Rules by leaving a review on WordPress.org</p>
               <button class="cta-button">⭐ Leave a Review</button>
               <p class="cta-footer">Your feedback helps us improve and grow. Thank you for your support!</p>
             </section>
   
             <!-- Footer -->
             <footer class="footer">
-              <p>SmartDynamicPricing v1.0.2 | Developed by WPulse | © 2025 All Rights Reserved</p>
+              <p>WPulse Pricing Rules v1.0.2 | Developed by WPulse | © 2025 All Rights Reserved</p>
               <p>
                 <a href="#">Privacy Policy</a>
                 <span> • </span>

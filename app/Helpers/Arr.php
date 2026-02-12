@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Helpers;
+namespace WpulsePricingRules\Helpers;
 
 class Arr
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricing\Database\Migrations;
+namespace WpulsePricingRules\Database\Migrations;
 
-use SmartDynamicPricing\Database\Database;
+use WpulsePricingRules\Database\Database;
 
 /**
  * Migration to create trips table
@@ -51,7 +51,7 @@ class CreateTripsTable
             ]
         ];
 
-        $this->database->createTable('smart_pricing_discounts_roles', $columns, $options);
+        $this->database->createTable('wpulse_pricing_rules_discounts', $columns, $options);
     }
 
     /**
@@ -59,6 +59,6 @@ class CreateTripsTable
      */
     public function down(): void
     {
-        $this->database->dropTable('smart_pricing_discounts_roles');
+        $this->database->dropTable('wpulse_pricing_rules_discounts');
     }
 }

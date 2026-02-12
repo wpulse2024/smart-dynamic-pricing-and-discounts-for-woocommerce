@@ -1,8 +1,8 @@
 <?php
 
-namespace SmartDynamicPricing\Controllers;
+namespace WpulsePricingRules\Controllers;
 
-use SmartDynamicPricing\Models\Trip;
+use WpulsePricingRules\Models\Trip;
 
 /**
  * Trip Controller

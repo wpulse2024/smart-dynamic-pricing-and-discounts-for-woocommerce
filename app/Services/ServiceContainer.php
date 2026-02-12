@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartDynamicPricing\Services;
+namespace WpulsePricingRules\Services;
 
 /**
  * Simple Service Container for dependency injection
@@ -48,7 +48,7 @@ class ServiceContainer
 
         // Check if service is registered
         if (!isset($this->services[$name])) {
-            // throw new \Exception("Service '{$name}' not found in container");
+            return null;
         }
 
         $concrete = $this->services[$name];

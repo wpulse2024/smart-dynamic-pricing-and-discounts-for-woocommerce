@@ -90,8 +90,8 @@ export default defineComponent({
         return {
             searchQuery: "",
             loading: false,
-            restUrl: SmartDynamicPricingDiscount.restUrl,
-            nonce: SmartDynamicPricingDiscount.restNonce,
+            restUrl: WpulsePricingRulesDiscount.restUrl,
+            nonce: WpulsePricingRulesDiscount.restNonce,
             rules: [
             ],
         };
