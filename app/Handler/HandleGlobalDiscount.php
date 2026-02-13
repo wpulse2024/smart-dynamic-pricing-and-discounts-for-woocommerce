@@ -13,7 +13,7 @@ class HandleGlobalDiscount
         $discount_type = $offer['reward']['discountType'] ?? 'percentage';
         $qty = $cart_item['quantity'];
         $product = $cart_item['data'];
-        $base_price = (float) $product->get_regular_price();
+        $base_price = Helper::get_base_price_for_discount($product);
         $original_total = $qty * $base_price;
         $discounted_price = Helper::calculate_discounted_price($base_price, $discount_type, $discount_value);
         $discounted_total = $discounted_price * $qty;

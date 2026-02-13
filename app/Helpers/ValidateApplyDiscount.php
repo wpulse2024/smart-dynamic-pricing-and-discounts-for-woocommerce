@@ -19,7 +19,8 @@ class ValidateApplyDiscount
 
         // 2️⃣ Handle product inclusion logic
         if (!self::passesInclusionCheck($rule, $product_id, $product)) {
-            if(Arr::get($rule->product_scope, 'scopeType', '') != 'all_products') {
+            $scope = self::ensureArray($rule->product_scope ?? null);
+            if (Arr::get($scope, 'scopeType', '') !== 'all_products') {
                 return false;
             }
         }
@@ -57,7 +58,8 @@ class ValidateApplyDiscount
 
         // 2️⃣ Handle product inclusion logic
         if (!self::passesInclusionCheck($rule, $product_id, $product)) {
-            if(Arr::get($rule->product_scope, 'scopeType', '') != 'all_products') {
+            $scope = self::ensureArray($rule->product_scope ?? null);
+            if (Arr::get($scope, 'scopeType', '') !== 'all_products') {
                 return false;
             }
         }
@@ -72,17 +74,47 @@ class ValidateApplyDiscount
     }
 
     /**
+     * Validate rule for cart-level discounts (user scope + schedule only; no product scope).
+     */
+    public static function validateCartLevel($rule): bool
+    {
+        if (($rule->status ?? '') !== 'active') {
+            return false;
+        }
+        $user = wp_get_current_user();
+        $scope = self::ensureArray($rule->user_scope ?? null);
+        if (!$scope) {
+            return false;
+        }
+        if (!$user->exists() && Arr::get($scope, 'scopeType') !== 'all_users') {
+            return false;
+        }
+        if (Arr::get($scope, 'scopeType') === 'specific_users' && !self::inArrayLoose($user->ID, Arr::get($scope, 'users', []))) {
+            return false;
+        }
+        if (Arr::get($scope, 'scopeType') === 'user_roles' && !self::hasIntersection($user->roles, Arr::get($scope, 'roles', []))) {
+            return false;
+        }
+        return self::passesScheduleCheck($rule);
+    }
+
+    /**
      * Check if product matches inclusion scope
      */
     protected static function passesInclusionCheck($rule, $product_id, $product)
     {
-        $scope = $rule->product_scope ?? null;
+        $scope = self::ensureArray($rule->product_scope ?? null);
 
-        if (!$scope) return false;
+        if (!$scope) {
+            return false;
+        }
 
         switch (Arr::get($scope, 'scopeType')) {
+            case 'all_products':
+                return true;
+
             case 'specific_products':
-                return in_array($product_id, Arr::get($scope, 'inclusion.products', []), true);
+                return self::inArrayLoose($product_id, Arr::get($scope, 'inclusion.products', []));
 
             case 'product_categories':
                 return self::hasIntersection(
@@ -106,7 +138,7 @@ class ValidateApplyDiscount
      */
     protected static function passesExclusionCheck($rule, $product_id, $product)
     {
-        $scope = $rule->product_scope ?? null;
+        $scope = self::ensureArray($rule->product_scope ?? null);
         if (Arr::get($scope, 'scopeType', '') !== 'all_products') {
             return true; // only applies to all_products type
         }
@@ -119,7 +151,7 @@ class ValidateApplyDiscount
 
         switch (Arr::get($exclusion, 'type')) {
             case 'specific_products':
-                return !in_array($product_id, Arr::get($exclusion, 'products', []), true);
+                return !self::inArrayLoose($product_id, Arr::get($exclusion, 'products', []));
 
             case 'product_categories':
                 return !self::hasIntersection(
@@ -140,18 +172,18 @@ class ValidateApplyDiscount
 
     protected static function passesUserScopeCheck($rule, $cart_item, $cart_item_key)
     {
-        $scope = $rule->user_scope ?? null;
+        $scope = self::ensureArray($rule->user_scope ?? null);
 
-        if (!$scope) return false;
+        if (!$scope) {
+            return false;
+        }
 
         $user = wp_get_current_user();
-        //check if user is not logged in and scope is not all users
+        // Check if user is not logged in and scope is not all users
         if (!$user->exists() && Arr::get($scope, 'scopeType') !== 'all_users') {
-            //show an woocommerce notice
-            if (!is_cart()) {
-                return;
+            if (is_cart()) {
+                wc_add_notice(__('You must be logged in to apply this discount', 'wpulse-pricing-rules-for-woocommerce'), 'notice');
             }
-            wc_add_notice(__('You must be logged in to apply this discount', 'wpulse-pricing-rules-for-woocommerce'), 'notice');
             return false;
         }
         $user_id = $user->ID;
@@ -159,7 +191,7 @@ class ValidateApplyDiscount
 
         switch (Arr::get($scope, 'scopeType')) {
             case 'specific_users':
-                return in_array($user_id, Arr::get($scope, 'users', []), true);
+                return self::inArrayLoose($user_id, Arr::get($scope, 'users', []));
 
             case 'user_roles':
                 return self::hasIntersection($user_roles, Arr::get($scope, 'roles', []));
@@ -171,7 +203,7 @@ class ValidateApplyDiscount
 
     protected static function passesScheduleCheck($rule)
     {
-        $schedule = $rule->schedule ?? null;
+        $schedule = self::ensureArray($rule->schedule ?? null);
         if (empty($schedule)) {
             return true; // No schedule = always active
         }
@@ -212,5 +244,35 @@ class ValidateApplyDiscount
     protected static function hasIntersection(array $a, array $b)
     {
         return (bool) array_intersect($a, $b);
+    }
+
+    /**
+     * Ensure value is array (handles objects from JSON/unserialize)
+     */
+    protected static function ensureArray($value): ?array
+    {
+        if ($value === null) {
+            return null;
+        }
+        if (is_array($value)) {
+            return $value;
+        }
+        if (is_object($value)) {
+            return json_decode(json_encode($value), true);
+        }
+        return null;
+    }
+
+    /**
+     * Check if value exists in array with loose type comparison (handles int vs string IDs)
+     */
+    protected static function inArrayLoose($needle, array $haystack): bool
+    {
+        foreach ($haystack as $item) {
+            if ((int) $item === (int) $needle) {
+                return true;
+            }
+        }
+        return false;
     }
 }

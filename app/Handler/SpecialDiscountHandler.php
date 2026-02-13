@@ -31,7 +31,7 @@ class SpecialDiscountHandler
         $base_product_id = $cart_item['product_id'];
         $qty = $cart_item['quantity'];
         $base_product = $cart_item['data'];
-        $base_price = (float) $base_product->get_regular_price();
+        $base_price = Helper::get_base_price_for_discount($base_product);
 
         // --- CASE 1: same product ---
         if ($discount_product_type === 'same_product') {
@@ -51,17 +51,17 @@ class SpecialDiscountHandler
             return ['success' => true, 'base_product' => $base_product, 'totalDiscount' => $totalDiscount, 'rule_name' => $rule_name];
         }
 
-        // --- CASE 2: specific products or categories ---
-        if (in_array($discount_product_type, ['specific_products', 'specific_categories'], true)) {
-            $target_products = $reward['specific_products'] ?? [];
-            $target_categories = $reward['specific_categories'] ?? [];
+        // --- CASE 2: specific products or categories (Vue uses specific_product, specific_product_category) ---
+        $target_products = $reward['specific_products'] ?? [];
+        $target_categories = $reward['specific_categories'] ?? [];
 
+        if (in_array($discount_product_type, ['specific_product', 'specific_products', 'specific_product_category', 'specific_categories'], true)) {
             foreach ($cart->get_cart() as $target_key => $target_item) {
                 $target_product_id = $target_item['product_id'];
 
                 if (
-                    ($discount_product_type === 'specific_products' && !in_array($target_product_id, $target_products, true)) ||
-                    ($discount_product_type === 'specific_categories' && !has_term($target_categories, 'product_cat', $target_product_id))
+                    (in_array($discount_product_type, ['specific_product', 'specific_products'], true) && !$this->inArrayLoose($target_product_id, $target_products)) ||
+                    (in_array($discount_product_type, ['specific_product_category', 'specific_categories'], true) && !has_term($target_categories, 'product_cat', $target_product_id))
                 ) {
                     continue;
                 }
@@ -73,20 +73,31 @@ class SpecialDiscountHandler
 
                 $discount_qty = min($times * $available_to_discount, $target_item['quantity']);
                 $target_product = $target_item['data'];
-                $target_base_price = (float) $target_product->get_regular_price();
-                $discounted_price = $this->calculate_discounted_price($target_base_price, $discount_type, $discount_value);
+                $target_base_price = Helper::get_base_price_for_discount($target_product);
+                $discounted_price = Helper::calculate_discounted_price($target_base_price, $discount_type, $discount_value);
 
                 $full_price_qty = $target_item['quantity'] - $discount_qty;
                 $new_total = ($full_price_qty * $target_base_price) + ($discount_qty * $discounted_price);
                 $target_product->set_price(round($new_total / $target_item['quantity'], wc_get_price_decimals()));
 
                 $totalDiscount = ($target_base_price * $target_item['quantity']) - $new_total;
-                $this->showsApplyDiscountMessage($totalDiscount, $rule_name, $target_product);
-
                 return ['success' => true, 'base_product' => $base_product, 'totalDiscount' => $totalDiscount, 'rule_name' => $rule_name];
             }
         }
 
         return ['success' => false];
+    }
+
+    /**
+     * Check if value exists in array with loose type comparison (handles int vs string IDs)
+     */
+    protected function inArrayLoose($needle, array $haystack): bool
+    {
+        foreach ($haystack as $item) {
+            if ((int) $item === (int) $needle) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -272,7 +272,7 @@
                     <el-row :gutter="20">
                         <el-col :span="12">
                             <el-form-item label="Discount Type">
-                                <el-select v-model="currentOffer.reward.discountType" style="width: 100%">
+                                <el-select v-model="currentOffer.reward.discountType" style="width: 100%" filterable class="fraise_filterable-select">
                                     <el-option label="Percentage" value="percentage" />
                                     <el-option label="Fixed Amount" value="fixed_amount" />
                                 </el-select>
@@ -525,7 +525,7 @@ export default {
             ruleForm: {
                 id: '',
                 name: '',
-                status: true,
+                status: 'active',
                 priority: 1,
                 rule_type: '',
                 product_scope: {
@@ -571,12 +571,13 @@ export default {
     methods: {
         initializeRule() {
             // Check if it's a template or custom type
-            console.log('Route name:', this.$route.name);
             if (this.$route.name === 'add-new-role-template') {
                 this.templateData = getTemplateByKey(this.template);
                 if (this.templateData) {
                     this.ruleForm = JSON.parse(JSON.stringify(this.templateData));
                     delete this.ruleForm.template_key;
+                    // Normalize status (templates use true/false; API expects 'active'/'inactive')
+                    this.ruleForm.status = this.ruleForm.status === true || this.ruleForm.status === 'active' ? 'active' : 'inactive';
                 }
             } else if (this.$route.name === 'edit-rule') {
                 this.fetchRule();
@@ -700,7 +701,7 @@ export default {
                 if (this.$route.name === 'edit-rule') {
                     this.ruleForm.id = this.$route.params.id;
                 }
-
+                
                 const response = await fetch(this.restUrl + 'api/rules', {
                     method: 'POST',
                     headers: {
@@ -709,23 +710,22 @@ export default {
                     },
                     body: JSON.stringify(this.ruleForm)
                 });
-
                 const data = await response.json();
-
-                if (!response.ok || data?.success === false) {
+                if(!data?.success) {
                     this.$message.error(data?.message || 'Failed to save rule');
                     this.isSaving = false;
                     return;
                 }
 
-                this.$message.success(data?.message || 'Rule saved successfully');
-                // Redirect to home (rules list) after successful creation/update
-                this.$router.push({ name: 'roles' });
+                this.$message?.success(data?.message || 'Rule saved successfully');
+                this.$router?.push({ name: 'roles' });
             } catch (err) {
                 console.error('Error:', err);
                 this.$message.error('An error occurred while saving the rule');
             } finally {
                 // Re-enable button in case of error; router push will unmount on success
+                //redirect to roles page
+                // this.$router.push({ name: 'roles' });
                 this.isSaving = false;
             }
         }

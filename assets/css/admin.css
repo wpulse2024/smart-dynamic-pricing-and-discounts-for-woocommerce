@@ -954,3 +954,14 @@
   max-width: 1040px;
   margin: 0 auto;
 }
+
+.fraise_filterable-select {
+  position: relative;
+}
+.fraise_filterable-select .el-select__selection {
+  position: absolute;
+  width: 200px;
+}
+.fraise_filterable-select .el-select__placeholder {
+  margin-left: 210px;
+}

@@ -62,7 +62,7 @@ class RuleController extends Controller
     {
         $data = $this->validate([
             'name'           => 'required|max:255',
-            'status'         => 'required|in:active,inactive',
+            'status'         => 'required', // normalized below (accepts active/inactive/true/false)
             'priority'       => 'required|numeric',
             'rule_type'      => 'required|max:255',
             'product_scope'  => 'required',
@@ -72,10 +72,19 @@ class RuleController extends Controller
             'meta'           => 'required',
         ]);
 
+        // Normalize status (Vue may send boolean true/false; API expects 'active'/'inactive')
+        $status = $data['status'] ?? 'active';
+        if ($status === true || $status === 'true' || $status === 1) {
+            $status = 'active';
+        } elseif ($status === false || $status === 'false' || $status === 0) {
+            $status = 'inactive';
+        }
+        $status = in_array($status, ['active', 'inactive'], true) ? $status : 'active';
+
         // Sanitize scalar fields
         $sanitized = [
             'name'      => sanitize_text_field($data['name']),
-            'status'    => sanitize_text_field($data['status']),
+            'status'    => $status,
             'priority'  => intval($data['priority']),
             'rule_type' => sanitize_text_field($data['rule_type']),
         ];

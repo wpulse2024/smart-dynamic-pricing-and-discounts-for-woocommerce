@@ -12,7 +12,7 @@ class QuantityDiscountHandler
         $tiers = $offer['tiers'] ?? [];
         $qty = $cart_item['quantity'];
         $product = $cart_item['data'];
-        $base_price = (float) $product->get_regular_price();
+        $base_price = Helper::get_base_price_for_discount($product);
         $original_total = $qty * $base_price;
         $discounted_total = $original_total;
         $applied_tier = null;
@@ -32,7 +32,9 @@ class QuantityDiscountHandler
         }
 
         if ($applied_tier) {
-            $discounted_price = Helper::calculate_discounted_price($base_price, $discount_type, $discount_value);
+            $tier_discount_type = $applied_tier['discountType'] ?? 'percentage';
+            $tier_discount_value = (float) ($applied_tier['value'] ?? 0);
+            $discounted_price = Helper::calculate_discounted_price($base_price, $tier_discount_type, $tier_discount_value);
             $discounted_qty = $qty;
             $discounted_total = $discounted_price * $discounted_qty;
         }
