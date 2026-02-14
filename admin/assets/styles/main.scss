@@ -1,10 +1,45 @@
 @use 'variables.scss' as *;
+@use 'rules-view.scss' as *;
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+
+  .sidebar-container {
+    width: 204px;
+    height: 100%;
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+    min-height: 100vh;
+    padding: 0px 20px;
+    padding-left: 12px;
+  }
+
+  .content-container {
+    flex: 1;
+    height: 100%;
+    padding: 24px;
+    box-sizing: border-box;
+    max-width: calc(100% - 48px);
+  }
+}
 
 // Base layout for admin app
 #wpulse-pricing-rules-app {
   font-family: var(--el-font-family);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin-left: -32px;
+
+  .el-main {
+    padding: 0 !important;
+  }
+  .el-header {
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+  }
 }
 
 .wpulse-pricing-rules {
