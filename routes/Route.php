@@ -95,6 +95,7 @@ class Route {
         self::post($base, $controller, 'store');
         self::get($base . '/{id}', $controller, 'show');
         self::put($base . '/{id}', $controller, 'update');
+        self::patch($base . '/{id}', $controller, 'update');
         self::delete($base . '/{id}', $controller, 'destroy');
     }
 }

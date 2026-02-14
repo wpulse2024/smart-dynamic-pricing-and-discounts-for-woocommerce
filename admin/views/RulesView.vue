@@ -4,12 +4,12 @@
     <div class="page-header">
       <div class="page-header__content">
         <h1 class="page-header__title">Dynamic Rules</h1>
-        <button class="btn btn--primary">
+        <button type="button" class="btn btn--primary" @click="showTemplatesModal = true">
           <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          Add Rule
+          Add new rule
         </button>
       </div>
       <p class="page-header__subtitle">
@@ -63,7 +63,7 @@
         </div>
       </div>
       <div class="filters-card__footer">
-        <span class="filters-card__count">16 items</span>
+        <span class="filters-card__count">{{ rules.length }} items</span>
       </div>
     </div>
 
@@ -88,19 +88,19 @@
               <input type="checkbox" class="checkbox" />
             </td>
             <td class="rules-table__td">
-              <a href="#" class="rules-table__link">{{ rule.name }}</a>
+              <router-link :to="'/rules/edit/' + rule.id" class="rules-table__link">{{ rule.name }}</router-link>
             </td>
             <td class="rules-table__td">{{ rule.type }}</td>
             <td class="rules-table__td">{{ rule.priority }}</td>
             <td class="rules-table__td">
-              <span class="badge badge--warning">{{ rule.status }}</span>
+              <span class="badge" :class="badgeClass(rule.status)">{{ rule.status }}</span>
             </td>
             <td class="rules-table__td">
               <label class="switch">
                 <input
                   type="checkbox"
-                  :checked="rule.enabled"
-                  @change="toggleRule(rule.id)"
+                  :checked="rule.status === 'active'"
+                  @change="toggleRule(rule)"
                 />
                 <span class="switch__slider"></span>
               </label>
@@ -109,54 +109,37 @@
         </tbody>
       </table>
     </div>
+
+    <TemplatesModal :visible="showTemplatesModal" @close="showTemplatesModal = false" />
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-
-interface Rule {
-  id: string;
-  name: string;
-  type: string;
-  priority: number;
-  status: 'Active' | 'Inactive';
-  enabled: boolean;
-}
+<script setup>
+import { ref, onMounted } from 'vue';
+import { api } from '../api';
+import TemplatesModal from '../components/TemplatesModal.vue';
 
 const searchQuery = ref('');
+const showTemplatesModal = ref(false);
+const rules = ref([]);
 
-const rules = ref<Rule[]>([
-  {
-    id: '1',
-    name: '10% Discount',
-    type: 'Category discount',
-    priority: 1,
-    status: 'Active',
-    enabled: true,
-  },
-  {
-    id: '2',
-    name: 'BOGO',
-    type: 'Buy 1 Get 1',
-    priority: 2,
-    status: 'Active',
-    enabled: true,
-  },
-  {
-    id: '3',
-    name: 'Free Shipping',
-    type: 'Cart discount',
-    priority: 3,
-    status: 'Active',
-    enabled: false,
-  },
-]);
+function badgeClass(status) {
+  if (status === 'active') return 'badge--success';
+  if (status === 'disabled') return 'badge--error';
+  return 'badge--warning';
+}
+function toggleRule(rule) {
+  const next = rule.status === 'active' ? 'disabled' : 'active';
+  api.patch(`rules/${rule.id}`, { status: next }).then(() => {
+    rule.status = next;
+  }).catch(() => {});
+}
 
-const toggleRule = (id: string) => {
-  const rule = rules.value.find((r) => r.id === id);
-  if (rule) {
-    rule.enabled = !rule.enabled;
-  }
-};
+onMounted(() => {
+  api.get('rules').then((data) => {
+    rules.value = Array.isArray(data) ? data : (data?.rules || []);
+  }).catch(() => {
+    rules.value = [];
+  });
+});
 </script>

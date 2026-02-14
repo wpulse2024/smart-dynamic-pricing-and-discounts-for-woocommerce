@@ -6,7 +6,8 @@
         "psr-4": {
             "WpulsePricingRules\\Core\\": "src/Core/",
             "WpulsePricingRules\\App\\": "app/",
-            "WpulsePricingRules\\Routes\\": "routes/"
+            "WpulsePricingRules\\Routes\\": "routes/",
+            "WpulsePricingRules\\Includes\\": "includes/"
         },
         "files": []
     },

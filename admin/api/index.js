@@ -18,11 +18,16 @@ function headers() {
   return h;
 }
 
-async function request(method, path, body = undefined) {
-  const url = path.startsWith('http') ? path : `${baseUrl()}/${path.replace(/^\//, '')}`;
+async function request(method, path, bodyOrParams = undefined) {
+  let url = path.startsWith('http') ? path : `${baseUrl()}/${path.replace(/^\//, '')}`;
   const options = { method, headers: headers() };
-  if (body !== undefined && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
-    options.body = JSON.stringify(body);
+  if (method === 'GET' && bodyOrParams != null && typeof bodyOrParams === 'object' && !Array.isArray(bodyOrParams)) {
+    const params = new URLSearchParams();
+    Object.entries(bodyOrParams).forEach(([k, v]) => { if (v != null && v !== '') params.set(k, String(v)); });
+    const qs = params.toString();
+    if (qs) url += (url.includes('?') ? '&' : '?') + qs;
+  } else if (bodyOrParams !== undefined && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+    options.body = JSON.stringify(bodyOrParams);
   }
   const res = await fetch(url, options);
   const data = await res.json().catch(() => ({}));
@@ -36,7 +41,7 @@ async function request(method, path, body = undefined) {
 }
 
 export const api = {
-  get: (path) => request('GET', path),
+  get: (path, params) => request('GET', path, params),
   post: (path, body) => request('POST', path, body),
   put: (path, body) => request('PUT', path, body),
   patch: (path, body) => request('PATCH', path, body),

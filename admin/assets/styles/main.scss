@@ -1,5 +1,7 @@
 @use 'variables.scss' as *;
 @use 'rules-view.scss' as *;
+@use 'templates-modal.scss' as *;
+@use 'rule-editor-page.scss' as *;
 
 .main-container {
   display: flex;

@@ -33,6 +33,13 @@ final class Plugin {
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
         add_action('rest_api_init', [$this, 'registerRestRoutes']);
         add_filter('script_loader_tag', [$this, 'scriptLoaderTag'], 10, 3);
+        add_action('woocommerce_loaded', [$this, 'registerEngine']);
+        add_action('wp_ajax_wpulse_get_templates', [\WpulsePricingRules\Includes\Admin\Ajax::class, 'getTemplates']);
+        add_action('wp_ajax_wpulse_create_rule_from_template', [\WpulsePricingRules\Includes\Admin\Ajax::class, 'createRuleFromTemplate']);
+    }
+
+    public function registerEngine(): void {
+        \WpulsePricingRules\Includes\Engine\RuleEvaluator::register();
     }
 
     /**
@@ -66,6 +73,7 @@ final class Plugin {
             'dashicons-tag',
             56
         );
+        \WpulsePricingRules\Includes\Admin\EditRulePage::register();
     }
 
     public function renderAdminPage(): void {
@@ -104,9 +112,10 @@ final class Plugin {
         }
 
         wp_localize_script($script_handle, 'wpulsePricingRules', [
-            'restUrl'   => rest_url('wpulse-pricing-rules/v1'),
-            'nonce'     => wp_create_nonce('wp_rest'),
-            'pluginUrl' => WPULSE_PRICING_RULES_URL,
+            'restUrl'      => rest_url('wpulse-pricing-rules/v1'),
+            'nonce'        => wp_create_nonce('wp_rest'),
+            'pluginUrl'    => WPULSE_PRICING_RULES_URL,
+            'editRuleUrl'  => admin_url('admin.php?page=wpulse-pricing-rules-edit'),
         ]);
     }
 
@@ -122,7 +131,7 @@ final class Plugin {
         if (file_exists(WPULSE_PRICING_RULES_PATH . 'vendor/autoload.php')) {
             require_once WPULSE_PRICING_RULES_PATH . 'vendor/autoload.php';
         }
-        \WpulsePricingRules\App\Models\PricingRule::createTable();
+        \WpulsePricingRules\Includes\DB\Installer::install();
         flush_rewrite_rules();
     }
 
