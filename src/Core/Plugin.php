@@ -45,7 +45,7 @@ final class Plugin {
     }
 
     public function registerEngine(): void {
-        \WpulsePricingRules\Includes\Engine\RuleEvaluator::register();
+        \WpulsePricingRules\Includes\Engine\RuleEngine::register();
     }
 
     /**

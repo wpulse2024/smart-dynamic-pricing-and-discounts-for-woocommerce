@@ -292,6 +292,136 @@
         </div>
       </section>
 
+      <!-- Trigger Options -->
+      <section class="rule-editor-card">
+        <h2 class="rule-editor-card__title">Trigger Options</h2>
+        <div class="rule-editor-card__body">
+          <div class="rule-editor-field">
+            <label class="rule-editor-field__label">Apply discount</label>
+            <div class="rule-editor-field__radio-group">
+              <label class="rule-editor-field__radio">
+                <input v-model="applyDiscountMode" type="radio" value="always" />
+                <span>Always</span>
+              </label>
+              <label class="rule-editor-field__radio">
+                <input v-model="applyDiscountMode" type="radio" value="conditions" />
+                <span>Only when specific conditions are met</span>
+              </label>
+            </div>
+            <p class="rule-editor-field__help">Choose if the discount will be added automatically or under specific conditions (e.g. cart subtotal, quantity, products in cart).</p>
+          </div>
+          <template v-if="applyDiscountMode === 'conditions'">
+            <div class="rule-editor-field">
+              <strong class="rule-editor-field__label">Discount conditions</strong>
+              <div class="rule-editor-conditions-list">
+                <div
+                  v-for="(item, idx) in conditionItems"
+                  :key="idx"
+                  class="rule-editor-condition-row"
+                >
+                  <span class="rule-editor-condition-label">{{ conditionTypeLabel(item.type) }}</span>
+                  <span class="rule-editor-condition-op">{{ conditionOperatorLabel(item.operator) }}</span>
+                  <span class="rule-editor-condition-val">{{ conditionValueSummary(item) }}</span>
+                  <button type="button" class="btn btn--outline btn--sm" aria-label="Remove condition" @click="removeConditionItem(idx)">Remove</button>
+                </div>
+                <div v-if="showAddConditionForm" class="rule-editor-condition-add">
+                  <select v-model="newCondition.type" class="rule-editor-field__select rule-editor-field__select--sm">
+                    <option value="cart_subtotal">Cart subtotal</option>
+                    <option value="cart_quantity">Cart quantity</option>
+                    <option value="cart_items_count">Cart line items</option>
+                    <option value="total_amount_spent">Total amount spent (customer)</option>
+                    <option value="order_count">Number of orders (customer)</option>
+                    <option value="product_in_cart">Products in cart</option>
+                    <option value="user_role">User role</option>
+                    <option value="user_id">User</option>
+                    <option value="page">Page</option>
+                  </select>
+                  <select v-model="newCondition.operator" class="rule-editor-field__select rule-editor-field__select--sm">
+                    <template v-if="isNumericConditionType(newCondition.type)">
+                      <option value=">=">&#8805;</option>
+                      <option value=">">&gt;</option>
+                      <option value="<=">&#8804;</option>
+                      <option value="<">&lt;</option>
+                      <option value="=">=</option>
+                    </template>
+                    <template v-else-if="newCondition.type === 'page'">
+                      <option value="=">is</option>
+                    </template>
+                    <template v-else>
+                      <option value="in">in</option>
+                      <option value="not_in">not in</option>
+                    </template>
+                  </select>
+                  <template v-if="isNumericConditionType(newCondition.type)">
+                    <input
+                      v-model.number="newCondition.numericValue"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      class="rule-editor-field__input rule-editor-field__input--xs"
+                      :placeholder="newCondition.type === 'cart_quantity' || newCondition.type === 'cart_items_count' || newCondition.type === 'order_count' ? '0' : '0.00'"
+                    />
+                  </template>
+                  <template v-else-if="newCondition.type === 'page'">
+                    <select v-model="newCondition.pageValue" class="rule-editor-field__select rule-editor-field__select--sm">
+                      <option value="cart">Cart page</option>
+                      <option value="checkout">Checkout page</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </template>
+                  <template v-else-if="newCondition.type === 'user_role'">
+                    <el-select
+                      v-model="newCondition.roleIds"
+                      multiple
+                      placeholder="Select roles"
+                      class="rule-editor-field__el-select rule-editor-field__el-select--inline"
+                      @focus="loadRolesOnce"
+                    >
+                      <el-option v-for="r in roleOptions" :key="r.id" :label="r.name" :value="r.id" />
+                    </el-select>
+                  </template>
+                  <template v-else-if="newCondition.type === 'user_id'">
+                    <el-select
+                      v-model="newCondition.userIds"
+                      multiple
+                      filterable
+                      remote
+                      :remote-method="searchUsers"
+                      :loading="usersLoading"
+                      placeholder="Search users"
+                      value-key="id"
+                      class="rule-editor-field__el-select rule-editor-field__el-select--inline"
+                      @focus="loadUsersOnce"
+                    >
+                      <el-option v-for="u in userOptions" :key="u.id" :label="u.name + (u.email ? ' (' + u.email + ')' : '')" :value="u.id" />
+                    </el-select>
+                  </template>
+                  <template v-else-if="newCondition.type === 'product_in_cart'">
+                    <el-select
+                      v-model="newCondition.productIds"
+                      multiple
+                      filterable
+                      remote
+                      :remote-method="searchProducts"
+                      :loading="productsLoading"
+                      placeholder="Search products"
+                      value-key="id"
+                      class="rule-editor-field__el-select rule-editor-field__el-select--inline"
+                      @focus="loadProductsIfEmpty"
+                    >
+                      <el-option v-for="p in productOptions" :key="p.id" :label="p.name" :value="p.id" />
+                    </el-select>
+                  </template>
+                  <button type="button" class="btn btn--primary btn--sm" @click="saveNewCondition">Add</button>
+                  <button type="button" class="btn btn--outline btn--sm" @click="showAddConditionForm = false">Cancel</button>
+                </div>
+              </div>
+              <button v-if="!showAddConditionForm" type="button" class="btn btn--outline btn--sm" @click="openAddCondition">+ Add condition</button>
+            </div>
+          </template>
+        </div>
+      </section>
+
       <!-- Rule Application -->
       <section class="rule-editor-card">
         <h2 class="rule-editor-card__title">Rule Application</h2>
@@ -468,6 +598,17 @@ const excludeUsersEnabled = ref(false);
 const scheduleMode = ref('always');
 const customMessageEnabled = ref(false);
 const applyTo = ref('all');
+const applyDiscountMode = ref('always');
+const showAddConditionForm = ref(false);
+const newCondition = ref({
+  type: 'cart_subtotal',
+  operator: '>=',
+  numericValue: 0,
+  pageValue: 'cart',
+  roleIds: [],
+  userIds: [],
+  productIds: [],
+});
 
 const roleOptions = ref([]);
 const userOptions = ref([]);
@@ -552,6 +693,90 @@ const excludeUserIds = computed({
   get: () => getConditionValue('user_id', 'not_in') || [],
   set: (v) => setConditionItem('user_id', 'not_in', v),
 });
+
+const conditionItems = computed(() => {
+  const groups = form.value.rule.conditions?.groups || [];
+  const items = groups[0]?.items || [];
+  return items;
+});
+
+const CONDITION_TYPE_LABELS = {
+  cart_subtotal: 'Cart subtotal',
+  cart_quantity: 'Cart quantity',
+  cart_items_count: 'Cart line items',
+  total_amount_spent: 'Total amount spent',
+  order_count: 'Number of orders',
+  product_in_cart: 'Products in cart',
+  user_role: 'User role',
+  user_id: 'User',
+  page: 'Page',
+  coupon: 'Coupon',
+  shipping_country: 'Shipping country',
+};
+
+function conditionTypeLabel(type) {
+  return CONDITION_TYPE_LABELS[type] || type;
+}
+
+function conditionOperatorLabel(op) {
+  const map = { '>=': '≥', '>': '>', '<=': '≤', '<': '<', '=': '=', in: 'in', not_in: 'not in' };
+  return map[op] || op;
+}
+
+function conditionValueSummary(item) {
+  const v = item.value;
+  if (item.type === 'page') return v || '—';
+  if (item.type === 'user_role' || item.type === 'user_id' || item.type === 'product_in_cart') {
+    const arr = Array.isArray(v) ? v : [];
+    return arr.length ? arr.length + ' selected' : '—';
+  }
+  if (typeof v === 'number' || (typeof v === 'string' && /^-?[\d.]+$/.test(v))) return v;
+  return v != null ? String(v) : '—';
+}
+
+function isNumericConditionType(type) {
+  return ['cart_subtotal', 'cart_quantity', 'cart_items_count', 'total_amount_spent', 'order_count'].includes(type);
+}
+
+function ensureConditionsGroups() {
+  if (!form.value.rule.conditions) form.value.rule.conditions = { groups: [] };
+  if (!form.value.rule.conditions.groups.length) form.value.rule.conditions.groups.push({ logic: 'and', items: [] });
+}
+
+function removeConditionItem(idx) {
+  ensureConditionsGroups();
+  form.value.rule.conditions.groups[0].items.splice(idx, 1);
+}
+
+function openAddCondition() {
+  newCondition.value = {
+    type: 'cart_subtotal',
+    operator: '>=',
+    numericValue: 0,
+    pageValue: 'cart',
+    roleIds: [],
+    userIds: [],
+    productIds: [],
+  };
+  showAddConditionForm.value = true;
+}
+
+function saveNewCondition() {
+  ensureConditionsGroups();
+  const n = newCondition.value;
+  let value;
+  if (n.type === 'page') value = n.pageValue;
+  else if (n.type === 'user_role') value = n.roleIds?.length ? n.roleIds : null;
+  else if (n.type === 'user_id') value = n.userIds?.length ? n.userIds : null;
+  else if (n.type === 'product_in_cart') value = n.productIds?.length ? n.productIds : null;
+  else if (isNumericConditionType(n.type)) value = n.numericValue;
+  else value = null;
+  if (value === null && isNumericConditionType(n.type)) value = 0;
+  if (value === null && n.type === 'page') value = 'cart';
+  if ((value === null || (Array.isArray(value) && !value.length)) && !isNumericConditionType(n.type) && n.type !== 'page') return;
+  form.value.rule.conditions.groups[0].items.push({ type: n.type, operator: n.operator, value });
+  showAddConditionForm.value = false;
+}
 
 function ensureTargetsArrays() {
   if (!Array.isArray(form.value.rule.targets.products)) form.value.rule.targets.products = [];
@@ -769,6 +994,8 @@ function assignFromRule(r) {
   if (getConditionValue('user_role', 'in').length) applyTo.value = 'roles';
   else if (getConditionValue('user_id', 'in').length) applyTo.value = 'users';
   else applyTo.value = 'all';
+  const condItems = form.value.rule.conditions?.groups?.[0]?.items || [];
+  applyDiscountMode.value = condItems.length ? 'conditions' : 'always';
   rolesLoaded = false;
   categoriesLoaded = false;
   tagsLoaded = false;

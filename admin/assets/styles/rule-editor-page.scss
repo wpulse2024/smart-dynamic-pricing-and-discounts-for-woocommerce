@@ -113,6 +113,46 @@
   padding: 16px;
 }
 
+// Trigger options – discount conditions list
+.rule-editor-page .rule-editor-conditions-list {
+  margin-bottom: 10px;
+}
+
+.rule-editor-page .rule-editor-condition-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--wpulse-editor-bg);
+  border: 1px solid var(--wpulse-editor-border);
+  border-radius: var(--wpulse-editor-radius);
+  font-size: 13px;
+
+  .rule-editor-condition-label {
+    font-weight: 500;
+    color: var(--wpulse-editor-label);
+  }
+
+  .rule-editor-condition-op {
+    color: #64748b;
+  }
+
+  .rule-editor-condition-val {
+    color: #334155;
+  }
+}
+
+.rule-editor-page .rule-editor-condition-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  margin-bottom: 8px;
+}
+
 // Fields – compact
 .rule-editor-page .rule-editor-field {
   margin-bottom: 14px;

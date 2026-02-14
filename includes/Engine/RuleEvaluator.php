@@ -6,7 +6,10 @@ use WpulsePricingRules\Includes\DB\RulesRepository;
 use WpulsePricingRules\Includes\Exclusions\ExclusionService;
 
 /**
- * Applies pricing rules to cart/checkout.
+ * Legacy rule evaluator. Superseded by RuleEngine which adds:
+ * original price restore, recursion/cart-hash protection, modular benefits, gift handling.
+ * Kept for reference; Plugin now registers RuleEngine only.
+ *
  * Hooks: woocommerce_before_calculate_totals, woocommerce_cart_calculate_fees, woocommerce_package_rates.
  */
 class RuleEvaluator {
