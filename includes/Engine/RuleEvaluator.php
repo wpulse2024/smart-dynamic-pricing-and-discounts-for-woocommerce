@@ -3,6 +3,7 @@
 namespace WpulsePricingRules\Includes\Engine;
 
 use WpulsePricingRules\Includes\DB\RulesRepository;
+use WpulsePricingRules\Includes\Exclusions\ExclusionService;
 
 /**
  * Applies pricing rules to cart/checkout.
@@ -233,6 +234,10 @@ class RuleEvaluator {
         foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
             $product = $cart_item['data'];
             if (!$product || !self::productMatchesTargets($product, $targets)) {
+                continue;
+            }
+            // Global exclusion list: skip if product/category/tag is excluded from ALL rules.
+            if (ExclusionService::isWCProductExcluded($product)) {
                 continue;
             }
             if (!empty($exclusions['enabled']) && self::productIsExcluded($product, $exclusions)) {

@@ -36,6 +36,12 @@ final class Plugin {
         add_action('woocommerce_loaded', [$this, 'registerEngine']);
         add_action('wp_ajax_wpulse_get_templates', [\WpulsePricingRules\Includes\Admin\Ajax::class, 'getTemplates']);
         add_action('wp_ajax_wpulse_create_rule_from_template', [\WpulsePricingRules\Includes\Admin\Ajax::class, 'createRuleFromTemplate']);
+        add_action('wp_ajax_wpulse_add_exclusion', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'addExclusion']);
+        add_action('wp_ajax_wpulse_delete_exclusion', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'deleteExclusion']);
+        add_action('wp_ajax_wpulse_search_products', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'searchProducts']);
+        add_action('wp_ajax_wpulse_search_categories', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'searchCategories']);
+        add_action('wp_ajax_wpulse_search_tags', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'searchTags']);
+        add_action('wp_ajax_wpulse_get_exclusions', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'getExclusions']);
     }
 
     public function registerEngine(): void {
@@ -74,6 +80,7 @@ final class Plugin {
             56
         );
         \WpulsePricingRules\Includes\Admin\EditRulePage::register();
+        \WpulsePricingRules\Includes\Admin\ExclusionPage::register();
     }
 
     public function renderAdminPage(): void {
@@ -112,10 +119,12 @@ final class Plugin {
         }
 
         wp_localize_script($script_handle, 'wpulsePricingRules', [
-            'restUrl'      => rest_url('wpulse-pricing-rules/v1'),
-            'nonce'        => wp_create_nonce('wp_rest'),
-            'pluginUrl'    => WPULSE_PRICING_RULES_URL,
-            'editRuleUrl'  => admin_url('admin.php?page=wpulse-pricing-rules-edit'),
+            'restUrl'          => rest_url('wpulse-pricing-rules/v1'),
+            'nonce'            => wp_create_nonce('wp_rest'),
+            'pluginUrl'        => WPULSE_PRICING_RULES_URL,
+            'editRuleUrl'      => admin_url('admin.php?page=wpulse-pricing-rules-edit'),
+            'ajaxUrl'          => admin_url('admin-ajax.php'),
+            'exclusionNonce'   => wp_create_nonce(\WpulsePricingRules\Includes\Admin\ExclusionAjax::NONCE_ACTION),
         ]);
     }
 
@@ -132,6 +141,7 @@ final class Plugin {
             require_once WPULSE_PRICING_RULES_PATH . 'vendor/autoload.php';
         }
         \WpulsePricingRules\Includes\DB\Installer::install();
+        \WpulsePricingRules\Includes\Exclusions\ExclusionRepository::installTable();
         flush_rewrite_rules();
     }
 
