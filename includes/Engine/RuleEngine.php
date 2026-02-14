@@ -128,7 +128,7 @@ class RuleEngine {
         }
 
         // Add gifts (benefit handlers that run as part of rule loop already did line-item/fees/shipping;
-        // free_gift and buy_x_get_y add to cart here to avoid running in a separate loop).
+        // free_gift and x_for_y add to cart here to avoid running in a separate loop).
         foreach ($rules as $row) {
             $rule_data = is_string($row['rule_json'] ?? null) ? json_decode($row['rule_json'], true) : ($row['rule'] ?? []);
             if (!is_array($rule_data)) {
@@ -305,7 +305,7 @@ class RuleEngine {
         $benefit = $rule_data['benefit'] ?? [];
         $kind = $benefit['kind'] ?? '';
         if ($phase === 'gift') {
-            if ($kind === 'free_gift' || $kind === 'buy_x_get_y') {
+            if ($kind === 'free_gift' || $kind === 'x_for_y') {
                 FreeGift::apply($row, $rule_data, $context);
             }
             return;
@@ -334,7 +334,7 @@ class RuleEngine {
                 FreeShipping::apply($row, $rule_data, $context);
                 break;
             case 'free_gift':
-            case 'buy_x_get_y':
+            case 'x_for_y':
                 // Handled in gift phase.
                 break;
             default:

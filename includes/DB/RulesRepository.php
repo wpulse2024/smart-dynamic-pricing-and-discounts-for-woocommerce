@@ -105,66 +105,68 @@ class RulesRepository {
     }
 
     /**
-     * Create a new draft rule from a template id.
+     * Create a new draft rule from a template id. Rule is always merged with defaultRule so the editor gets a complete config.
      *
      * @return array{id: int, edit_url: string}|null
      */
     public static function createFromTemplate(string $template_id): ?array {
         $templates = Templates::all();
         $template = null;
-        foreach ($templates as $t) {
-            if (($t['id'] ?? '') === $template_id) {
+        foreach ( $templates as $t ) {
+            if ( ( $t['id'] ?? '' ) === $template_id ) {
                 $template = $t;
                 break;
             }
         }
-        if (!$template || empty($template['defaults'])) {
+        if ( ! $template || empty( $template['defaults'] ) ) {
             return null;
         }
-        $rule = $template['defaults'];
-        $rule['meta'] = $rule['meta'] ?? [];
-        $rule['meta']['template_id'] = $template_id;
-        $name = $template['title'] ?? __('New rule', 'wpulse-pricing-rules-for-woocommerce');
+        $default = Templates::defaultRule();
+        $rule    = array_replace_recursive( $default, $template['defaults'] );
+        $rule['meta'] = array_merge( $rule['meta'] ?? [], [ 'template_id' => $template_id ] );
+        $name = $template['title'] ?? __( 'New rule', 'wpulse-pricing-rules-for-woocommerce' );
         $type = $template['type'] ?? 'quantity_discount';
-        $id = self::insert([
-            'name' => $name,
-            'type' => $type,
-            'status' => 'draft',
+        $id = self::insert( [
+            'name'     => $name,
+            'type'     => $type,
+            'status'   => 'draft',
             'priority' => self::nextPriority(),
-            'rule' => $rule,
-        ]);
-        if (!$id) {
+            'rule'     => $rule,
+        ] );
+        if ( ! $id ) {
             return null;
         }
         return [
-            'id' => $id,
-            'edit_url' => self::editUrl($id),
+            'id'       => $id,
+            'edit_url' => self::editUrl( $id ),
         ];
     }
 
     /**
-     * Create a new draft rule from a scratch type (minimal config).
+     * Create a new draft rule from a scratch type. Rule is always merged with defaultRule so the editor gets a complete config.
      *
      * @return array{id: int, edit_url: string}|null
      */
     public static function createFromScratch(string $scratch_type): ?array {
-        $scratch = Templates::getScratchDefaults($scratch_type);
-        if (!$scratch) {
+        $scratch = Templates::getScratchDefaults( $scratch_type );
+        if ( ! $scratch ) {
             return null;
         }
-        $id = self::insert([
-            'name' => $scratch['name'],
-            'type' => $scratch['type'],
-            'status' => 'draft',
+        $default = Templates::defaultRule();
+        $rule    = array_replace_recursive( $default, $scratch['rule'] );
+        $id = self::insert( [
+            'name'     => $scratch['name'],
+            'type'     => $scratch['type'],
+            'status'   => 'draft',
             'priority' => self::nextPriority(),
-            'rule' => $scratch['rule'],
-        ]);
-        if (!$id) {
+            'rule'     => $rule,
+        ] );
+        if ( ! $id ) {
             return null;
         }
         return [
-            'id' => $id,
-            'edit_url' => self::editUrl($id),
+            'id'       => $id,
+            'edit_url' => self::editUrl( $id ),
         ];
     }
 

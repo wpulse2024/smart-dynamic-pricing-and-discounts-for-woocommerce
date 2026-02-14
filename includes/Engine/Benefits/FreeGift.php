@@ -5,7 +5,7 @@ namespace WpulsePricingRules\Includes\Engine\Benefits;
 use WpulsePricingRules\Includes\Engine\Context;
 
 /**
- * Gift benefit: free_gift (product_ids) or buy_x_get_y.
+ * Gift benefit: free_gift (product_ids) or x_for_y.
  * Adds qualifying products to cart with _wpulse_is_gift and _wpulse_gift_rule_id.
  * RuleEngine removes non-qualifying gifts and adds qualifying ones; this performs the add.
  */
@@ -27,7 +27,7 @@ class FreeGift {
         if ($kind === 'free_gift' && !empty($benefit['product_ids'])) {
             $product_ids = array_map('intval', (array) $benefit['product_ids']);
         }
-        if ($kind === 'buy_x_get_y' && !empty($benefit['get_selector']['products'])) {
+        if ($kind === 'x_for_y' && !empty($benefit['get_selector']['products'])) {
             $product_ids = array_map('intval', (array) $benefit['get_selector']['products']);
         }
         if (empty($product_ids)) {
