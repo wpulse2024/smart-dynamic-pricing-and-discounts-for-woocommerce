@@ -1,0 +1,12 @@
+// WPulse Pricing Rules – design tokens
+$wpulse-header-bg: #fff;
+$wpulse-bg-page: #f5f7fa;
+$wpulse-primary: #409eff;
+$wpulse-border: #dcdfe6;
+
+:root {
+  --wpulse-header-bg: #{$wpulse-header-bg};
+  --wpulse-bg-page: #{$wpulse-bg-page};
+  --wpulse-primary: #{$wpulse-primary};
+  --wpulse-border: #{$wpulse-border};
+}

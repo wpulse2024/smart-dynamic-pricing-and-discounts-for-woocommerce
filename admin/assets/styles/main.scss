@@ -1,0 +1,15 @@
+@use 'variables.scss' as *;
+
+// Base layout for admin app
+#wpulse-pricing-rules-app {
+  font-family: var(--el-font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.wpulse-pricing-rules {
+  .el-header {
+    height: auto;
+    padding: 1rem 1.5rem;
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "wpulse/pricing-rules-for-woocommerce",
+    "description": "WooCommerce dynamic pricing rules with Vue admin and Laravel-style MVC backend",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "WpulsePricingRules\\Core\\": "src/Core/",
+            "WpulsePricingRules\\App\\": "app/",
+            "WpulsePricingRules\\Routes\\": "routes/"
+        },
+        "files": []
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}
