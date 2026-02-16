@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import RulesView from '../views/RulesView.vue';
 import RuleEditorView from '../views/RuleEditorView.vue';
 import ExclusionListView from '../views/ExclusionListView.vue';
+import HelpView from '../views/HelpView.vue';
 import PlaceholderView from '../views/PlaceholderView.vue';
 
 const routes = [
@@ -11,7 +12,7 @@ const routes = [
   { path: '/exclusion-list', name: 'ExclusionList', component: ExclusionListView },
   { path: '/settings', name: 'Settings', component: PlaceholderView, props: { title: 'Settings' } },
   { path: '/tools', name: 'Tools', component: PlaceholderView, props: { title: 'Your Store Tools' } },
-  { path: '/help', name: 'Help', component: PlaceholderView, props: { title: 'Help' } },
+  { path: '/help', name: 'Help', component: HelpView },
 ];
 
 export default createRouter({

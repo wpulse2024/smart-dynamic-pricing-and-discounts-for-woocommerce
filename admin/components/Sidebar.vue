@@ -2,7 +2,9 @@
     <aside :class="['sidebar', { collapsed: isCollapsed }]">
         <!-- Logo -->
         <div class="sidebar__header">
-            <span v-if="!isCollapsed" class="sidebar__logo">YITH</span>
+            <span v-if="!isCollapsed" class="sidebar__logo">
+                Pricing Rules
+            </span>
         </div>
 
         <!-- Menu Header -->
@@ -35,7 +37,7 @@
                 </button>
             </router-link>
 
-            <router-link to="/settings" custom v-slot="{ navigate, isActive }">
+            <!-- <router-link to="/settings" custom v-slot="{ navigate, isActive }">
                 <button
                     type="button"
                     class="sidebar__nav-item"
@@ -50,7 +52,7 @@
                     </svg>
                     <span v-if="!isCollapsed">Settings</span>
                 </button>
-            </router-link>
+            </router-link> -->
 
             <router-link to="/exclusion-list" custom v-slot="{ navigate, isActive }">
                 <button
@@ -60,18 +62,15 @@
                     @click="navigate"
                 >
                     <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="8" y1="6" x2="21" y2="6"></line>
-                        <line x1="8" y1="12" x2="21" y2="12"></line>
-                        <line x1="8" y1="18" x2="21" y2="18"></line>
-                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                        </path>
                     </svg>
                     <span v-if="!isCollapsed">Exclusion List</span>
                 </button>
             </router-link>
 
-            <router-link to="/tools" custom v-slot="{ navigate, isActive }">
+            <!-- <router-link to="/tools" custom v-slot="{ navigate, isActive }">
                 <button
                     type="button"
                     class="sidebar__nav-item"
@@ -85,7 +84,7 @@
                     </svg>
                     <span v-if="!isCollapsed">Your Store Tools</span>
                 </button>
-            </router-link>
+            </router-link> -->
 
             <router-link to="/help" custom v-slot="{ navigate, isActive }">
                 <button

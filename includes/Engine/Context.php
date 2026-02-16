@@ -121,6 +121,51 @@ class Context {
         return $ctx;
     }
 
+    /**
+     * Build context for product/shop display (no cart). Used to evaluate which single rule
+     * would apply so we only show that rule's message. Cart-dependent conditions will fail.
+     */
+    public static function forProductPage(): self {
+        $ctx = new self();
+        $ctx->cart = null;
+        $ctx->user_id = get_current_user_id();
+        $ctx->user_roles = [];
+        if ($ctx->user_id) {
+            $user = get_userdata($ctx->user_id);
+            if ($user && !empty($user->roles)) {
+                $ctx->user_roles = array_map('strval', $user->roles);
+            }
+        }
+        $ctx->cart_subtotal = 0.0;
+        $ctx->cart_quantity = 0;
+        $ctx->cart_items_count = 0;
+        $ctx->customer_total_spent = 0.0;
+        $ctx->customer_order_count = 0;
+        if ($ctx->user_id && function_exists('wc_get_customer_order_count')) {
+            $ctx->customer_order_count = (int) wc_get_customer_order_count($ctx->user_id);
+            if (class_exists('WC_Customer')) {
+                $customer = new \WC_Customer($ctx->user_id);
+                $ctx->customer_total_spent = (float) $customer->get_total_spent();
+            }
+        }
+        $ctx->applied_coupons = [];
+        $ctx->shipping_country = null;
+        $ctx->shipping_state = null;
+        if (function_exists('WC') && WC()->customer) {
+            $ctx->shipping_country = WC()->customer->get_shipping_country();
+            $ctx->shipping_state = WC()->customer->get_shipping_state();
+        }
+        if (function_exists('is_checkout') && is_checkout()) {
+            $ctx->page = 'checkout';
+        } elseif (function_exists('is_cart') && is_cart()) {
+            $ctx->page = 'cart';
+        } else {
+            $ctx->page = 'other';
+        }
+        $ctx->cart_lines = [];
+        return $ctx;
+    }
+
     private static function getProductTermIds(int $productId, string $taxonomy): array {
         $terms = wp_get_post_terms($productId, $taxonomy);
         if (is_wp_error($terms) || !is_array($terms)) {

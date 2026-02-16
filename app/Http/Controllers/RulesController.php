@@ -14,7 +14,7 @@ use WpulsePricingRules\Includes\DB\RulesRepository;
 class RulesController extends Controller {
 
     public function index(WP_REST_Request $request): WP_REST_Response {
-        $rules = RulesRepository::all();
+        $rules = RulesRepository::all('priority', 'DESC');
         return $this->json($rules);
     }
 

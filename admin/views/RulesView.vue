@@ -66,6 +66,7 @@
             class="search-box__input"
             placeholder="Search rule"
             v-model="searchQuery"
+            style="padding: 2px 34px;"
           />
         </div>
       </div>

@@ -46,6 +46,7 @@ final class Plugin {
 
     public function registerEngine(): void {
         \WpulsePricingRules\Includes\Engine\RuleEngine::register();
+        \WpulsePricingRules\Includes\Frontend\ProductDiscountMessage::register();
     }
 
     /**
