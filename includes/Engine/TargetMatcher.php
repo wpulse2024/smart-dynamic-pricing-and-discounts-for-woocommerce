@@ -46,6 +46,16 @@ class TargetMatcher {
             return self::applyExclude($match, $targets, 'tags');
         }
 
+        if ($type === 'variations' && !empty($targets['variations'])) {
+            $variation_id = (int) ($line['variation_id'] ?? 0);
+            if ($variation_id === 0) {
+                return false;
+            }
+            $ids = array_map('intval', (array) $targets['variations']);
+            $match = in_array($variation_id, $ids, true);
+            return self::applyExclude($match, $targets, 'variations');
+        }
+
         return true;
     }
 

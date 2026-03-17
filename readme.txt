@@ -3,7 +3,7 @@ Contributors: wpulse, dasnitesh780, chadni54
 Tags: woocommerce dynamic pricing, bulk discount, tiered pricing, BOGO, pricing rules
 Requires at least: 5.0
 Tested up to: 6.9.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 7.4
 WC requires at least: 5.0
 WC tested up to: 9.6
@@ -216,53 +216,12 @@ Open a thread on the [WordPress.org support forum](https://wordpress.org/support
 
 == Changelog ==
 
+= 1.1.1 – 2026-03-18 =
+* Added variation-level targeting — rules can now apply to specific variations of a variable product (e.g. only the 650ml size), leaving other variations unaffected.
+
 = 1.1.0 – 2026-03-17 =
 
-**Security**
-* Fixed SQL injection risk: applied `esc_sql()` to all raw table-name interpolations in RulesRepository, ExclusionRepository, and Installer queries (SEC-C1–C4).
-* Fixed CSRF: nonces are now read strictly from `$_POST` (not `$_REQUEST`) across all AJAX handlers (SEC-H1).
-* Fixed XSS: custom rule messages are sanitized with `wp_kses_post()` at the point of return, not just at output (SEC-H2).
-* Removed duplicate AJAX routes for template creation — frontend now uses REST API exclusively, reducing attack surface (SEC-H4).
-* Added transient-based rate limiting (60 requests/min per user) on product, category, and tag search AJAX endpoints (SEC-H5).
-* Applied `sanitize_text_field(wp_unslash())` to user and product search parameters in EditorDataController (SEC-M1, SEC-M2).
-* Wrapped `wp_safe_redirect()` URL with `esc_url()` in EditRulePage (SEC-M4).
-* DB errors in `Model::find()` are now logged via `error_log()` instead of silently returning null (SEC-M7).
-* Added null/empty price guard in `Context::fromCart()` — products with no price set are skipped and logged rather than treated as free (SEC-L2).
-* Added `KEY status (status)` index to the rules table via safe dbDelta migration — improves engine query performance on status filtering (SEC-L3).
-
-**Performance**
-* Introduced `RuleSchedule` shared utility class with static memoization — eliminates duplicate `wp_get_post_terms()` calls across RuleEngine, Context, TargetMatcher, and ProductDiscountMessage.
-* Rule JSON is now decoded once per request in RuleEngine and stored in a static cache — eliminates repeated `json_decode()` in the line-item loop, gift loop, and fees hook.
-* Static `$cached_rules` in ProductDiscountMessage — eliminates one DB query per product on shop/archive pages (was N queries for N products).
-* Static customer data cache in `Context` — WC_Customer data (order count, total spent) fetched once per user per request instead of on every cart recalculation.
-* `ExclusionRepository::getByType()` now runs a direct `WHERE exclusion_type = %s` query instead of loading all rows and filtering in PHP.
-* `RulesRepository::all()` now accepts optional `$limit` and `$offset` parameters for pagination (backward compatible — existing callers unaffected).
-* Discounted prices are now rounded to `wc_get_price_decimals()` in all benefit handlers (PercentOff, Tiered, XForY, NthPercentOff, CategoryDiscounts).
-
-**Code Quality**
-* Refactored `RuleEngine::onBeforeCalculateTotals()` (was 76 lines) into `prepareCart()`, `applyLineRules()`, and `applyGiftRules()` private methods.
-* Replaced 8-case `applyBenefit()` switch with a static benefit handler registry — new benefit types can be added without touching the central method.
-* Replaced route dispatcher switch in `Route::mapAction()` with dynamic `method_exists()` dispatch.
-* Extracted `buildCommonContext()` in `Context` — eliminates ~40 lines of duplicated customer data fetching between `fromCart()` and `forProductPage()`.
-* Extracted `getTaxonomyOptions()` in `EditorDataController` — `categories()` and `tags()` share one implementation.
-* Extracted `searchTaxonomy()` in `ExclusionAjax` — `searchCategories()` and `searchTags()` share one implementation.
-* Removed dead code: `RuleEvaluator` (431-line legacy class), `Ajax::register()`, `PricingRule::createTable()`.
-
-**Bug Fixes**
-* `RulesController::store()` now returns a decoded `rule` key (consistent with `show()`, `update()`, and `index()`). Previously returned the raw `rule_json` string.
-* `FreeGift::apply()` now checks `ExclusionService::isProductExcluded()` before adding the gift product to the cart — respects the global exclusion list.
-* `ExclusionService` static cache is now reset at the start of each `woocommerce_before_calculate_totals` call — prevents stale cache in object-cache or queue-worker environments.
-* `createFromTemplate` and `createFromScratch` responses now include a `hash` key (`#/rules/edit/{id}`) for correct Vue Router navigation.
-
-**UI / JavaScript**
-* Rule editor now shows an inline error message when a rule fails to load or save (previously silent).
-* Bulk enable/disable/delete now reports partial failures: "X of Y rules could not be updated" (previously silent on partial failure).
-* Templates modal now navigates via Vue Router hash (`res.hash`) instead of a full admin URL — fixes navigation on sites with non-standard WordPress installs.
-* Standardized search `per_page` to 50 across all product, user, category, and tag search calls in the rule editor.
-* `ExclusionListView` now loads up to 100 entries for categories and tags on initial load (matching products).
-* JSON parse errors in the API client are now logged to the browser console instead of swallowed silently.
-
----
+* Security, performance, and reliability release. Fixes SQL injection hardening, CSRF/XSS improvements, removes duplicate AJAX routes, and adds request-scoped caching throughout the rule engine. Fully backward compatible — no action required on upgrade.
 
 = 1.0.0 – 2026-02-14 =
 * Initial release.

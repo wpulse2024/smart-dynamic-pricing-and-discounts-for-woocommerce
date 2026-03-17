@@ -20,6 +20,8 @@ Route::get('editor/users', EditorDataController::class, 'users');
 Route::get('editor/categories', EditorDataController::class, 'categories');
 Route::get('editor/tags', EditorDataController::class, 'tags');
 Route::get('editor/products', EditorDataController::class, 'products');
+Route::get('editor/variable-products', EditorDataController::class, 'variableProducts');
+Route::get('editor/variations', EditorDataController::class, 'variations');
 
 // Resource: pricing rules (index, store, show, update, destroy)
 Route::resource('rules', RulesController::class);

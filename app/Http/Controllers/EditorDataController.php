@@ -116,4 +116,79 @@ class EditorDataController extends Controller {
         }
         return $this->json($list);
     }
+
+    /**
+     * GET editor/variable-products – search only variable products (for variation targeting).
+     */
+    public function variableProducts(WP_REST_Request $request): WP_REST_Response {
+        $search = $request->get_param('search');
+        $search = is_string($search) ? sanitize_text_field(wp_unslash(trim($search))) : '';
+        $per_page = min(50, max(5, (int) $request->get_param('per_page') ?: 20));
+        $q = new \WP_Query([
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            'posts_per_page' => $per_page,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+            's'              => $search,
+            'tax_query'      => [
+                [
+                    'taxonomy' => 'product_type',
+                    'field'    => 'slug',
+                    'terms'    => ['variable'],
+                ],
+            ],
+        ]);
+        $list = [];
+        foreach ($q->posts as $p) {
+            $product = wc_get_product($p->ID);
+            if (!$product) {
+                continue;
+            }
+            $list[] = [
+                'id'   => $product->get_id(),
+                'name' => $product->get_name(),
+            ];
+        }
+        return $this->json($list);
+    }
+
+    /**
+     * GET editor/variations – get all variations of a variable product.
+     * Requires product_id query param.
+     */
+    public function variations(WP_REST_Request $request): WP_REST_Response {
+        $product_id = (int) $request->get_param('product_id');
+        if (!$product_id) {
+            return $this->json([]);
+        }
+        $product = wc_get_product($product_id);
+        if (!$product || !$product->is_type('variable')) {
+            return $this->json([]);
+        }
+        $variation_ids = $product->get_children();
+        $list = [];
+        foreach ($variation_ids as $variation_id) {
+            $variation = wc_get_product($variation_id);
+            if (!$variation || !$variation->exists()) {
+                continue;
+            }
+            $attributes = $variation->get_variation_attributes();
+            $attr_parts = [];
+            foreach ($attributes as $attr_name => $attr_value) {
+                if ($attr_value !== '') {
+                    $attr_parts[] = $attr_value;
+                }
+            }
+            $label = $product->get_name();
+            if (!empty($attr_parts)) {
+                $label .= ' – ' . implode(', ', $attr_parts);
+            }
+            $list[] = [
+                'id'   => $variation->get_id(),
+                'name' => $label,
+            ];
+        }
+        return $this->json($list);
+    }
 }

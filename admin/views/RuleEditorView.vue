@@ -248,6 +248,7 @@
                 <option value="all">All products</option>
                 <option value="products">Specific products</option>
                 <option value="categories">Specific categories</option>
+                <option value="variations">Specific variations</option>
               </select>
             </div>
             <div v-if="form.rule.targets.type === 'products'" class="rule-editor-field">
@@ -290,6 +291,49 @@
                 />
               </el-select>
             </div>
+            <template v-if="form.rule.targets.type === 'variations'">
+              <div class="rule-editor-field">
+                <label class="rule-editor-field__label">Select variable product</label>
+                <el-select
+                  v-model="variationParentId"
+                  filterable
+                  remote
+                  :remote-method="searchVariableProducts"
+                  :loading="variableProductsLoading"
+                  placeholder="Search variable product…"
+                  clearable
+                  class="rule-editor-field__el-select"
+                  @focus="loadVariableProductsIfEmpty"
+                  @change="onVariationParentChange"
+                >
+                  <el-option
+                    v-for="p in variableProductOptions"
+                    :key="p.id"
+                    :label="p.name"
+                    :value="p.id"
+                  />
+                </el-select>
+                <p class="rule-editor-field__help">Select the variable product whose variations you want to target.</p>
+              </div>
+              <div v-if="variationParentId" class="rule-editor-field">
+                <label class="rule-editor-field__label">Select variations</label>
+                <el-select
+                  v-model="form.rule.targets.variations"
+                  multiple
+                  filterable
+                  :loading="variationsLoading"
+                  placeholder="Select variations"
+                  class="rule-editor-field__el-select"
+                >
+                  <el-option
+                    v-for="v in variationOptions"
+                    :key="v.id"
+                    :label="v.name"
+                    :value="v.id"
+                  />
+                </el-select>
+              </div>
+            </template>
           </template>
         </div>
       </section>
@@ -627,9 +671,14 @@ const excludeProductsLoading = ref(false);
 const usersExcludeLoading = ref(false);
 const productsLoading = ref(false);
 const targetProductsLoading = ref(false);
+const variableProductOptions = ref([]);
+const variableProductsLoading = ref(false);
+const variationOptions = ref([]);
+const variationsLoading = ref(false);
+const variationParentId = ref(null);
 
 const defaultRule = () => ({
-  targets: { type: 'all', products: [], categories: [] },
+  targets: { type: 'all', products: [], categories: [], variations: [] },
   conditions: { groups: [{ logic: 'and', items: [] }] },
   benefit: {
     kind: 'percent_off',
@@ -785,6 +834,7 @@ function saveNewCondition() {
 function ensureTargetsArrays() {
   if (!Array.isArray(form.value.rule.targets.products)) form.value.rule.targets.products = [];
   if (!Array.isArray(form.value.rule.targets.categories)) form.value.rule.targets.categories = [];
+  if (!Array.isArray(form.value.rule.targets.variations)) form.value.rule.targets.variations = [];
 }
 
 function getConditionValue(type, op) {
@@ -947,6 +997,61 @@ async function loadExcludeProductsOnce() {
   if (excludeProductOptions.value.length === 0) await searchExcludeProducts('');
 }
 
+async function searchVariableProducts(q) {
+  variableProductsLoading.value = true;
+  try {
+    const data = await api.get('editor/variable-products', { search: q || '', per_page: 50 });
+    variableProductOptions.value = Array.isArray(data) ? data : [];
+  } catch (_) {
+    variableProductOptions.value = [];
+  } finally {
+    variableProductsLoading.value = false;
+  }
+}
+
+async function loadVariableProductsIfEmpty() {
+  if (variableProductOptions.value.length === 0) await searchVariableProducts('');
+}
+
+async function loadVariationsForProduct(productId) {
+  if (!productId) {
+    variationOptions.value = [];
+    return;
+  }
+  variationsLoading.value = true;
+  try {
+    const data = await api.get('editor/variations', { product_id: productId });
+    variationOptions.value = Array.isArray(data) ? data : [];
+  } catch (_) {
+    variationOptions.value = [];
+  } finally {
+    variationsLoading.value = false;
+  }
+}
+
+async function onVariationParentChange(newParentId) {
+  form.value.rule.targets.variations = [];
+  await loadVariationsForProduct(newParentId);
+}
+
+async function restoreVariationParent(variationIds) {
+  if (!variationIds || !variationIds.length) return;
+  // Load variable products to populate the dropdown, then find which parent owns these variations
+  await loadVariableProductsIfEmpty();
+  // Load variations for each variable product candidate until we find the parent
+  for (const p of variableProductOptions.value) {
+    try {
+      const data = await api.get('editor/variations', { product_id: p.id });
+      const ids = Array.isArray(data) ? data.map((v) => v.id) : [];
+      if (variationIds.some((vid) => ids.includes(vid))) {
+        variationParentId.value = p.id;
+        variationOptions.value = data;
+        return;
+      }
+    } catch (_) {}
+  }
+}
+
 const wordCount = computed(() => {
   const t = form.value.rule?.meta?.custom_message || '';
   return t.trim() ? t.split(/\s+/).length : 0;
@@ -960,7 +1065,7 @@ function assignFromRule(r) {
   form.value.rule = {
     ...defaultRule(),
     ...(r.rule || {}),
-    targets: { ...defaultRule().targets, ...(r.rule?.targets || {}), products: (r.rule?.targets?.products ?? []).map(Number).filter(Boolean), categories: (r.rule?.targets?.categories ?? []).map(Number).filter(Boolean) },
+    targets: { ...defaultRule().targets, ...(r.rule?.targets || {}), products: (r.rule?.targets?.products ?? []).map(Number).filter(Boolean), categories: (r.rule?.targets?.categories ?? []).map(Number).filter(Boolean), variations: (r.rule?.targets?.variations ?? []).map(Number).filter(Boolean) },
     benefit: {
       ...defaultRule().benefit,
       ...(r.rule?.benefit || {}),
@@ -986,12 +1091,16 @@ function assignFromRule(r) {
   if (!Array.isArray(form.value.rule.benefit.category_discounts)) form.value.rule.benefit.category_discounts = [];
   form.value.rule.targets.products = form.value.rule.targets.products.map(Number).filter(Boolean);
   form.value.rule.targets.categories = form.value.rule.targets.categories.map(Number).filter(Boolean);
+  form.value.rule.targets.variations = (r.rule?.targets?.variations ?? []).map(Number).filter(Boolean);
   if (!form.value.rule.meta) form.value.rule.meta = {};
   form.value.rule.meta.show_badge = form.value.rule.meta.show_badge !== false;
   form.value.rule.meta.show_on_shop = form.value.rule.meta.show_on_shop !== false;
   form.value.rule.meta.custom_message = form.value.rule.meta.custom_message || '';
   ensureTargetsArrays();
   productFilterEnabled.value = (form.value.rule.targets?.type || 'all') !== 'all';
+  if (form.value.rule.targets?.type === 'variations' && form.value.rule.targets.variations.length) {
+    restoreVariationParent(form.value.rule.targets.variations);
+  }
   excludeUsersEnabled.value = (getConditionValue('user_role', 'not_in').length > 0 || getConditionValue('user_id', 'not_in').length > 0);
   scheduleMode.value = (form.value.rule.schedule?.start || form.value.rule.schedule?.end) ? 'schedule' : 'always';
   customMessageEnabled.value = !!(form.value.rule.meta?.custom_message || '').trim();
@@ -1003,6 +1112,8 @@ function assignFromRule(r) {
   rolesLoaded = false;
   categoriesLoaded = false;
   tagsLoaded = false;
+  variationParentId.value = null;
+  variationOptions.value = [];
   loadRolesOnce();
   loadCategoriesOnce();
 }

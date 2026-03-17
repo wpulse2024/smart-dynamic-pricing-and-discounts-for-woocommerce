@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WPulse Pricing Rules for WooCommerce
  * Description: A powerful WooCommerce addon to create smart dynamic pricing, discounts, and tiered pricing rules with an intuitive Vue 3 admin interface.
- * Version: 1.0.0
+ * Version: 1.1.1
  * Author: WPulse
  * Author URI: https://profiles.wordpress.org/wpulse/
  * Text Domain: wpulse-pricing-rules-for-woocommerce
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('WPULSE_PRICING_RULES_VERSION', '1.0.0');
+define('WPULSE_PRICING_RULES_VERSION', '1.1.1');
 define('WPULSE_PRICING_RULES_FILE', __FILE__);
 define('WPULSE_PRICING_RULES_PATH', plugin_dir_path(__FILE__));
 define('WPULSE_PRICING_RULES_URL', plugin_dir_url(__FILE__));
