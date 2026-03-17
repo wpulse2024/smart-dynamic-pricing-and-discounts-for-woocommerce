@@ -30,7 +30,7 @@ class EditorDataController extends Controller {
      */
     public function users(WP_REST_Request $request): WP_REST_Response {
         $search = $request->get_param('search');
-        $search = is_string($search) ? trim($search) : '';
+        $search = is_string($search) ? sanitize_text_field(wp_unslash(trim($search))) : '';
         $per_page = min(50, max(5, (int) $request->get_param('per_page') ?: 20));
         $args = [
             'number'   => $per_page,
@@ -58,31 +58,19 @@ class EditorDataController extends Controller {
      * GET editor/categories – WooCommerce product categories.
      */
     public function categories(WP_REST_Request $request): WP_REST_Response {
-        $terms = get_terms([
-            'taxonomy'   => 'product_cat',
-            'hide_empty' => false,
-            'orderby'    => 'name',
-            'order'      => 'ASC',
-        ]);
-        if (is_wp_error($terms)) {
-            return $this->json([]);
-        }
-        $list = [];
-        foreach ($terms as $term) {
-            $list[] = [
-                'id'   => (int) $term->term_id,
-                'name' => $term->name,
-            ];
-        }
-        return $this->json($list);
+        return $this->getTaxonomyOptions('product_cat');
     }
 
     /**
      * GET editor/tags – WooCommerce product tags.
      */
     public function tags(WP_REST_Request $request): WP_REST_Response {
+        return $this->getTaxonomyOptions('product_tag');
+    }
+
+    private function getTaxonomyOptions(string $taxonomy): WP_REST_Response {
         $terms = get_terms([
-            'taxonomy'   => 'product_tag',
+            'taxonomy'   => $taxonomy,
             'hide_empty' => false,
             'orderby'    => 'name',
             'order'      => 'ASC',
@@ -105,7 +93,7 @@ class EditorDataController extends Controller {
      */
     public function products(WP_REST_Request $request): WP_REST_Response {
         $search = $request->get_param('search');
-        $search = is_string($search) ? trim($search) : '';
+        $search = is_string($search) ? sanitize_text_field(wp_unslash(trim($search))) : '';
         $per_page = min(50, max(5, (int) $request->get_param('per_page') ?: 20));
         $q = new \WP_Query([
             'post_type'      => 'product',
@@ -124,7 +112,6 @@ class EditorDataController extends Controller {
             $list[] = [
                 'id'    => $product->get_id(),
                 'name'  => $product->get_name(),
-                'price' => $product->get_price(),
             ];
         }
         return $this->json($list);

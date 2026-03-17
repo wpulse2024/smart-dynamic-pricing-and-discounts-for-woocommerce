@@ -244,9 +244,9 @@ function loadAllForType() {
   if (type === 'product') {
     exclusionApi.searchProducts('', 100).then(done).catch(() => { searchLoading.value = false; });
   } else if (type === 'category') {
-    exclusionApi.searchCategories('').then(done).catch(() => { searchLoading.value = false; });
+    exclusionApi.searchCategories('', 100).then(done).catch(() => { searchLoading.value = false; });
   } else {
-    exclusionApi.searchTags('').then(done).catch(() => { searchLoading.value = false; });
+    exclusionApi.searchTags('', 100).then(done).catch(() => { searchLoading.value = false; });
   }
 }
 
@@ -264,9 +264,9 @@ function runSearch() {
   if (type === 'product') {
     exclusionApi.searchProducts(q, 50).then(done).catch(() => { searchLoading.value = false; });
   } else if (type === 'category') {
-    exclusionApi.searchCategories(q).then(done).catch(() => { searchLoading.value = false; });
+    exclusionApi.searchCategories(q, 50).then(done).catch(() => { searchLoading.value = false; });
   } else {
-    exclusionApi.searchTags(q).then(done).catch(() => { searchLoading.value = false; });
+    exclusionApi.searchTags(q, 50).then(done).catch(() => { searchLoading.value = false; });
   }
 }
 

@@ -34,8 +34,8 @@ final class Plugin {
         add_action('rest_api_init', [$this, 'registerRestRoutes']);
         add_filter('script_loader_tag', [$this, 'scriptLoaderTag'], 10, 3);
         add_action('woocommerce_loaded', [$this, 'registerEngine']);
-        add_action('wp_ajax_wpulse_get_templates', [\WpulsePricingRules\Includes\Admin\Ajax::class, 'getTemplates']);
-        add_action('wp_ajax_wpulse_create_rule_from_template', [\WpulsePricingRules\Includes\Admin\Ajax::class, 'createRuleFromTemplate']);
+        // Templates are served via REST API (GET /templates, POST /rules/from-template).
+        // The AJAX equivalents have been removed to reduce attack surface (SEC-H4).
         add_action('wp_ajax_wpulse_add_exclusion', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'addExclusion']);
         add_action('wp_ajax_wpulse_delete_exclusion', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'deleteExclusion']);
         add_action('wp_ajax_wpulse_search_products', [\WpulsePricingRules\Includes\Admin\ExclusionAjax::class, 'searchProducts']);

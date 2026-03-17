@@ -5,6 +5,7 @@ namespace WpulsePricingRules\Includes\Frontend;
 use WpulsePricingRules\Includes\DB\RulesRepository;
 use WpulsePricingRules\Includes\Engine\ConditionEvaluator;
 use WpulsePricingRules\Includes\Engine\Context;
+use WpulsePricingRules\Includes\Engine\RuleSchedule;
 use WpulsePricingRules\Includes\Engine\TargetMatcher;
 
 /**
@@ -13,6 +14,16 @@ use WpulsePricingRules\Includes\Engine\TargetMatcher;
  * Respects rule meta: show_badge, show_on_shop, custom_message.
  */
 class ProductDiscountMessage {
+
+	/** @var array<int, array>|null */
+	private static ?array $cached_rules = null;
+
+	private static function getActiveRules(): array {
+		if (self::$cached_rules === null) {
+			self::$cached_rules = RulesRepository::all('priority', 'DESC');
+		}
+		return self::$cached_rules;
+	}
 
 	public static function register(): void {
 		add_action( 'woocommerce_single_product_summary', [ __CLASS__, 'renderSingleProductMessage' ], 11 );
@@ -86,13 +97,13 @@ class ProductDiscountMessage {
 		$product_id = (int) $product->get_id();
 		$line       = [
 			'product_id' => $product_id,
-			'categories' => self::getProductTermIds( $product_id, 'product_cat' ),
-			'tags'       => self::getProductTermIds( $product_id, 'product_tag' ),
+			'categories' => RuleSchedule::getTermIds( $product_id, 'product_cat' ),
+			'tags'       => RuleSchedule::getTermIds( $product_id, 'product_tag' ),
 		];
 
 		// Context with no cart so cart-dependent conditions fail; only rules that pass (e.g. user role) are applicable.
 		$context   = Context::forProductPage();
-		$all_rules = RulesRepository::all( 'priority', 'DESC' );
+		$all_rules = self::getActiveRules();
 
 		foreach ( $all_rules as $row ) {
 			if ( ( $row['status'] ?? '' ) !== 'active' ) {
@@ -102,7 +113,7 @@ class ProductDiscountMessage {
 			if ( ! is_array( $rule_data ) ) {
 				$rule_data = [];
 			}
-			if ( ! self::ruleInSchedule( $rule_data ) ) {
+			if ( ! RuleSchedule::inSchedule( $rule_data ) ) {
 				continue;
 			}
 			// Conditions must pass (e.g. user role, page). Cart conditions fail on product page.
@@ -141,34 +152,10 @@ class ProductDiscountMessage {
 		return [];
 	}
 
-	private static function ruleInSchedule( array $rule ): bool {
-		$schedule = $rule['schedule'] ?? [];
-		$start    = $schedule['start'] ?? '';
-		$end      = $schedule['end'] ?? '';
-		$now      = (int) current_time( 'timestamp' );
-		if ( $start !== '' && strtotime( $start ) > $now ) {
-			return false;
-		}
-		if ( $end !== '' && strtotime( $end ) < $now ) {
-			return false;
-		}
-		return true;
-	}
-
-	private static function getProductTermIds( int $product_id, string $taxonomy ): array {
-		$terms = wp_get_post_terms( $product_id, $taxonomy );
-		if ( is_wp_error( $terms ) || ! is_array( $terms ) ) {
-			return [];
-		}
-		return array_map( function ( $t ) {
-			return (int) $t->term_id;
-		}, $terms );
-	}
-
 	private static function buildMessage( array $rule_data, string $rule_name, string $custom_message, bool $single_product ): string {
 		if ( $custom_message !== '' ) {
 			$msg = self::replaceShortcodes( $custom_message, $rule_data );
-			return $msg;
+			return wp_kses_post( $msg );
 		}
 		$benefit = $rule_data['benefit'] ?? [];
 		$kind    = $benefit['kind'] ?? '';

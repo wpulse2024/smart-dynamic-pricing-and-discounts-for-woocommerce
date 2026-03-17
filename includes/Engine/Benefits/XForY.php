@@ -48,7 +48,7 @@ class XForY {
             $pay_count = self::payCountForXForY($qty, $buy_qty, $pay_qty);
             $free_count = $qty - $pay_count;
             $adjustment = -$price * $free_count;
-            $new_price = max(0, $price + ($adjustment / $qty));
+            $new_price = round(max(0, $price + ($adjustment / $qty)), wc_get_price_decimals());
             PercentOff::setLinePrice($cart_item, $new_price, $row['id']);
         }
     }

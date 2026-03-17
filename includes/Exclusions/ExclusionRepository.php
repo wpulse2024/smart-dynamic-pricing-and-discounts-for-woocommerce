@@ -49,7 +49,7 @@ class ExclusionRepository {
     public static function getAll(): array {
         global $wpdb;
         $table = self::getTableName();
-        $rows  = $wpdb->get_results("SELECT id, exclusion_type, object_id, created_at FROM {$table} ORDER BY exclusion_type, object_id", ARRAY_A);
+        $rows  = $wpdb->get_results("SELECT id, exclusion_type, object_id, created_at FROM " . esc_sql($table) . " ORDER BY exclusion_type, object_id", ARRAY_A);
         return $rows ? array_map(function ($row) {
             return [
                 'id'             => (int) $row['id'],
@@ -64,11 +64,14 @@ class ExclusionRepository {
      * @return array<int, array{id: int, exclusion_type: string, object_id: int, created_at: string}>
      */
     public static function getByType(string $type): array {
-        $type = self::sanitizeType($type);
-        $all  = self::getAll();
-        return array_values(array_filter($all, function ($row) use ($type) {
-            return $row['exclusion_type'] === $type;
-        }));
+        global $wpdb;
+        $type  = self::sanitizeType($type);
+        $table = self::getTableName();
+        $rows  = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, exclusion_type, object_id, created_at FROM " . esc_sql($table) . " WHERE exclusion_type = %s ORDER BY object_id",
+            $type
+        ), ARRAY_A);
+        return $rows ?: [];
     }
 
     /**

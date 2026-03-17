@@ -8,6 +8,8 @@
           <h1 class="rule-editor-page__title">Dynamic Rule</h1>
           <button type="button" class="rule-editor-page__save-view" @click="save">Save view &gt;</button>
         </div>
+        <div v-if="saveError" style="color: red; margin: 8px 0;">{{ saveError }}</div>
+        <div v-if="loadError" style="color: red; margin: 8px 0;">{{ loadError }}</div>
       </div>
 
       <!-- General Options -->
@@ -592,6 +594,8 @@ const ruleId = computed(() => route.params.id);
 const loading = ref(true);
 const rule = ref(null);
 const saveSaving = ref(false);
+const saveError = ref(null);
+const loadError = ref(null);
 
 const productFilterEnabled = ref(false);
 const excludeUsersEnabled = ref(false);
@@ -852,7 +856,7 @@ async function loadCategoriesOnce() {
 async function searchUsers(q) {
   usersLoading.value = true;
   try {
-    const data = await api.get('editor/users', { search: q || '', per_page: 30 });
+    const data = await api.get('editor/users', { search: q || '', per_page: 50 });
     userOptions.value = Array.isArray(data) ? data : [];
   } catch (_) {
     userOptions.value = [];
@@ -869,7 +873,7 @@ async function loadUsersOnce() {
 async function searchUsersExclude(q) {
   usersExcludeLoading.value = true;
   try {
-    const data = await api.get('editor/users', { search: q || '', per_page: 30 });
+    const data = await api.get('editor/users', { search: q || '', per_page: 50 });
     userExcludeOptions.value = Array.isArray(data) ? data : [];
   } catch (_) {
     userExcludeOptions.value = [];
@@ -886,7 +890,7 @@ async function loadUsersExcludeOnce() {
 async function searchProducts(q) {
   productsLoading.value = true;
   try {
-    const data = await api.get('editor/products', { search: q || '', per_page: 30 });
+    const data = await api.get('editor/products', { search: q || '', per_page: 50 });
     productOptions.value = Array.isArray(data) ? data : [];
   } catch (_) {
     productOptions.value = [];
@@ -902,7 +906,7 @@ async function loadProductsIfEmpty() {
 async function searchProductsForTarget(q) {
   targetProductsLoading.value = true;
   try {
-    const data = await api.get('editor/products', { search: q || '', per_page: 30 });
+    const data = await api.get('editor/products', { search: q || '', per_page: 50 });
     targetProductOptions.value = Array.isArray(data) ? data : [];
   } catch (_) {
     targetProductOptions.value = [];
@@ -930,7 +934,7 @@ async function loadTagsOnce() {
 async function searchExcludeProducts(q) {
   excludeProductsLoading.value = true;
   try {
-    const data = await api.get('editor/products', { search: q || '', per_page: 30 });
+    const data = await api.get('editor/products', { search: q || '', per_page: 50 });
     excludeProductOptions.value = Array.isArray(data) ? data : [];
   } catch (_) {
     excludeProductOptions.value = [];
@@ -1013,8 +1017,9 @@ onMounted(async () => {
   try {
     const data = await api.get(`rules/${id}`);
     assignFromRule(data);
-  } catch (_) {
+  } catch (err) {
     rule.value = null;
+    loadError.value = err?.message || 'Failed to load rule.';
   } finally {
     loading.value = false;
   }
@@ -1026,8 +1031,9 @@ watch(ruleId, async (id) => {
   try {
     const data = await api.get(`rules/${id}`);
     assignFromRule(data);
-  } catch (_) {
+  } catch (err) {
     rule.value = null;
+    loadError.value = err?.message || 'Failed to load rule.';
   } finally {
     loading.value = false;
   }
@@ -1035,6 +1041,7 @@ watch(ruleId, async (id) => {
 
 async function save() {
   if (!rule.value) return;
+  saveError.value = null;
   saveSaving.value = true;
   ensureTargetsArrays();
   if (applyTo.value === 'all') {
@@ -1053,7 +1060,9 @@ async function save() {
   try {
     await api.patch(`rules/${ruleId.value}`, payload);
     assignFromRule({ ...rule.value, ...payload, rule: payload.rule });
-  } catch (_) {}
+  } catch (err) {
+    saveError.value = err?.message || 'Failed to save rule.';
+  }
   saveSaving.value = false;
 }
 </script>

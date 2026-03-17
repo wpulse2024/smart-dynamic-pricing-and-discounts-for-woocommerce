@@ -55,7 +55,7 @@ class CategoryDiscounts {
                 }
             }
             if ($adjustment !== 0.0) {
-                $new_price = max(0, $price + ($adjustment / $qty));
+                $new_price = round(max(0, $price + ($adjustment / $qty)), wc_get_price_decimals());
                 PercentOff::setLinePrice($cart_item, $new_price, $row['id']);
             }
         }

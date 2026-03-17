@@ -44,13 +44,17 @@ class RulesRepository {
     /**
      * @return array<int, array>
      */
-    public static function all(string $orderBy = 'priority', string $order = 'ASC'): array {
+    public static function all(string $orderBy = 'priority', string $order = 'ASC', int $limit = 0, int $offset = 0): array {
         global $wpdb;
         $table = self::getTableName();
         $allowed = ['priority' => 'priority', 'updated_at' => 'updated_at', 'id' => 'id'];
         $col = $allowed[$orderBy] ?? 'priority';
         $dir = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
-        $rows = $wpdb->get_results("SELECT * FROM {$table} ORDER BY {$col} {$dir}", ARRAY_A);
+        $sql = "SELECT * FROM " . esc_sql($table) . " ORDER BY {$col} {$dir}";
+        if ($limit > 0) {
+            $sql .= $wpdb->prepare(' LIMIT %d OFFSET %d', $limit, $offset);
+        }
+        $rows = $wpdb->get_results($sql, ARRAY_A);
         return $rows ?: [];
     }
 
@@ -139,6 +143,7 @@ class RulesRepository {
         return [
             'id'       => $id,
             'edit_url' => self::editUrl( $id ),
+            'hash'     => '/rules/edit/' . $id,
         ];
     }
 
@@ -167,13 +172,14 @@ class RulesRepository {
         return [
             'id'       => $id,
             'edit_url' => self::editUrl( $id ),
+            'hash'     => '/rules/edit/' . $id,
         ];
     }
 
     private static function nextPriority(): int {
         global $wpdb;
         $table = self::getTableName();
-        $max = (int) $wpdb->get_var("SELECT COALESCE(MAX(priority), 0) FROM {$table}");
+        $max = (int) $wpdb->get_var("SELECT COALESCE(MAX(priority), 0) FROM " . esc_sql($table));
         return $max + 10;
     }
 

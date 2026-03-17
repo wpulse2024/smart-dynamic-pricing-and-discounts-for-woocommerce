@@ -11,6 +11,7 @@ use WpulsePricingRules\Includes\Engine\Benefits\CategoryDiscounts;
 use WpulsePricingRules\Includes\Engine\Benefits\CartDiscount;
 use WpulsePricingRules\Includes\Engine\Benefits\FreeGift;
 use WpulsePricingRules\Includes\Engine\Benefits\FreeShipping;
+use WpulsePricingRules\Includes\Engine\RuleSchedule;
 
 /**
  * Main pricing rule apply engine.
@@ -24,6 +25,20 @@ class RuleEngine {
 
     /** @var string|null Cart signature from last apply (avoid double-apply same cart in one request). */
     private static $last_cart_signature = null;
+
+    /** @var array<int, array>|null Decoded rule data cache keyed by rule id. */
+    private static ?array $decoded_rules = null;
+
+    private static array $benefit_handlers = [
+        'percent_off'        => \WpulsePricingRules\Includes\Engine\Benefits\PercentOff::class,
+        'tiered'             => \WpulsePricingRules\Includes\Engine\Benefits\Tiered::class,
+        'x_for_y'            => \WpulsePricingRules\Includes\Engine\Benefits\XForY::class,
+        'nth_percent_off'    => \WpulsePricingRules\Includes\Engine\Benefits\NthPercentOff::class,
+        'category_discounts' => \WpulsePricingRules\Includes\Engine\Benefits\CategoryDiscounts::class,
+        'cart_discount'      => \WpulsePricingRules\Includes\Engine\Benefits\CartDiscount::class,
+        'free_shipping'      => \WpulsePricingRules\Includes\Engine\Benefits\FreeShipping::class,
+        'free_gift'          => \WpulsePricingRules\Includes\Engine\Benefits\FreeGift::class,
+    ];
 
     public static function register(): void {
         // A) Line item pricing (cart, checkout, AJAX refresh).
@@ -76,6 +91,8 @@ class RuleEngine {
     }
 
     public static function onBeforeCalculateTotals($cart, $data = null): void {
+        \WpulsePricingRules\Includes\Exclusions\ExclusionService::resetCache();
+        RuleSchedule::resetCache();
         if (is_admin() && !defined('DOING_AJAX')) {
             return;
         }
@@ -92,6 +109,24 @@ class RuleEngine {
         self::$run_completed = true;
         self::$last_cart_signature = $signature;
 
+        $rules = self::getActiveRules();
+
+        self::$decoded_rules = [];
+        foreach ($rules as $row) {
+            self::$decoded_rules[$row['id']] = is_string($row['rule_json'] ?? null) ? (json_decode($row['rule_json'], true) ?: []) : ($row['rule'] ?? []);
+        }
+
+        self::prepareCart($cart);
+
+        $context = Context::fromCart($cart);
+        $applied_rule_ids = self::applyLineRules($rules, $context, $cart);
+        self::applyGiftRules($rules, $context, $cart, $applied_rule_ids);
+
+        // Set gift line item prices to 0 (gifts were removed at 9000 and re-added above).
+        self::setGiftPricesToZero($cart);
+    }
+
+    private static function prepareCart(\WC_Cart $cart): void {
         // 1) Restore original prices so we never double-apply on already discounted prices.
         self::restoreOriginalPrices($cart);
         // 2) Clear free shipping flag; rules will set it if applicable.
@@ -99,16 +134,16 @@ class RuleEngine {
         if ($session) {
             $session->set('wpulse_free_shipping', false);
         }
+    }
 
-        $rules = self::getActiveRules();
-        $context = Context::fromCart($cart);
+    private static function applyLineRules(array $rules, Context $context, \WC_Cart $cart): array {
         $applied_rule_ids = [];
         foreach ($rules as $row) {
-            $rule_data = is_string($row['rule_json'] ?? null) ? json_decode($row['rule_json'], true) : ($row['rule'] ?? []);
+            $rule_data = self::$decoded_rules[$row['id']] ?? [];
             if (!is_array($rule_data)) {
                 $rule_data = [];
             }
-            if (!self::ruleInSchedule($rule_data)) {
+            if (!RuleSchedule::inSchedule($rule_data)) {
                 continue;
             }
             if (!ConditionEvaluator::evaluate($rule_data, $context)) {
@@ -126,15 +161,18 @@ class RuleEngine {
                 break;
             }
         }
+        return $applied_rule_ids;
+    }
 
+    private static function applyGiftRules(array $rules, Context $context, \WC_Cart $cart, array $applied_rule_ids): void {
         // Add gifts (benefit handlers that run as part of rule loop already did line-item/fees/shipping;
         // free_gift and x_for_y add to cart here to avoid running in a separate loop).
         foreach ($rules as $row) {
-            $rule_data = is_string($row['rule_json'] ?? null) ? json_decode($row['rule_json'], true) : ($row['rule'] ?? []);
+            $rule_data = self::$decoded_rules[$row['id']] ?? [];
             if (!is_array($rule_data)) {
                 continue;
             }
-            if (!self::ruleInSchedule($rule_data) || !ConditionEvaluator::evaluate($rule_data, $context)) {
+            if (!RuleSchedule::inSchedule($rule_data) || !ConditionEvaluator::evaluate($rule_data, $context)) {
                 continue;
             }
             $stacking = $rule_data['stacking'] ?? [];
@@ -147,9 +185,6 @@ class RuleEngine {
             }
             self::applyBenefit($row, $rule_data, $context, 'gift');
         }
-
-        // Set gift line item prices to 0 (gifts were removed at 9000 and re-added above).
-        self::setGiftPricesToZero($cart);
     }
 
     public static function onCartCalculateFees($cart, $data = null): void {
@@ -165,11 +200,11 @@ class RuleEngine {
         $applied_rule_ids = [];
 
         foreach ($rules as $row) {
-            $rule_data = is_string($row['rule_json'] ?? null) ? json_decode($row['rule_json'], true) : ($row['rule'] ?? []);
+            $rule_data = self::$decoded_rules[$row['id']] ?? (is_string($row['rule_json'] ?? null) ? (json_decode($row['rule_json'], true) ?: []) : ($row['rule'] ?? []));
             if (!is_array($rule_data)) {
                 continue;
             }
-            if (!self::ruleInSchedule($rule_data) || !ConditionEvaluator::evaluate($rule_data, $context)) {
+            if (!RuleSchedule::inSchedule($rule_data) || !ConditionEvaluator::evaluate($rule_data, $context)) {
                 continue;
             }
             $stacking = $rule_data['stacking'] ?? [];
@@ -287,20 +322,6 @@ class RuleEngine {
         return $active;
     }
 
-    private static function ruleInSchedule(array $rule): bool {
-        $schedule = $rule['schedule'] ?? [];
-        $start = $schedule['start'] ?? '';
-        $end = $schedule['end'] ?? '';
-        $now = current_time('timestamp');
-        if ($start !== '' && strtotime($start) > $now) {
-            return false;
-        }
-        if ($end !== '' && strtotime($end) < $now) {
-            return false;
-        }
-        return true;
-    }
-
     private static function applyBenefit(array $row, array $rule_data, Context $context, string $phase): void {
         $benefit = $rule_data['benefit'] ?? [];
         $kind = $benefit['kind'] ?? '';
@@ -310,35 +331,9 @@ class RuleEngine {
             }
             return;
         }
-        switch ($kind) {
-            case 'percent_off':
-                PercentOff::apply($row, $rule_data, $context);
-                break;
-            case 'tiered':
-                Tiered::apply($row, $rule_data, $context);
-                break;
-            case 'x_for_y':
-                XForY::apply($row, $rule_data, $context);
-                break;
-            case 'nth_percent_off':
-                NthPercentOff::apply($row, $rule_data, $context);
-                break;
-            case 'category_discounts':
-                CategoryDiscounts::apply($row, $rule_data, $context);
-                break;
-            case 'cart_percent_off':
-            case 'cart_fixed_off':
-                // Handled in onCartCalculateFees.
-                break;
-            case 'free_shipping':
-                FreeShipping::apply($row, $rule_data, $context);
-                break;
-            case 'free_gift':
-            case 'x_for_y':
-                // Handled in gift phase.
-                break;
-            default:
-                break;
+        if (isset(self::$benefit_handlers[$kind])) {
+            $handler = self::$benefit_handlers[$kind];
+            $handler::apply($row, $rule_data, $context);
         }
     }
 }

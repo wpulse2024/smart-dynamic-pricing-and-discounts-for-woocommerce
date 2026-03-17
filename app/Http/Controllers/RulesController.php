@@ -5,7 +5,6 @@ namespace WpulsePricingRules\App\Http\Controllers;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
-use WpulsePricingRules\App\Models\PricingRule;
 use WpulsePricingRules\Includes\DB\RulesRepository;
 
 /**
@@ -42,7 +41,7 @@ class RulesController extends Controller {
         if (!$id) {
             return $this->error(__('Could not create rule.', 'wpulse-pricing-rules-for-woocommerce'), 422);
         }
-        $row = RulesRepository::find($id);
+        $row = RulesRepository::findWithDecodedRule($id);
         return $this->success('', $row, 201);
     }
 

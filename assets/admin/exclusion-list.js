@@ -79,7 +79,7 @@
                     action: action,
                     nonce: nonce,
                     search: search,
-                    per_page: 20
+                    per_page: 50
                 })
                     .done(function (res) {
                         if (res.success && res.data && res.data.length) {

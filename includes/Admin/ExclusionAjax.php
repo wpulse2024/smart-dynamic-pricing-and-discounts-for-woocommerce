@@ -72,7 +72,8 @@ class ExclusionAjax {
      * Search products for selector (search param).
      */
     public static function searchProducts(): void {
-        self::checkRequest();
+        self::checkRequest('get');
+        self::checkRateLimit();
         $search   = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
         $per_page = min(200, max(5, (int) (isset($_GET['per_page']) ? $_GET['per_page'] : 50)));
         $q        = new \WP_Query([
@@ -101,10 +102,24 @@ class ExclusionAjax {
      * Search categories (product_cat) for selector.
      */
     public static function searchCategories(): void {
-        self::checkRequest();
+        self::checkRequest('get');
+        self::checkRateLimit();
+        self::searchTaxonomy('product_cat');
+    }
+
+    /**
+     * Search tags (product_tag) for selector.
+     */
+    public static function searchTags(): void {
+        self::checkRequest('get');
+        self::checkRateLimit();
+        self::searchTaxonomy('product_tag');
+    }
+
+    private static function searchTaxonomy(string $taxonomy): void {
         $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
         $args   = [
-            'taxonomy'   => 'product_cat',
+            'taxonomy'   => $taxonomy,
             'hide_empty' => false,
             'orderby'    => 'name',
             'order'      => 'ASC',
@@ -127,41 +142,29 @@ class ExclusionAjax {
     }
 
     /**
-     * Search tags (product_tag) for selector.
+     * @param 'post'|'get' $source  Use 'post' for state-changing actions, 'get' for read-only searches.
      */
-    public static function searchTags(): void {
-        self::checkRequest();
-        $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
-        $args   = [
-            'taxonomy'   => 'product_tag',
-            'hide_empty' => false,
-            'orderby'    => 'name',
-            'order'      => 'ASC',
-        ];
-        if ($search !== '') {
-            $args['search'] = $search;
-        }
-        $terms = get_terms($args);
-        if (is_wp_error($terms)) {
-            wp_send_json_success([]);
-        }
-        $list = [];
-        foreach ($terms as $term) {
-            $list[] = [
-                'id'   => (int) $term->term_id,
-                'name' => $term->name,
-            ];
-        }
-        wp_send_json_success($list);
-    }
-
-    private static function checkRequest(): void {
+    private static function checkRequest(string $source = 'post'): void {
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(['message' => __('Permission denied.', 'wpulse-pricing-rules-for-woocommerce')], 403);
         }
-        $nonce = isset($_REQUEST['nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['nonce'])) : '';
+        $bag   = $source === 'get' ? $_GET : $_POST;
+        $nonce = isset($bag['nonce']) ? sanitize_text_field(wp_unslash($bag['nonce'])) : '';
         if (!wp_verify_nonce($nonce, self::NONCE_ACTION)) {
             wp_send_json_error(['message' => __('Security check failed.', 'wpulse-pricing-rules-for-woocommerce')], 403);
         }
+    }
+
+    /**
+     * Transient-based rate limit: max 60 search requests per user per minute.
+     */
+    private static function checkRateLimit(): void {
+        $user_id = get_current_user_id();
+        $key     = 'wpulse_search_rate_' . $user_id . '_' . floor(time() / 60);
+        $count   = (int) get_transient($key);
+        if ($count >= 60) {
+            wp_send_json_error(['message' => __('Too many requests. Please wait a moment.', 'wpulse-pricing-rules-for-woocommerce')], 429);
+        }
+        set_transient($key, $count + 1, 60);
     }
 }

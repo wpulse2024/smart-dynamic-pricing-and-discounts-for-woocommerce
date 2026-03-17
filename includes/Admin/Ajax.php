@@ -12,11 +12,6 @@ class Ajax {
 
     const NONCE_ACTION = 'wpulse_templates';
 
-    public static function register(): void {
-        add_action('wp_ajax_wpulse_get_templates', [__CLASS__, 'getTemplates']);
-        add_action('wp_ajax_wpulse_create_rule_from_template', [__CLASS__, 'createRuleFromTemplate']);
-    }
-
     public static function getTemplates(): void {
         self::checkRequest();
         $list = [];
@@ -61,7 +56,7 @@ class Ajax {
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(['message' => __('Permission denied.', 'wpulse-pricing-rules-for-woocommerce')], 403);
         }
-        $nonce = isset($_REQUEST['nonce']) ? sanitize_text_field($_REQUEST['nonce']) : '';
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
         if (!wp_verify_nonce($nonce, self::NONCE_ACTION)) {
             wp_send_json_error(['message' => __('Security check failed.', 'wpulse-pricing-rules-for-woocommerce')], 403);
         }

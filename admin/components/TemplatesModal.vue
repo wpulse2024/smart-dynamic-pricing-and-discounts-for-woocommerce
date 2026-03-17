@@ -70,7 +70,10 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { api } from '../api';
+
+const router = useRouter();
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
@@ -111,8 +114,8 @@ async function createFromTemplate(templateId) {
   error.value = '';
   try {
     const res = await api.post('rules/from-template', { template_id: templateId });
-    if (res?.edit_url) {
-      window.location.href = res.edit_url;
+    if (res?.id) {
+      router.push({ name: 'RuleEditor', params: { id: res.id } });
       return;
     }
     error.value = 'Could not create rule';
@@ -128,8 +131,8 @@ async function createFromScratch(scratchType) {
   error.value = '';
   try {
     const res = await api.post('rules/from-template', { scratch_type: scratchType });
-    if (res?.edit_url) {
-      window.location.href = res.edit_url;
+    if (res?.id) {
+      router.push({ name: 'RuleEditor', params: { id: res.id } });
       return;
     }
     error.value = 'Could not create rule';

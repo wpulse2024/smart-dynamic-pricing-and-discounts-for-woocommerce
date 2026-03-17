@@ -222,14 +222,24 @@ async function applyBulkAction() {
   bulkApplying.value = true;
   try {
     if (action === 'delete') {
-      await Promise.all(ids.map((id) => api.delete(`rules/${id}`)));
-      rules.value = rules.value.filter((r) => !ids.includes(r.id));
+      const results = await Promise.allSettled(ids.map((id) => api.delete(`rules/${id}`)));
+      const failed = results.filter((r) => r.status === 'rejected');
+      const succeededIds = ids.filter((_, i) => results[i].status === 'fulfilled');
+      rules.value = rules.value.filter((r) => !succeededIds.includes(r.id));
+      if (failed.length > 0) {
+        alert(`${failed.length} of ${ids.length} rules could not be deleted.`);
+      }
     } else if (action === 'enable' || action === 'disable') {
       const status = action === 'enable' ? 'active' : 'disabled';
-      await Promise.all(ids.map((id) => api.patch(`rules/${id}`, { status })));
-      rules.value.forEach((r) => {
-        if (ids.includes(r.id)) r.status = status;
+      const results = await Promise.allSettled(ids.map((id) => api.patch(`rules/${id}`, { status })));
+      const failed = results.filter((r) => r.status === 'rejected');
+      rules.value.forEach((r, _i) => {
+        const idx = ids.indexOf(r.id);
+        if (idx !== -1 && results[idx].status === 'fulfilled') r.status = status;
       });
+      if (failed.length > 0) {
+        alert(`${failed.length} of ${ids.length} rules could not be updated.`);
+      }
     }
     selectedIds.value = new Set();
     bulkAction.value = '';

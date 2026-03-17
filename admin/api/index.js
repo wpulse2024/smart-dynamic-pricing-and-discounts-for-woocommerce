@@ -30,7 +30,7 @@ async function request(method, path, bodyOrParams = undefined) {
     options.body = JSON.stringify(bodyOrParams);
   }
   const res = await fetch(url, options);
-  const data = await res.json().catch(() => ({}));
+  const data = await res.json().catch((e) => { console.error('[wpulse] JSON parse error', e); return {}; });
   if (!res.ok) {
     const err = new Error(data?.message || res.statusText || 'Request failed');
     err.status = res.status;

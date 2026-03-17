@@ -3,6 +3,7 @@
 namespace WpulsePricingRules\Includes\Engine;
 
 use WpulsePricingRules\Includes\Exclusions\ExclusionService;
+use WpulsePricingRules\Includes\Engine\RuleSchedule;
 
 /**
  * Matches cart line (product) to rule targets and global exclusion list.
@@ -80,23 +81,14 @@ class TargetMatcher {
             return in_array($product_id, $ids, true);
         }
         if ($type === 'categories') {
-            $term_ids = self::getProductTermIds($product_id, 'product_cat');
+            $term_ids = RuleSchedule::getTermIds($product_id, 'product_cat');
             return !empty(array_intersect($term_ids, $ids));
         }
         if ($type === 'tags') {
-            $term_ids = self::getProductTermIds($product_id, 'product_tag');
+            $term_ids = RuleSchedule::getTermIds($product_id, 'product_tag');
             return !empty(array_intersect($term_ids, $ids));
         }
         return false;
     }
 
-    private static function getProductTermIds(int $productId, string $taxonomy): array {
-        $terms = wp_get_post_terms($productId, $taxonomy);
-        if (is_wp_error($terms) || !is_array($terms)) {
-            return [];
-        }
-        return array_map(function ($t) {
-            return (int) $t->term_id;
-        }, $terms);
-    }
 }

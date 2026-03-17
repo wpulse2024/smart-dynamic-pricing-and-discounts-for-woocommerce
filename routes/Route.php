@@ -53,22 +53,9 @@ class Route {
         }
         $wpUri = self::laravelUriToWpRegex($uri);
         $router = self::router();
-        switch (strtoupper($method)) {
-            case 'GET':
-                $router->get($wpUri, $controller, $methodName);
-                break;
-            case 'POST':
-                $router->post($wpUri, $controller, $methodName);
-                break;
-            case 'PUT':
-                $router->put($wpUri, $controller, $methodName);
-                break;
-            case 'PATCH':
-                $router->patch($wpUri, $controller, $methodName);
-                break;
-            case 'DELETE':
-                $router->delete($wpUri, $controller, $methodName);
-                break;
+        $routerMethod = strtolower($method);
+        if (method_exists($router, $routerMethod)) {
+            $router->$routerMethod($wpUri, $controller, $methodName);
         }
     }
 

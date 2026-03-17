@@ -27,7 +27,7 @@ class EditRulePage {
             exit;
         }
         // Redirect to Vue app rule editor (hash route)
-        wp_safe_redirect(admin_url('admin.php?page=wpulse-pricing-rules') . '#/rules/edit/' . $id);
+        wp_safe_redirect(esc_url(admin_url('admin.php?page=wpulse-pricing-rules') . '#/rules/edit/' . $id));
         exit;
     }
 

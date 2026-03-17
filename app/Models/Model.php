@@ -37,6 +37,9 @@ abstract class Model {
             ),
             ARRAY_A
         );
+        if ($wpdb->last_error) {
+            error_log('[wpulse] DB error in find(): ' . $wpdb->last_error);
+        }
         return $row ?: null;
     }
 

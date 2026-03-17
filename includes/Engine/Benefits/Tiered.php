@@ -46,7 +46,7 @@ class Tiered {
             $pct = (float) ($tier['percent_off'] ?? 0);
             $fixed = (float) ($tier['fixed_off'] ?? 0);
             $adjustment = -$price * ($pct / 100) * $qty - $fixed * $qty;
-            $new_price = max(0, $price + ($adjustment / $qty));
+            $new_price = round(max(0, $price + ($adjustment / $qty)), wc_get_price_decimals());
             PercentOff::setLinePrice($cart_item, $new_price, $row['id']);
         }
     }

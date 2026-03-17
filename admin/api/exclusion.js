@@ -54,6 +54,6 @@ export const exclusionApi = {
   addMultiple: (exclusionType, objectIds) => post('wpulse_add_exclusion', { exclusion_type: exclusionType, object_ids: objectIds }),
   delete: (id) => post('wpulse_delete_exclusion', { id }),
   searchProducts: (search, perPage = 20) => get('wpulse_search_products', { search, per_page: perPage }),
-  searchCategories: (search = '') => get('wpulse_search_categories', { search }),
-  searchTags: (search = '') => get('wpulse_search_tags', { search }),
+  searchCategories: (search = '', perPage = 20) => get('wpulse_search_categories', { search, per_page: perPage }),
+  searchTags: (search = '', perPage = 20) => get('wpulse_search_tags', { search, per_page: perPage }),
 };

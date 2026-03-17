@@ -43,7 +43,7 @@ class PercentOff {
                 continue;
             }
             $adjustment_per_unit = -$price * ($percent / 100);
-            $new_price = max(0, $price + $adjustment_per_unit);
+            $new_price = round(max(0, $price + $adjustment_per_unit), wc_get_price_decimals());
             self::setLinePrice($cart_item, $new_price, $row['id']);
         }
     }

@@ -70,11 +70,11 @@ class Installer {
         ));
 
         if ($exists) {
-            $has_rule_json = $wpdb->get_var("SHOW COLUMNS FROM {$table} LIKE 'rule_json'");
+            $has_rule_json = $wpdb->get_var("SHOW COLUMNS FROM " . esc_sql($table) . " LIKE 'rule_json'");
             if ($has_rule_json) {
                 return;
             }
-            $wpdb->query("DROP TABLE IF EXISTS {$table}");
+            $wpdb->query("DROP TABLE IF EXISTS " . esc_sql($table));
         }
 
         $sql = "CREATE TABLE IF NOT EXISTS {$table} (
@@ -88,6 +88,7 @@ class Installer {
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY type_status (type, status),
+            KEY status (status),
             KEY priority (priority),
             KEY updated_at (updated_at)
         ) {$charset};";

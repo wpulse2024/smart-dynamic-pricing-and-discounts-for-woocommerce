@@ -39,6 +39,9 @@ class FreeGift {
             if ($pid <= 0) {
                 continue;
             }
+            if (\WpulsePricingRules\Includes\Exclusions\ExclusionService::isProductExcluded($pid)) {
+                continue;
+            }
             if (self::isGiftInCart($cart, $pid, $rule_id)) {
                 continue;
             }

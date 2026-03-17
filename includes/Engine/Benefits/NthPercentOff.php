@@ -47,7 +47,7 @@ class NthPercentOff {
             } else {
                 $adjustment = $qty >= $nth ? -$price * ($percent / 100) : 0;
             }
-            $new_price = max(0, $price + ($adjustment / $qty));
+            $new_price = round(max(0, $price + ($adjustment / $qty)), wc_get_price_decimals());
             PercentOff::setLinePrice($cart_item, $new_price, $row['id']);
         }
     }
