@@ -3,7 +3,7 @@ Contributors: wpulse, dasnitesh780, chadni54
 Tags: woocommerce dynamic pricing, bulk discount, tiered pricing, BOGO, pricing rules
 Requires at least: 5.0
 Tested up to: 6.9.1
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 Requires PHP: 7.4
 WC requires at least: 5.0
 WC tested up to: 9.6
@@ -45,7 +45,7 @@ Most WooCommerce dynamic pricing plugins lock essential features behind expensiv
 
 ### Discount Types
 
-**WPulse Pricing Rules** supports 9 distinct discount types out of the box:
+**WPulse Pricing Rules** supports 10 distinct discount types out of the box:
 
 * **Percent off** — Percentage discount on individual products or the entire cart.
 * **Fixed amount off** — Fixed £/$ discount per product or on the cart total.
@@ -57,6 +57,7 @@ Most WooCommerce dynamic pricing plugins lock essential features behind expensiv
 * **Free shipping** — Free shipping when conditions are met (replaces or overrides the shipping rate).
 * **Free gift** — Automatically add one or more free products when conditions are met.
 * **Category discounts** — Different percent or fixed discount per product category in one rule.
+* **Fixed price** — Override a product's price to a specific amount; choose to apply to all matching items, the cheapest, or the most expensive. Option to always set the price or only when it is a genuine discount.
 
 ---
 
@@ -112,7 +113,7 @@ Or start from scratch — the full editor is available for any discount type.
 
 * **Vue 3 single-page app** — Fast, reactive admin with no full-page reloads.
 * **Rules list** — Sort, filter by type/status, search by name, bulk enable/disable/delete.
-* **Rule editor** — Inline editing with live validation and error feedback.
+* **Rule editor** — Two-column layout with a sticky publish sidebar; visual discount-type card grid; segmented controls; structured condition pills; proper tiered-pricing table; and a clean section hierarchy (Discount → Apply To → Conditions → Users & Schedule → Display).
 * **Templates modal** — Pick a starting template in one click.
 * **Exclusion List** — Searchable product, category, and tag exclusion manager.
 
@@ -216,7 +217,13 @@ Open a thread on the [WordPress.org support forum](https://wordpress.org/support
 
 == Changelog ==
 
+= 1.2.0 – 2026-03-26 =
 
+* Added `fixed_price` benefit type: set a product's unit price to an exact amount instead of applying a percentage or fixed reduction.
+* `apply_to` option controls scope — apply the fixed price to all matching products, only the cheapest, or only the most expensive item in the cart.
+* `force` toggle: when off (default) the rule only fires if the fixed price is lower than the original (discount-only mode); when on, the price is always overridden regardless of the original.
+* Session-based original-price restore is applied so the fixed price stacks correctly with other rules and never double-applies on recalculation.
+* Product-page badge shows "Special price: $X.XX" for rules of this type.
 
 = 1.1.1 – 2026-03-18 =
 * Added variation-level targeting — rules can now apply to specific variations of a variable product
@@ -237,6 +244,9 @@ Open a thread on the [WordPress.org support forum](https://wordpress.org/support
 ---
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Adds a new Fixed Price discount type and a fully redesigned rule editor. No database changes — fully backward compatible. Existing rules continue to work without any action required.
 
 = 1.1.0 =
 Security, performance, and reliability release. Fixes SQL injection hardening, CSRF/XSS improvements, removes duplicate AJAX routes, and adds request-scoped caching throughout the rule engine. Fully backward compatible — no action required on upgrade.
