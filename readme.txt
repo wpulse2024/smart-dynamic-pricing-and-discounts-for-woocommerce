@@ -216,6 +216,8 @@ Open a thread on the [WordPress.org support forum](https://wordpress.org/support
 
 == Changelog ==
 
+
+
 = 1.1.1 – 2026-03-18 =
 * Added variation-level targeting — rules can now apply to specific variations of a variable product
 

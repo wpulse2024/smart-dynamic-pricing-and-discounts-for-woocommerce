@@ -29,9 +29,6 @@
 
     <!-- Table -->
     <div v-else-if="!loading && list.length > 0" class="exclusion-list-page__table-wrap">
-      <div class="exclusion-list-page__toolbar">
-        <button type="button" class="btn btn--primary" @click="openModal">Add exclusion</button>
-      </div>
       <div class="table-container">
         <table class="rules-table">
           <thead class="rules-table__head">
