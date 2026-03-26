@@ -11,6 +11,7 @@ use WpulsePricingRules\Includes\Engine\Benefits\CategoryDiscounts;
 use WpulsePricingRules\Includes\Engine\Benefits\CartDiscount;
 use WpulsePricingRules\Includes\Engine\Benefits\FreeGift;
 use WpulsePricingRules\Includes\Engine\Benefits\FreeShipping;
+use WpulsePricingRules\Includes\Engine\Benefits\FixedPrice;
 use WpulsePricingRules\Includes\Engine\RuleSchedule;
 
 /**
@@ -38,6 +39,7 @@ class RuleEngine {
         'cart_discount'      => \WpulsePricingRules\Includes\Engine\Benefits\CartDiscount::class,
         'free_shipping'      => \WpulsePricingRules\Includes\Engine\Benefits\FreeShipping::class,
         'free_gift'          => \WpulsePricingRules\Includes\Engine\Benefits\FreeGift::class,
+        'fixed_price'        => \WpulsePricingRules\Includes\Engine\Benefits\FixedPrice::class,
     ];
 
     public static function register(): void {

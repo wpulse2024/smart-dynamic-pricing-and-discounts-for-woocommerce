@@ -217,7 +217,7 @@ Open a thread on the [WordPress.org support forum](https://wordpress.org/support
 == Changelog ==
 
 = 1.1.1 – 2026-03-18 =
-* Added variation-level targeting — rules can now apply to specific variations of a variable product (e.g. only the 650ml size), leaving other variations unaffected.
+* Added variation-level targeting — rules can now apply to specific variations of a variable product
 
 = 1.1.0 – 2026-03-17 =
 

@@ -68,6 +68,39 @@ class TargetMatcher {
     }
 
     /**
+     * Match a product on the product page (no cart context).
+     * For variation rules on a variable product, returns true if any child variation is targeted.
+     *
+     * @param \WC_Product $product
+     * @param array       $targets
+     * @return bool
+     */
+    public static function productPageMatchesTargets( \WC_Product $product, array $targets ): bool {
+        $type = $targets['type'] ?? 'all';
+
+        if ( $type === 'variations' ) {
+            if ( $product->is_type( 'variable' ) ) {
+                $variation_ids   = array_map( 'intval', (array) $product->get_children() );
+                $target_var_ids  = array_map( 'intval', (array) ( $targets['variations'] ?? [] ) );
+                $match = ! empty( array_intersect( $variation_ids, $target_var_ids ) );
+                return self::applyExclude( $match, $targets, 'variations' );
+            }
+            // Simple product on a variation-targeted rule – never matches.
+            return false;
+        }
+
+        // For all other types re-use the standard line match (variation_id not needed there).
+        $product_id = (int) $product->get_id();
+        $line = [
+            'product_id'   => $product_id,
+            'variation_id' => 0,
+            'categories'   => RuleSchedule::getTermIds( $product_id, 'product_cat' ),
+            'tags'         => RuleSchedule::getTermIds( $product_id, 'product_tag' ),
+        ];
+        return self::lineMatchesTargets( $line, $targets );
+    }
+
+    /**
      * Check if product is on the global exclusion list (skip from ALL rules).
      */
     public static function isGloballyExcluded($product): bool {

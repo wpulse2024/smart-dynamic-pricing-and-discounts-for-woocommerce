@@ -94,13 +94,6 @@ class ProductDiscountMessage {
 	 * @return array<int, array{message: string}>
 	 */
 	public static function getMessagesForProduct( \WC_Product $product, bool $single_product ): array {
-		$product_id = (int) $product->get_id();
-		$line       = [
-			'product_id' => $product_id,
-			'categories' => RuleSchedule::getTermIds( $product_id, 'product_cat' ),
-			'tags'       => RuleSchedule::getTermIds( $product_id, 'product_tag' ),
-		];
-
 		// Context with no cart so cart-dependent conditions fail; only rules that pass (e.g. user role) are applicable.
 		$context   = Context::forProductPage();
 		$all_rules = self::getActiveRules();
@@ -121,7 +114,7 @@ class ProductDiscountMessage {
 				continue;
 			}
 			$targets = $rule_data['targets'] ?? [];
-			if ( ! TargetMatcher::lineMatchesTargets( $line, $targets ) ) {
+			if ( ! TargetMatcher::productPageMatchesTargets( $product, $targets ) ) {
 				continue;
 			}
 			if ( TargetMatcher::isExcludedByRule( $product, $rule_data['exclusions'] ?? [] ) ) {
@@ -142,7 +135,7 @@ class ProductDiscountMessage {
 				}
 			}
 
-			$message = self::buildMessage( $rule_data, $row['name'] ?? '', $custom_msg, $single_product );
+			$message = self::buildMessage( $rule_data, $row['name'] ?? '', $custom_msg, $single_product, $targets );
 			if ( $message !== '' ) {
 				// Only the first (highest priority) applicable rule.
 				return [ [ 'message' => $message ] ];
@@ -152,36 +145,44 @@ class ProductDiscountMessage {
 		return [];
 	}
 
-	private static function buildMessage( array $rule_data, string $rule_name, string $custom_message, bool $single_product ): string {
+	private static function buildMessage( array $rule_data, string $rule_name, string $custom_message, bool $single_product, array $targets = [] ): string {
 		if ( $custom_message !== '' ) {
 			$msg = self::replaceShortcodes( $custom_message, $rule_data );
 			return wp_kses_post( $msg );
 		}
-		$benefit = $rule_data['benefit'] ?? [];
-		$kind    = $benefit['kind'] ?? '';
+		$benefit         = $rule_data['benefit'] ?? [];
+		$kind            = $benefit['kind'] ?? '';
+		$variation_scope = ( ( $targets['type'] ?? '' ) === 'variations' );
+		$variation_suffix = $variation_scope ? ' ' . self::variationSuffix( $targets['variations'] ?? [] ) : '';
 		switch ( $kind ) {
 			case 'percent_off':
 				$pct = (int) ( $benefit['percent'] ?? 0 );
-				return $pct > 0 ? sprintf( __( '%d%% off', 'wpulse-pricing-rules-for-woocommerce' ), $pct ) : '';
+				if ( $pct <= 0 ) {
+					return '';
+				}
+				return sprintf( __( '%d%% off', 'wpulse-pricing-rules-for-woocommerce' ), $pct ) . $variation_suffix;
 			case 'fixed_off':
 				$amount = (float) ( $benefit['amount'] ?? 0 );
-				return $amount > 0 ? sprintf( __( '%s off', 'wpulse-pricing-rules-for-woocommerce' ), wc_price( $amount ) ) : '';
+				if ( $amount <= 0 ) {
+					return '';
+				}
+				return sprintf( __( '%s off', 'wpulse-pricing-rules-for-woocommerce' ), wc_price( $amount ) ) . $variation_suffix;
 			case 'x_for_y':
 				$buy = (int) ( $benefit['buy_qty'] ?? 0 );
 				$pay = (int) ( $benefit['pay_qty'] ?? 0 );
 				if ( $buy > 0 && $pay >= 0 && $pay < $buy ) {
-					return sprintf( __( 'Buy %d pay for %d', 'wpulse-pricing-rules-for-woocommerce' ), $buy, $pay );
+					return sprintf( __( 'Buy %d pay for %d', 'wpulse-pricing-rules-for-woocommerce' ), $buy, $pay ) . $variation_suffix;
 				}
 				return '';
 			case 'nth_percent_off':
 				$nth = (int) ( $benefit['nth'] ?? 0 );
 				$pct = (int) ( $benefit['percent'] ?? 0 );
 				if ( $nth > 0 && $pct > 0 ) {
-					return sprintf( __( '%1$d%% off %2$s unit', 'wpulse-pricing-rules-for-woocommerce' ), $pct, self::ordinal( $nth ) );
+					return sprintf( __( '%1$d%% off %2$s unit', 'wpulse-pricing-rules-for-woocommerce' ), $pct, self::ordinal( $nth ) ) . $variation_suffix;
 				}
 				return '';
 			case 'tiered':
-				return __( 'Quantity discount available', 'wpulse-pricing-rules-for-woocommerce' );
+				return __( 'Quantity discount available', 'wpulse-pricing-rules-for-woocommerce' ) . $variation_suffix;
 			case 'category_discounts':
 				return __( 'Category discount available', 'wpulse-pricing-rules-for-woocommerce' );
 			case 'free_gift':
@@ -192,9 +193,38 @@ class ProductDiscountMessage {
 				return $pct > 0 ? sprintf( __( 'Cart: %d%% off when conditions met', 'wpulse-pricing-rules-for-woocommerce' ), $pct ) : __( 'Cart discount when conditions met', 'wpulse-pricing-rules-for-woocommerce' );
 			case 'free_shipping':
 				return __( 'Free shipping when conditions met', 'wpulse-pricing-rules-for-woocommerce' );
+			case 'fixed_price':
+				$fixed = isset( $benefit['price'] ) ? (float) $benefit['price'] : null;
+				if ( $fixed === null || $fixed < 0 ) {
+					return '';
+				}
+				return sprintf( __( 'Special price: %s', 'wpulse-pricing-rules-for-woocommerce' ), wc_price( $fixed ) ) . $variation_suffix;
 			default:
 				return $rule_name ? sprintf( __( 'Discount: %s', 'wpulse-pricing-rules-for-woocommerce' ), $rule_name ) : __( 'Discount available', 'wpulse-pricing-rules-for-woocommerce' );
 		}
+	}
+
+	/**
+	 * Build a human-readable suffix listing the targeted variation attributes.
+	 * e.g. "on: 650ml, 1 LTR"
+	 */
+	private static function variationSuffix( array $variation_ids ): string {
+		$labels = [];
+		foreach ( $variation_ids as $vid ) {
+			$variation = wc_get_product( (int) $vid );
+			if ( ! $variation || ! $variation->exists() ) {
+				continue;
+			}
+			$attrs = $variation->get_variation_attributes();
+			$parts = array_filter( array_values( $attrs ), static fn( $v ) => $v !== '' );
+			if ( ! empty( $parts ) ) {
+				$labels[] = implode( ', ', $parts );
+			}
+		}
+		if ( empty( $labels ) ) {
+			return __( 'on selected variants', 'wpulse-pricing-rules-for-woocommerce' );
+		}
+		return sprintf( __( 'on: %s', 'wpulse-pricing-rules-for-woocommerce' ), implode( ' &amp; ', $labels ) );
 	}
 
 	private static function replaceShortcodes( string $text, array $rule_data ): string {

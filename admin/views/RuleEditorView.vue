@@ -32,7 +32,7 @@
           <div class="rule-editor-field">
             <label class="rule-editor-field__label">Priority</label>
             <input v-model.number="form.priority" type="number" class="rule-editor-field__input rule-editor-field__input--sm" min="0" />
-            <p class="rule-editor-field__help">Set the priority for this rule. Priority is a number (1 is the highest priority)</p>
+            <p class="rule-editor-field__help">Set the priority for this rule. The higher the number, the higher the priority.</p>
           </div>
         </div>
       </section>
@@ -54,6 +54,7 @@
               <option value="cart_fixed_off">Cart fixed off</option>
               <option value="free_shipping">Free shipping</option>
               <option value="free_gift">Free gift</option>
+              <option value="fixed_price">Fixed price</option>
             </select>
           </div>
           <!-- Set a category discount (multiple rules) -->
@@ -166,6 +167,36 @@
                   :value="p.id"
                 />
               </el-select>
+            </div>
+          </template>
+          <template v-else-if="benefitKind === 'fixed_price'">
+            <div class="rule-editor-field rule-editor-field--inline">
+              <label class="rule-editor-field__label">Fixed price</label>
+              <input
+                v-model.number="form.rule.benefit.price"
+                type="number"
+                class="rule-editor-field__input rule-editor-field__input--xs"
+                min="0"
+                step="0.01"
+                placeholder="9.99"
+              />
+            </div>
+            <div class="rule-editor-field rule-editor-field--inline">
+              <label class="rule-editor-field__label">Apply to</label>
+              <select v-model="form.rule.benefit.apply_to" class="rule-editor-field__select">
+                <option value="all">All matching products</option>
+                <option value="lowest">Cheapest matching product only</option>
+                <option value="highest">Most expensive matching product only</option>
+              </select>
+              <p class="rule-editor-field__help">Choose which matched cart item(s) the fixed price applies to.</p>
+            </div>
+            <div class="rule-editor-field rule-editor-field--toggle">
+              <label class="rule-editor-field__label">Always set price (even if already cheaper)</label>
+              <label class="switch">
+                <input v-model="form.rule.benefit.force" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+              <p class="rule-editor-field__help">By default the fixed price only applies when it is lower than the original price (discount only). Enable this to always override the price.</p>
             </div>
           </template>
           <p v-if="benefitKind !== 'category_discounts'" class="rule-editor-field__help">Set the discount to apply. Leave 0 if not used.</p>
@@ -690,6 +721,9 @@ const defaultRule = () => ({
     nth: 2,
     product_ids: [],
     category_discounts: [],
+    price: 0,
+    apply_to: 'all',
+    force: false,
   },
   exclusions: { enabled: false, type: 'products', ids: [] },
   limits: { max_uses: 0, max_uses_per_user: 0 },
@@ -723,6 +757,11 @@ const benefitKind = computed({
       if (!form.value.rule.benefit.category_discounts.length) {
         form.value.rule.benefit.category_discounts.push({ apply_type: 'percent', value: 10, category_ids: [] });
       }
+    }
+    if (v === 'fixed_price') {
+      if (form.value.rule.benefit.price === undefined) form.value.rule.benefit.price = 0;
+      if (!form.value.rule.benefit.apply_to) form.value.rule.benefit.apply_to = 'all';
+      if (form.value.rule.benefit.force === undefined) form.value.rule.benefit.force = false;
     }
   },
 });
