@@ -1,22 +1,22 @@
-=== WPulse Pricing Rules for WooCommerce ===
+=== Dynamic Pricing & Discount Rules for WooCommerce ===
 Contributors: wpulse, dasnitesh780, chadni54
-Tags: woocommerce dynamic pricing, bulk discount, tiered pricing, BOGO, pricing rules
+Tags: woocommerce dynamic pricing, discount rules, bulk discount, tiered pricing, woocommerce discounts
 Requires at least: 5.0
 Tested up to: 6.9.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 Requires PHP: 7.4
 WC requires at least: 5.0
 WC tested up to: 9.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Create dynamic pricing rules, quantity discounts, BOGO deals, role-based pricing, and cart promotions for WooCommerce — 100% free.
+Create dynamic pricing and discount rules for WooCommerce — tiered bulk pricing, BOGO, role-based pricing, cart promotions, free shipping, and free gifts. 100% free.
 
 == Description ==
 
-**WPulse Pricing Rules for WooCommerce** is the **free, open-source alternative to premium dynamic pricing plugins** like YITH Dynamic Pricing & Discounts and Dynamic Pricing & Discounts by RightPress. Build powerful, flexible discount rules with zero subscription fees.
+**Dynamic Pricing & Discount Rules for WooCommerce** is the **free, open-source alternative to premium dynamic pricing plugins** like YITH Dynamic Pricing & Discounts and Dynamic Pricing & Discounts by RightPress. Build powerful, flexible discount rules with zero subscription fees.
 
-Whether you need **quantity-based discounts**, **tiered bulk pricing**, **BOGO deals**, **user role pricing**, **cart promotions**, **free shipping rules**, or **free gift products** — WPulse handles them all from a clean, modern admin interface.
+Whether you need **quantity-based discounts**, **tiered bulk pricing**, **BOGO deals**, **user role pricing**, **cart promotions**, **free shipping rules**, or **free gift products** — this plugin handles them all from a clean, modern admin interface.
 
 🎥 **See it in action:**
 
@@ -24,9 +24,9 @@ Whether you need **quantity-based discounts**, **tiered bulk pricing**, **BOGO d
 
 ---
 
-### Why WPulse Pricing Rules?
+### Why Dynamic Pricing & Discount Rules for WooCommerce?
 
-Most WooCommerce dynamic pricing plugins lock essential features behind expensive yearly plans. WPulse gives you the **same core rule engine — completely free**:
+Most WooCommerce dynamic pricing plugins lock essential features behind expensive yearly plans. This plugin gives you the **same core rule engine — completely free**:
 
 * ✅ Tiered / bulk quantity discounts
 * ✅ BOGO (Buy One Get One) and X for Y deals
@@ -45,7 +45,7 @@ Most WooCommerce dynamic pricing plugins lock essential features behind expensiv
 
 ### Discount Types
 
-**WPulse Pricing Rules** supports 10 distinct discount types out of the box:
+**Dynamic Pricing & Discount Rules for WooCommerce** supports 10 distinct discount types out of the box:
 
 * **Percent off** — Percentage discount on individual products or the entire cart.
 * **Fixed amount off** — Fixed £/$ discount per product or on the cart total.
@@ -134,7 +134,7 @@ Or start from scratch — the full editor is available for any discount type.
 **From WordPress admin (recommended):**
 
 1. Go to **Plugins → Add New**.
-2. Search for **WPulse Pricing Rules**.
+2. Search for **Dynamic Pricing & Discount Rules for WooCommerce**.
 3. Click **Install Now**, then **Activate**.
 4. Go to **Pricing Rules** in the WordPress admin menu.
 
@@ -157,7 +157,7 @@ Or start from scratch — the full editor is available for any discount type.
 
 = Is this a free alternative to YITH WooCommerce Dynamic Pricing & Discounts? =
 
-Yes. WPulse Pricing Rules provides the core dynamic pricing features found in premium plugins — tiered discounts, BOGO, role-based pricing, cart promotions, free shipping rules, and free gifts — completely free with no pro plan required.
+Yes. Dynamic Pricing & Discount Rules for WooCommerce provides the core dynamic pricing features found in premium plugins — tiered discounts, BOGO, role-based pricing, cart promotions, free shipping rules, and free gifts — completely free with no pro plan required.
 
 = Does it support bulk / quantity-based discounts? =
 
@@ -252,4 +252,4 @@ Adds a new Fixed Price discount type and a fully redesigned rule editor. No data
 Security, performance, and reliability release. Fixes SQL injection hardening, CSRF/XSS improvements, removes duplicate AJAX routes, and adds request-scoped caching throughout the rule engine. Fully backward compatible — no action required on upgrade.
 
 = 1.0.0 =
-First stable release of **WPulse Pricing Rules for WooCommerce**.
+First stable release of **Dynamic Pricing & Discount Rules for WooCommerce**.
